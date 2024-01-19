@@ -127,3 +127,19 @@ let process_rec_flag ( x:rec_flag):string="process_rec_flag" ^
                                           | Recursive -> "rec"
 
 [print_type_decl:"rec_flag" = type variant:constructor:"Nonrecursive"{Pcstr_tuple:my_process_core_type_list:}	|constructor:"Recursive"{Pcstr_tuple:my_process_core_type_list:}	|VARIANT(rec_flag)
+
+*** fixmes:
+
+DBG22A:let process_rec_flag"-> x : rec_flag"->= x
+
+DBG22E:constructor_declaration_new: constructor:"Pstr_type"{| Pstr_type (rec_flag"->0,list"->type_declaration"->00) -> (process_types_structure_item_desc__Pstr_type((process_rec_flag"-> rec_flag"->0),(process_list"->type_declaration"->0 list"->type_declaration"->01)))}
+
+let process_types_rec_flag__Nonrecursive(():()):string = (process_types ^ ("rec_flag","Nonrecursive") ^)
+let process_types_rec_flag__Recursive(():()):string = (process_types ^ ("rec_flag","Recursive") ^)
+
+let process_rec_flag__Recursive x :string =match x with
+| Recursive () -> (process_types_rec_flag__Recursive())
+| Nonrecursive () -> (process_types_rec_flag__Nonrecursive())
+
+
+*** handle a list of items

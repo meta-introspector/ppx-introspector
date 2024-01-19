@@ -196,8 +196,7 @@ and emit_type_variant_constructor_declaration_list(a:string*constructor_declarat
       ^
       (emit_type_variant_constructor_declaration_list (p,t,s))
         
-and emit_type_decl_kind((p,x,s,ss)) :string=
-  "(emit_type_decl_kind " ^
+and emit_type_decl_kind((p,x,s,ss)) :string=  
   (
     match x with
     | Ptype_record a ->     
@@ -208,7 +207,6 @@ and emit_type_decl_kind((p,x,s,ss)) :string=
       (emit_type_variant_constructor_declaration_list (p,a,s))                                          ^ ")"
     | Ptype_open  -> "OPEN"
   )
-  ^")"
 and  emit_record_kind_field_list(p,x,s,ss) : string =
     match x with
   | [] -> ""
