@@ -799,7 +799,7 @@ let print_structure_item_desc(a :structure_item_desc*string_list) :string =
       match x with
       | Pstr_value (rec_flag, value_binding_list) ->
         (* (ppddump ("DBG1:Pstr_value:", rec_flag, value_binding_list)); *)
-        "(pstr_value "   ^ (process_rec_flag rec_flag) "^" ^ print_value_binding_list(value_binding_list) ^ ")"
+        "(pstr_value "   ^ (process_rec_flag rec_flag) ^ "^" ^ print_value_binding_list(value_binding_list) ^ ")"
       | Pstr_type (rec_flag, type_declaration_list) ->
         
       (print_endline ("\n(HELPEmitthecode_emit_type_decl_list "^((process_rec_flag rec_flag) ^ Emitthecode.emit_type_decl_list (type_declaration_list,s," "))^")\n"));
