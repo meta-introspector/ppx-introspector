@@ -7,7 +7,9 @@ type 'x isofhlevel = __
 type 'x isaprop = 'x isofhlevel
 type ('t, 'p) total2 = { pr1: 't; pr2 : 'p}
 type 'a paths = | Coq_paths_refl (* terminal in proof system reflexive *)
+(*"An isaset function takes in two elements, x and y, and returns a path connecting them."*)
 type 'x isaset = 'x -> 'x -> 'x paths isaprop
+    
 type ('x, 'y) hfiber = ('x, 'y paths) total2 (*x leads to y reflexive*)
 type ('x, 'y) isofhlevelf = 'y -> ('x, 'y) hfiber isofhlevel
 type ('x, 'y) isincl = ('x, 'y) isofhlevelf

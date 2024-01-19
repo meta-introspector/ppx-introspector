@@ -103,11 +103,22 @@ let rec process_id1 a : string =
 let process_longident_loc ( a :longident_loc):string="ident:" ^ (process_id1 a.txt)
 let process_module_expr ( amodule_expr0:module_expr):string="FIXME16"
 let process_open_declaration ( aopen_declaration0:open_declaration):string="FIXME17"
-let process_rec_flag ( x:rec_flag):string="process_rec_flag" ^
-                                          match x with 
-                                          | Nonrecursive -> "plain"
-                                          | Recursive -> "rec"
 
+let process_types (a,b) = "(process_types_20 " ^ a ^"," ^ b ^ ")"
+
+let process_types_rec_flag__Nonrecursive:string = (process_types ("rec_flag","Nonrecursive") )
+let process_types_rec_flag__Recursive:string = (process_types ("rec_flag","Recursive") )
+
+let process_rec_flag__Recursive x :string =match x with
+| Recursive  -> process_types_rec_flag__Recursive
+| Nonrecursive  -> process_types_rec_flag__Nonrecursive
+
+let process_rec_flag( x : rec_flag):string = "process_rec_flag_new" ^ process_rec_flag__Recursive x
+
+let process_rec_flag_manual ( x:rec_flag):string="process_rec_flag" ^
+                                                 match x with 
+                                                 | Nonrecursive -> "plain"
+                                                 | Recursive -> "rec"
 
 
 
@@ -557,7 +568,7 @@ let emit_constructor_arguments(a1:(string*string*constructor_arguments*string_li
     "| " ^ name
     ^ " (emit_core_type_list "
     ^ (emit_core_type_list (a,s,0))
-    ^ ") -> (process_types_"
+    ^ ") -> (process_types_21_"
     ^ parent
     ^ "__"
     ^ name
@@ -617,10 +628,10 @@ let rec decl_imp_core_type_list_hats((parent,name,a,b,n): string*string*core_typ
 let decl_emit_constructor_arguments(parent,name,x,s):string =
   match x with
   | Pcstr_tuple a ->
-    "let "^ "process_types_" ^ parent ^ "__" ^ name
+    "let "^ "process_types_22_" ^ parent ^ "__" ^ name
     ^ "(("    ^  decl_imp_core_type_list (parent,name,a,s,0) ^   "):"
     ^ "("    ^  decl_imp_core_type_list2 (parent,name,a,s,0) ^  ")):string"
-    ^ " = (process_types ^ (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
+    ^ " = (process_types_23 (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
     (decl_imp_core_type_list_hats (parent,name,a,s,0) ) ^ ")"
   | other  -> "other"
 
@@ -747,7 +758,7 @@ let rec process_type_decl_list(a:type_declaration_list*string_list):string =
   match a with
   |(x,s)->
     match x with
-    | [] -> "process_type_decl_list"
+    | [] -> "process_type_decl_list_24"
     | h :: t ->
       (print_type_decl (h,s))
       ^ "[" ^
@@ -788,9 +799,10 @@ let print_structure_item_desc(a :structure_item_desc*string_list) :string =
       match x with
       | Pstr_value (rec_flag, value_binding_list) ->
         (* (ppddump ("DBG1:Pstr_value:", rec_flag, value_binding_list)); *)
-        "Pstr_value:"      ^ print_value_binding_list(value_binding_list)
-    | Pstr_type (rec_flag, type_declaration_list) ->      
-      (print_endline ("\n(HELPEmitthecode_emit_type_decl_list "^(Emitthecode.emit_type_decl_list (type_declaration_list,s," "))^")\n"));
+        "(pstr_value "   ^ (process_rec_flag rec_flag) "^" ^ print_value_binding_list(value_binding_list) ^ ")"
+      | Pstr_type (rec_flag, type_declaration_list) ->
+        
+      (print_endline ("\n(HELPEmitthecode_emit_type_decl_list "^((process_rec_flag rec_flag) ^ Emitthecode.emit_type_decl_list (type_declaration_list,s," "))^")\n"));
       "(emit_pstr_type)"^
       process_type_decl_list((type_declaration_list,s))
     | Pstr_module  module_binding ->
