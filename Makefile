@@ -1,5 +1,9 @@
 
 
+
+test/test2.txt: test/test2.ml 
+	./_build/install/default/lib/ppx-introspector/ppx.exe   --impl test/test2.ml > test/test2.txt
+
 report: log.txt
 	grep DEBUG2B: log.txt | cut -d: -f2- 
 	grep DEBUG2A: log.txt | cut -d: -f2-
@@ -15,4 +19,4 @@ clean :
 
 log.txt:  src/ppx.ml
 	dune clean
-	dune build --display=quiet > log.txt 2>&1
+	dune build --trace-file build.trace --verbose --display=quiet > log.txt 2>&1

@@ -1,5 +1,6 @@
-(*in ocaml coq extraction, explain isaset to me like i am 5 yo.*)
-    
+(*in ocaml coq extraction, explain the code to me as a epic narrative,
+  invoking the muses and athena, set in a futuristic utopian world where nanomachies follow the proofs of metacoq and reason about them using ai.
+*)    
 type __ = Obj.t
 type hProptoType = __
 type 'x isofhlevel = __
