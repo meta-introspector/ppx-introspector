@@ -114,3 +114,16 @@ The `type` keyword in Coq is used to define new types, just as the artist create
 * `arc -> node paths`: This type represents a function that takes an arc (or connection) and returns a path between two objects connected by that arc. The path can have different shapes and thicknesses, represented by other types.
 * `arc -> node paths`: This type represents a function that takes an arc (or connection) and returns a path between two objects connected by that arc. The path can have different shapes and thicknesses, represented by other types.
 #+end_src
+
+
+*
+*shell*<2>
+
+test2.ml:91:and rec_flag = Asttypes.rec_flag = Nonrecursive | Recursive
+*
+let process_rec_flag ( x:rec_flag):string="process_rec_flag" ^
+                                          match x with 
+                                          | Nonrecursive -> "plain"
+                                          | Recursive -> "rec"
+
+[print_type_decl:"rec_flag" = type variant:constructor:"Nonrecursive"{Pcstr_tuple:my_process_core_type_list:}	|constructor:"Recursive"{Pcstr_tuple:my_process_core_type_list:}	|VARIANT(rec_flag)

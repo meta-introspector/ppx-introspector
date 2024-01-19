@@ -15,7 +15,6 @@
 
 (** Definition of the OCaml AST *)
 
-
 (* This file is obtained by:
 
    - copying a subset of the corresponding ast_xxx.ml file from Astlib
