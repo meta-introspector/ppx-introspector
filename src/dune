@@ -1,10 +1,10 @@
 (env
  (_
   (flags
-   (:standard -warn-error -8-9-26-27-11-32-39 -dtypedtree -dparsetree -dump-into-file -dlambda -annot -dlocations -dsource  -drawlambda  ))))
+   (:standard -warn-error -20-8-9-26-27-11-32-39 -dtypedtree -dparsetree -dump-into-file -dlambda -annot -dlocations -dsource  -drawlambda  ))))
 (library
  (name ppxintrospector)
  (wrapped false)
  (public_name ppx-introspector)
  (kind ppx_rewriter)
- (libraries ppxlib batteries))
+ (libraries ppxlib ))

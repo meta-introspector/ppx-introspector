@@ -1,4 +1,5 @@
 
+
 report: log.txt
 	grep DEBUG2B: log.txt | cut -d: -f2- 
 	grep DEBUG2A: log.txt | cut -d: -f2-

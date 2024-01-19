@@ -1,9 +1,18 @@
 open Ppxlib
+open Ppxlibextras
+open Graph
+
+(*
+    pregraph
+    graph
+*)
+let create_edge (edge,node)=
+  let pg = make_pregraph in
+  let g = make_graph pg edge node in
+  g
+
 let ppddump x = () (*stub to hide batteries dump*)
 
-type string_list = string list
-type patter_list = pattern list
-type core_type_list = core_type list
 
 let process_apply (a,c) :string = "apply:" ^ a ^ "|" ^ c
 let process_coerce a = "FIXME122"
@@ -20,7 +29,7 @@ let process_match (a,b) = "process_match" ^ a ^ "|" ^ b
 let process_newtype a = "FIXME1334"
 let process_open a = "FIXME1337"
 let process_poly a = "FIXME1338"
-let process_record a = "FIXME1339"
+let process_record (a, b) = "process_record" ^ a ^ "|" ^  b 
 let process_send a = "FIXME1340"
 let process_sequence  (a,b) = "process_sequences" ^ a ^ "|" ^ b
 let process_setfield a = "FIXME1352"
@@ -47,7 +56,7 @@ let process_pack (x):string = "PACK" ^ x     let process_tuple (x):string = "TUP
                                 
 let process_constant1 (x):string = "CONSTANT" ^ x
 let process_assert (x):string = "ASSERT" ^ x
-let process_option ( a):string = "process_option_TODO" ^ a
+let process_option ( a):string = "(process_option " ^ a ^ ")"
                                                                 
 
 
@@ -112,10 +121,11 @@ let rec
   match a with
   | [] -> "process_list1"
   | (l,e) :: t -> (process_arg_label l) ^ "|" ^ (process_expression e) ^ "|" ^ (process_list1 t)
-and process_expression_option ( a: expression option ):string = "process_expression_option_TODO" ^
-  match a with
+and process_expression_option ( a: expression option ):string = "(process_expression_option" ^
+  (match a with
   | Some x -> (process_expression x)
-  | None -> "nope"
+  | None -> "(null_expression)"
+  ) ^")"
 and process_string_loc_expression_list x = "process_string_loc_expression_list"
 and process_expression_list ( a ):string=
   "process_list" ^  
@@ -128,16 +138,18 @@ and process_value_binding x =
   process_expression(x.pvb_expr)
 
 and  process_case (a:case) =
-  "case:" ^ 
-  process_pattern a.pc_lhs ^ "|" ^
+  "(case" ^ 
+  (process_pattern a.pc_lhs ^ "|" ^
   process_expression_option a.pc_guard ^ "|" ^
-  process_expression a.pc_rhs
+  process_expression a.pc_rhs) ^
+    ")"
     
 and process_cases ( a:cases):string=
-  "process_cases" ^  
-  match a with
+  "(process_cases" ^  
+ ( match a with
   | [] -> "process_cases"
   | a :: t -> (process_case a) ^ "|" ^ (process_cases t)
+ ) ^ ")"
 
 and process_value_binding_list x = "value_binding_list" ^
     match x with
@@ -151,8 +163,8 @@ and  print_value_binding_expr (x : expression) : string=
     pexp_loc_stack (* : location_stack *);
     pexp_attributes (* : attributes *); (* [... \[@id1\] \[@id2\]] *)
   } ->
-    (* (ppddump ("DEBUG66:desc", pexp_desc ))); *)
-    (* (ppddump ("DEBUG66:desc", pexp_attributes ))); *)
+    (* (ppddump ("DBG166:desc", pexp_desc ))); *)
+    (* (ppddump ("DBG166:desc", pexp_attributes ))); *)
   "print_value_binding_expr:" ^ "|" ^ (process_expression_desc pexp_desc)
 and process_expression_desc ( x:expression_desc):string=
   match x with
@@ -222,10 +234,11 @@ and process_record_kind4 :label_declaration -> string_list -> string = fun x s -
 and  process_record_kind2(x :label_declaration)(s:string_list) = ""
 and    process_record_kind3 x s = ""
 and process_core_type ( x ):string = (my_process_core_type x)
-and process_core_type_option ( a: core_type option ):string = "processcore_type_option_TODO" ^
-  match a with
+and process_core_type_option ( a: core_type option ):string = "(process_core_type_option " ^
+  (match a with
   | Some x -> (process_core_type x)
   | None -> "nope"
+  ) ^ ")" 
 and
   process_record_kind((x,s):label_declaration *string_list):string =
   match x with
@@ -237,7 +250,7 @@ and
      pld_attributes(* : attributes *); 
    } ->
     let pct = (my_process_core_type pld_type) in
-    (ppddump ("DEBUG:precord_kind:",  
+    (ppddump ("DBG1:precord_kind:",  
                                     pld_name,
                                     "mutable",
                                     pld_mutable,
@@ -256,13 +269,16 @@ and
       ->
       let {txt;loc} = a in
       let id1 = process_id1(txt) in
+      
+      let edge = create_edge ("Ptyp_constr", id1) in
+        
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
       let newlist = (my_process_core_type_list (b, s)) in
-      Printf.printf "DEBUG:Ptyp_constr1 '%s' %s" id1 newlist;
+      Printf.printf "DBG1:Ptyp_constr1 '%s' %s" id1 newlist;
       (* "id" ^ a ^ " id2 " ^ myid  *)
       (ppddump (
-         "DEBUG:Ptyp_constr:",
+         "DBG1:Ptyp_constr:",
          "id",a,
          "types",b,
          "context",s,
@@ -271,41 +287,41 @@ and
       "Ptyp_constr:\"" ^ id1 ^ "|" ^ "\"->" ^ newlist
     | Ptyp_tuple a (* of core_type list *)
       ->
-      (ppddump ("DEBUG:Ptyp_tuple:", a ));
+      (ppddump ("DBG1:Ptyp_tuple:", a ));
       "Ptyp_tuple" ^ my_process_core_type_list(a,  s )
     (*not in test*)
-    | Ptyp_any  -> (ppddump ("DEBUG:Ptyp_any:")); "any"
-    | Ptyp_var name ->(ppddump ("DEBUG:Ptyp_var:"  , name)); "var-name"
+    | Ptyp_any  -> (ppddump ("DBG1:Ptyp_any:")); "any"
+    | Ptyp_var name ->(ppddump ("DBG1:Ptyp_var:"  , name)); "var-name"
   | Ptyp_arrow (arg_label , core_type , core_type2) ->
     (* my_process_core_type((core_type, string_list)); *)
     (* my_process_core_type(core_type2, string_list); *)
-    (ppddump ("DEBUG:Ptyp_arrow10:" )); "arrow"
+    (ppddump ("DBG1:Ptyp_arrow10:" )); "arrow"
   | Ptyp_object (a,b)(* of object_field list * closed_flag *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj"
+    (ppddump ("DBG1:Ptyp_arrow8:" )); "obj"
   | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
     ->
     let myid = (process_id1 a.txt) in
     (* my_process_core_type_list(b, y :: myid); *)
-    (ppddump ("DEBUG:Ptyp_arrow7:" )); "class"
+    (ppddump ("DBG1:Ptyp_arrow7:" )); "class"
   | Ptyp_alias (a,b) (* of core_type * string loc  *)
     ->
     (* my_process_core_type(a, y); *)
-    (ppddump ("DEBUG:Ptyp_arrow6:" )); "alias"
+    (ppddump ("DBG1:Ptyp_arrow6:" )); "alias"
   | Ptyp_variant (a,b,c) (* of row_field list * closed_flag * label list option *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow5:" ));"variant"
+    (ppddump ("DBG1:Ptyp_arrow5:" ));"(Ptyp_variant)"
   | Ptyp_poly (a,b) (* of string loc list * core_type *)
     ->
     (* my_process_core_type(b, y); *)
-    (ppddump ("DEBUG:Ptyp_arrow4:" )); "poly"
+    (ppddump ("DBG1:Ptyp_arrow4:" )); "poly"
   | Ptyp_package a(* of package_type  *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow3:",a )) ; "typ_package"
+    (ppddump ("DBG1:Ptyp_arrow3:",a )) ; "typ_package"
   (* | Ptyp_open (a,b) (\* of Longident.t loc * core_type *\)-> *)
-  (*   (ppddump ("DEBUG:Ptyp_arrow2",a,b )) *)    
+  (*   (ppddump ("DBG1:Ptyp_arrow2",a,b )) *)    
   | Ptyp_extension a (* of extension   *)    ->
-    (ppddump ("DEBUG:Ptyp_extension:",a )); "extension"
+    (ppddump ("DBG1:Ptyp_extension:",a )); "extension"
 and
   process_record_kind_list(p,x,s) : string =
   match x with
@@ -340,11 +356,11 @@ let print_value_binding_list2 (x : value_binding) : string =
     pvb_attributes; (* : attributes; *)
     pvb_loc; (* : location; *)
   } ->
-    (ppddump ("DEBUG:value_binding.pat:", pvb_pat ));
-    (ppddump ("DEBUG:value_binding.expr:", pvb_expr ));
+    (ppddump ("DBG1:value_binding.pat:", pvb_pat ));
+    (ppddump ("DBG1:value_binding.expr:", pvb_expr ));
     (*print_value_binding_expr pvb_expr*)
-    (ppddump ("DEBUG:value_binding.atrr:", pvb_attributes ));
-    (ppddump ("DEBUG:value_binding.loc:", pvb_loc ));
+    (ppddump ("DBG1:value_binding.atrr:", pvb_attributes ));
+    (ppddump ("DBG1:value_binding.loc:", pvb_loc ));
     "pattern:" ^ (process_pattern pvb_pat) ^ "|" ^ " expr: " ^ (process_expression pvb_expr)
 
 let rec print_value_binding_list (x : value_binding list) : string=
@@ -378,7 +394,7 @@ let process_id(x:longident_loc* string_list):string =
     match a with
     | {txt;_} ->(process_id2 (txt,b))
 (* (({txt2)) ->txt2 *)
-    (* (ppddump ("DEBUG:process_id:",  txt2)); *)
+    (* (ppddump ("DBG1:process_id:",  txt2)); *)
   
 let splitloc(x:longident_loc * string_list) : string=
   let (a, b) = x in
@@ -434,39 +450,42 @@ let emit_core_type_desc (x : core_type_desc * string_list):string =
       "Ptyp_tuple" ^ my_process_core_type_list(a,  s )
 
     (*not in test*)
-    | Ptyp_any  -> (ppddump ("DEBUG:Ptyp_any:")); "any"
-    | Ptyp_var name ->(ppddump ("DEBUG:Ptyp_var:"  , name)); "var-name"
+    | Ptyp_any  -> (ppddump ("DBG1:Ptyp_any:")); "any"
+    | Ptyp_var name ->(ppddump ("DBG1:Ptyp_var:"  , name)); "var-name"
   | Ptyp_arrow (arg_label , core_type , core_type2) ->
     (* my_process_core_type((core_type, string_list)); *)
     (* my_process_core_type(core_type2, string_list); *)
-    (ppddump ("DEBUG:Ptyp_arrow10:" )); "arrow"
+    (ppddump ("DBG1:Ptyp_arrow10:" )); "arrow"
 
   | Ptyp_object (a,b)(* of object_field list * closed_flag *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj"
+    (ppddump ("DBG1:Ptyp_arrow8:" )); "obj"
   | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
     ->
     let myid = (process_id1 a.txt ) in
     (* my_process_core_type_list(b, y :: myid); *)
-    (ppddump ("DEBUG:Ptyp_arrow7:" )); "class"
+    (ppddump ("DBG1:Ptyp_arrow7:" )); "class"
   | Ptyp_alias (a,b) (* of core_type * string loc  *)
     ->
     (* my_process_core_type(a, y); *)
-    (ppddump ("DEBUG:Ptyp_arrow6:" )); "alias"
+    (ppddump ("DBG1:Ptyp_arrow6:" )); "alias"
   | Ptyp_variant (a,b,c) (* of row_field list * closed_flag * label list option *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow5:" ));"variant"
+    (ppddump ("DBG1:Ptyp_arrow5:" ));
+    "" 
+  (*is handled elsewhere*)
+         
   | Ptyp_poly (a,b) (* of string loc list * core_type *)
     ->
     (* my_process_core_type(b, y); *)
-    (ppddump ("DEBUG:Ptyp_arrow4:" )); "poly"
+    (ppddump ("DBG1:Ptyp_arrow4:" )); "poly"
   | Ptyp_package a(* of package_type  *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow3:",a )) ; "typ_package"
+    (ppddump ("DBG1:Ptyp_arrow3:",a )) ; "typ_package"
   (* | Ptyp_open (a,b) (\* of Longident.t loc * core_type *\)-> *)
-  (*   (ppddump ("DEBUG:Ptyp_arrow2",a,b )) *)    
+  (*   (ppddump ("DBG1:Ptyp_arrow2",a,b )) *)    
   | Ptyp_extension a (* of extension   *)    ->
-    (ppddump ("DEBUG:Ptyp_extension:",a )); "extension"
+    (ppddump ("DBG1:Ptyp_extension:",a )); "extension"
 
 
 let  emit_core_type(a: core_type * string_list*int):string=
@@ -531,16 +550,27 @@ let rec imp_core_type_list(x: core_type_list * string_list*int):string =
       else 
         one 
 
-let emit_constructor_arguments(a1:(string*string*constructor_arguments*string_list)):string =  let (parent,name,x,s) = a1 in  match x with  | Pcstr_tuple a ->
-    "| " ^ name ^ " ("^ (emit_core_type_list (a,s,0))  ^ ") -> " ^ "("
-    ^ "process_types_" ^ parent ^ "__"^ name^  "(" ^ imp_core_type_list (a,s,0) ^"))"
-  | other  -> "other"
+let emit_constructor_arguments(a1:(string*string*constructor_arguments*string_list)):string =
+  let (parent,name,x,s) = a1
+  in  match x with  | Pcstr_tuple a ->
+    let ictl = imp_core_type_list (a,s,0) in
+    "| " ^ name
+    ^ " (emit_core_type_list "
+    ^ (emit_core_type_list (a,s,0))
+    ^ ") -> (process_types_"
+    ^ parent
+    ^ "__"
+    ^ name
+    ^ "("
+    ^ ictl
+    ^ "))"
+                                                                                                                                            | other  -> "other"
 
 let  decl_imp_core_type(a: string*string *core_type * string_list*int):string=
   let (parent, parent2, atype, s, n) = a in
   let name = emit_core_type(atype, s, n) in
   let h1 = emit_core_type2(atype, s, n) in
-  (print_endline ("DEBUG2A:" ^ "let process_" ^ h1 ^ " x : " ^ h1 ^ "= x"));  
+  (print_endline ("DBG12A:" ^ "let process_" ^ h1 ^ " x : " ^ h1 ^ "= x"));  
   "a" ^ name  
 (* ":" ^ name1  *)
 (* ")" *)
@@ -577,7 +607,7 @@ let rec decl_imp_core_type_list_hats((parent,name,a,b,n): string*string*core_typ
   | [] -> ""
   | h :: t ->
     let h1 = decl_imp_core_type (parent,name, h, b,n) in
-    let quoted = "\"" ^ h1 ^ "\"" in
+    let quoted = "(core_type \"" ^ h1 ^ "\")" in
     let tt = decl_imp_core_type_list_hats(parent,name,t,b,n+1)  in
     if tt != "" then 
       quoted ^ "^" ^ tt 
@@ -590,8 +620,8 @@ let decl_emit_constructor_arguments(parent,name,x,s):string =
     "let "^ "process_types_" ^ parent ^ "__" ^ name
     ^ "(("    ^  decl_imp_core_type_list (parent,name,a,s,0) ^   "):"
     ^ "("    ^  decl_imp_core_type_list2 (parent,name,a,s,0) ^  ")):string"
-    ^ " = \"process_types_" ^ parent ^ "__" ^ name ^ "\"^" ^
-    (decl_imp_core_type_list_hats (parent,name,a,s,0) )
+    ^ " = (process_types ^ (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
+    (decl_imp_core_type_list_hats (parent,name,a,s,0) ) ^ ")"
   | other  -> "other"
 
 let process_label_declaration  x =
@@ -599,21 +629,21 @@ let process_label_declaration  x =
     
 let rec process_label_declaration_list x = 
   match x with
-  | [] -> "label_declaration_list:" 
+  | [] -> "[]" 
   | h :: t ->
-    process_label_declaration h ^
-    "|"^ (process_label_declaration_list t)
+    "(label_declaration_list" ^ process_label_declaration h ^
+    "::("^ (process_label_declaration_list t) ^ "))"
 
 let print_constructor_arguments(a) =
   match a with
   | (x,s) ->
     match x with
     | Pcstr_tuple a ->       
-      (ppddump ("DEBUG:Pcstr_tuple:"  , a));
+      (ppddump ("DBG1:Pcstr_tuple:"  , a));
       "Pcstr_tuple:" ^ (my_process_core_type_list (a,s))
        
     | Pcstr_record a ->
-      (ppddump ("DEBUG:Pcstr_record:"  , a));
+      (ppddump ("DBG1:Pcstr_record:"  , a));
       "Pcstr_record" ^
       (process_label_declaration_list a)
 
@@ -622,7 +652,7 @@ let rec process_type_variant_constructor_declaration_list(a:string*constructor_d
   match a with
   | (p,x,s)->
     match x with
-    | [] -> "VARIANT(" ^ p ^ "):"
+    | [] -> "\nDEBUG3A: let process_variant_" ^ p ^ "(x:" ^ p ^")=\nmatch x with\n"
     | h :: t ->
       match h with
       |{
@@ -634,14 +664,14 @@ let rec process_type_variant_constructor_declaration_list(a:string*constructor_d
         pcd_attributes(* : attributes *); 
       }->
         (print_endline (
-            "DEBUG2C: let process_"
+            "DBG12C: let process_"
             ^ p ^ "__" ^ pcd_name.txt
             ^ " x :string ="
             ^ "match x with "));
         (* let name = match pcd_name with *)
         (*   | (str,_) -> str *)
         (* (ppddump ( *)
-        (*      "DEBUG:constructor_declaration:", *)
+        (*      "DBG1:constructor_declaration:", *)
         (*      pcd_name, *)
         (*      "vars", *)
         (*      pcd_vars, *)
@@ -656,16 +686,17 @@ let rec process_type_variant_constructor_declaration_list(a:string*constructor_d
         (*    )); *)
         let newtext = (emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
         let newtext2 = (decl_emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
-        (print_endline ("DEBUG2B:" ^ newtext2));
-        (print_endline ("DEBUG2C:" ^ newtext)); 
-        let ret =              "constructor:\""^ pcd_name.txt ^ "\""
+        (print_endline ("DBG12B:" ^ newtext2));
+        (print_endline ("DBG12C:" ^ newtext)); 
+        let ret =              "(constructor \""^ pcd_name.txt ^ "\" "
                                ^ "{" ^
                                print_constructor_arguments(pcd_args,s)
-                               ^ "}" ^ "\t|" ^
-                               process_type_variant_constructor_declaration_list(p,t,s)
+                               ^ "}" ^
+                                ")"
         in
-        Printf.printf "DEBUG:constructor_declaration_new: %s\n" ret;
-        ret
+        Printf.printf "DBG1:constructor_declaration_new: %s\n" ret;
+        let nextlist = (process_type_variant_constructor_declaration_list(p,t,s)) in
+        ret ^nextlist
         
 let bar =1
   
@@ -674,15 +705,15 @@ let process_kind(a) :string=
   | (p,x,s)->
     match x with
     (*and type_kind =*)
-    | Ptype_abstract  -> (ppddump ("DEBUG:Ptype_abstract:"));
-      "DEBUG:Ptype_abstract"
+    | Ptype_abstract  -> (ppddump ("DBG1:Ptype_abstract:"));
+      "DBG1:Ptype_abstract"
     | Ptype_variant a ->      
-      (* (ppddump ("DEBUG:Ptype_variant:",  a)); *)
-      "type variant:" ^ (process_type_variant_constructor_declaration_list (p,a,s))      
+      (* (ppddump ("DBG1:Ptype_variant:",  a)); *)
+      "(Ptype_variant " ^ (process_type_variant_constructor_declaration_list (p,a,s))       ^ ")"
     (*of constructor_declaration list *)     
     | Ptype_record a ->     
       process_record_kind_list(p,a,s)
-    | Ptype_open -> (ppddump ("DEBUG:Ptype_abstract:")); "Ptype_abstract"
+    | Ptype_open -> (ppddump ("DBG1:Ptype_open:")); "Ptype_open"
 
 let print_type_decl(a) =
   match a with
@@ -698,15 +729,15 @@ let print_type_decl(a) =
         ptype_attributes (*: attributes*);
         ptype_loc (*: location*)
       } ->
-      (* (ppddump ("DEBUG:type_decl:", ptype_name)); *)
-      (* (ppddump ("DEBUG:parameters:", ptype_params)); *)
-      (* (ppddump ("DEBUG:cstrs:", ptype_cstrs)); *)
-      (* (ppddump ("DEBUG:kind:",ptype_kind)); *)
+      (* (ppddump ("DBG1:type_decl:", ptype_name)); *)
+      (* (ppddump ("DBG1:parameters:", ptype_params)); *)
+      (* (ppddump ("DBG1:cstrs:", ptype_cstrs)); *)
+      (* (ppddump ("DBG1:kind:",ptype_kind)); *)
       
-      (* (ppddump ("DEBUG:private:",  ptype_private, *)
-      (*                                 "DEBUG:manifest", ptype_manifest, *)
-      (*                                 "DEBUG:attr", ptype_attributes, *)
-      (*                                 "DEBUG:loc", ptype_loc *)
+      (* (ppddump ("DBG1:private:",  ptype_private, *)
+      (*                                 "DBG1:manifest", ptype_manifest, *)
+      (*                                 "DBG1:attr", ptype_attributes, *)
+      (*                                 "DBG1:loc", ptype_loc *)
       (*                                )); *)
       "print_type_decl:\"" ^  ptype_name.txt ^ "\" = " ^ (process_kind (ptype_name.txt,ptype_kind,s))
       
@@ -746,144 +777,61 @@ let fffff=1
   string context,
   separarator
 *)
-let rec emit_type_decl_list((x,s,t1):(type_declaration_list*string_list*string)):string=
-  match x with
-  | [] -> ""
-  | h :: t ->
-    (emit_type_decl (h,s))
-    ^ t1 ^
-    (emit_type_decl_list (t,s,t1))
-and emit_type_decl ((x,s)) =
-  match x with
-    {
-      ptype_name (* : string loc *);
-      ptype_params (* : (core_type * (variance * injectivity)) list *);
-      ptype_cstrs (*: (core_type * core_type * location) list*) ;   
-      ptype_kind (*: type_kind*)  ; 
-      ptype_private (*: private_flag*); 
-      ptype_manifest (* : core_type option *);
-      ptype_attributes (*: attributes*);
-      ptype_loc (*: location*)
-    } ->
-    "\nDEBUG2Erec: let process_type_decl_" ^  ptype_name.txt ^ " (x:" ^ ptype_name.txt
-    ^ "):string = match x with {"
-    ^ (emit_type_decl_kind (ptype_name.txt,ptype_kind,s,";"))
-    ^ "} ->"
-    ^ (emit_type_decl_kind_process (ptype_name.txt,ptype_kind,s,"^"))
-
-and emit_type_decl_kind((p,x,s,ss)) :string=
-  match x with
-  | Ptype_record a ->     
-    emit_record_kind_field_list(p,a,s,ss)
-  | other -> "SKIP"
-and  emit_record_kind_field_list(p,x,s,ss) : string =
-    match x with
-  | [] -> ""
-  | h :: t ->
-    let one = (emit_record_kind_field (h, s)) in
-    let tail1 = (emit_record_kind_field_list (p, t, s, ss)) in
-    if tail1 != "" then
-      one ^ ss ^ tail1
-    else
-      one                                            
-and  emit_record_kind_field((x,s):label_declaration *string_list):string =
-  match x with
-    {
-     pld_name(* : string loc *);
-     pld_mutable(* : mutable_flag *);
-     pld_type(* : core_type *);
-     pld_loc(* : Location.t *);
-     pld_attributes(* : attributes *); 
-   } ->
-    let pct = (emit_core_type2 (pld_type,s,0)) in
-    pld_name.txt  ^ "(* " ^ pct ^ "*)"
 
 
-and emit_type_decl_kind_process((p,x,s,ss)) :string=
-  match x with
-  | Ptype_record a ->     
-    emit_record_kind_field_list_process(p,a,s,ss)
-  | other -> "SKIP"
-and  emit_record_kind_field_list_process(p,x,s,ss) : string =
-    match x with
-  | [] -> ""
-  | h :: t ->
-    let one = (emit_record_kind_field_process (h, s)) in
-    let tail1 = (emit_record_kind_field_list_process (p, t, s, ss)) in
-    if tail1 != "" then
-      one ^ ss ^ tail1
-    else
-      one                                            
-and  emit_record_kind_field_process((x,s):label_declaration *string_list):string =
-  match x with
-    {
-     pld_name(* : string loc *);
-     pld_mutable(* : mutable_flag *);
-     pld_type(* : core_type *);
-     pld_loc(* : Location.t *);
-     pld_attributes(* : attributes *); 
-   } ->
-    let pct = (emit_core_type2 (pld_type,s,0)) in
-    "(process_" ^ pct ^ " " ^  pld_name.txt ^ ")"
-
-let printdesc(a :structure_item_desc*string_list) :string =
-  match a with
-  |(x,s)->
-    (* (ppddump ("DEBUG:structure_item_desc:", x)); *)
-    match x with
-    | Pstr_value (rec_flag, value_binding_list) ->
-      (* (ppddump ("DEBUG:Pstr_value:", rec_flag, value_binding_list)); *)
-      "Pstr_value:"      ^ print_value_binding_list(value_binding_list)
+let print_structure_item_desc(a :structure_item_desc*string_list) :string =
+  "(print_structure_item_desc " ^
+  (
+    match a with
+    |(x,s)->
+      (* (ppddump ("DBG1:structure_item_desc:", x)); *)
+      match x with
+      | Pstr_value (rec_flag, value_binding_list) ->
+        (* (ppddump ("DBG1:Pstr_value:", rec_flag, value_binding_list)); *)
+        "Pstr_value:"      ^ print_value_binding_list(value_binding_list)
     | Pstr_type (rec_flag, type_declaration_list) ->      
-      (print_endline ("\n"^(emit_type_decl_list (type_declaration_list,s," "))^"\n"));
-      "Pstr_type:"^
+      (print_endline ("\n(HELPEmitthecode_emit_type_decl_list "^(Emitthecode.emit_type_decl_list (type_declaration_list,s," "))^")\n"));
+      "(emit_pstr_type)"^
       process_type_decl_list((type_declaration_list,s))
     | Pstr_module  module_binding ->
-      (* (ppddump ("DEBUG:Pstr_module:",module_binding)); *) "module_binding"
+      (* (ppddump ("DBG1:Pstr_module:",module_binding)); *) "module_binding"
     (*open model*)
-    | Pstr_open open_description ->(ppddump ("DEBUG:Pstr_open", open_description)); "module_open"
+    | Pstr_open open_description ->(ppddump ("DBG1:Pstr_open", open_description)); "module_open"
     | Pstr_eval (expression,attributes) ->
-      (ppddump ("DEBUG:Pstr_eval:", expression,attributes));
+      (ppddump ("DBG1:Pstr_eval:", expression,attributes));
       "Pstr_eval"
     (*value binding*)
-    | Pstr_primitive value_description ->(ppddump ("DEBUG:Pstr_primitive:", value_description)) ; "primitive"
-    | Pstr_typext  type_extension ->(ppddump ("DEBUG:Pstr_typext:", type_extension)); "typeext"
-    | Pstr_exception extension_constructor ->(ppddump ("DEBUG:Pstr_exception:", extension_constructor)); "exception"
-    | Pstr_recmodule  module_binding_list ->(ppddump ("DEBUG:Pstr_recmodule:", module_binding_list)) ; "recmodule"
-    | Pstr_modtype module_type_declaration ->(ppddump ("DEBUG:Pstr_modtype:", module_type_declaration)); "modtype"
-    | Pstr_class (class_declarations ) ->(ppddump ("DEBUG:Pstr_class:", class_declarations)); "class"
-    | Pstr_class_type (class_type_declarations) ->(ppddump ("DEBUG:Pstr_class_type:", class_type_declarations)) ; "class_Type"
-    | Pstr_include  (include_declaration)->(ppddump ("DEBUG:Pstr_include:",include_declaration)); "include"
-    | Pstr_attribute (attribute)->(ppddump ("DEBUG:Pstr_attribute:", attribute)); "attribte"
-    | Pstr_extension ( extension , attributes)->(ppddump ("DEBUG:Pstr_extension:", extension , attributes)) ; "extension"
-
-let process_string x = x
-let foo = 1
+    | Pstr_primitive value_description ->(ppddump ("DBG1:Pstr_primitive:", value_description)) ; "primitive"
+    | Pstr_typext  type_extension ->(ppddump ("DBG1:Pstr_typext:", type_extension)); "typeext"
+    | Pstr_exception extension_constructor ->(ppddump ("DBG1:Pstr_exception:", extension_constructor)); "exception"
+    | Pstr_recmodule  module_binding_list ->(ppddump ("DBG1:Pstr_recmodule:", module_binding_list)) ; "recmodule"
+    | Pstr_modtype module_type_declaration ->(ppddump ("DBG1:Pstr_modtype:", module_type_declaration)); "modtype"
+    | Pstr_class (class_declarations ) ->(ppddump ("DBG1:Pstr_class:", class_declarations)); "class"
+    | Pstr_class_type (class_type_declarations) ->(ppddump ("DBG1:Pstr_class_type:", class_type_declarations)) ; "class_Type"
+    | Pstr_include  (include_declaration)->(ppddump ("DBG1:Pstr_include:",include_declaration)); "include"
+    | Pstr_attribute (attribute)->(ppddump ("DBG1:Pstr_attribute:", attribute)); "_attribute"
+    | Pstr_extension ( extension , attributes)->(ppddump ("DBG1:Pstr_extension:", extension , attributes)) ; "extension"
+  )
+  ^ ")" (*end of print_desc*)
   
-let printone (x : structure_item) :string =
+let print_one_structure_item (x : structure_item) :string =
   match x with
   |{
     pstr_desc; (*structure_item_desc*)
     _
   } ->
-    "TOPstructure_item_desc:" ^ (printdesc (pstr_desc,[]))
-
-let printone2 x :string =
-  (ppddump ("DEBUG:SECOND::",x));
-  printone x
-  
-let proc1 x :string  =
-  printone2 x
- 
-let debug proc lst : string =
+    "TOPstructure_item_desc:" ^ (print_structure_item_desc (pstr_desc,[])) ^
+    "\nTOPstructure_item_desc2:" ^ (Gen.process_types_structure_item_desc (pstr_desc))
+   
+let process_all_structure_items proc lst : string =
   let result = List.map proc lst in
   List.iter (fun i -> print_endline i) result;
-    "TODO"
+  ""
                 
 let transform x (*ast, bytecodes of the interface *) =
-  (ppddump ("DEBUG3:",x));
-  (print_endline ("DEBUG2AA:" ^ "open Ppxlib")); 
-  let foo = (debug proc1 x) in
+  (ppddump ("DBG13:",x));
+  (print_endline ("DBG12AA:" ^ "open Ppxlib")); 
+  let foo = (process_all_structure_items print_one_structure_item x) in
   x
 
 let process_bool x = "bool"
