@@ -26,8 +26,8 @@ and emit_core_type_desc (x : core_type_desc * string_list):string =
       let id1 = emit_id1(txt) in
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
-      (* let newlist = (my_process_core_type_list (b, s)) in *)
-      id1 (* ^ "\"->" ^ newlist *)
+      let newlist = (emit_core_type_list (b, s)) in 
+      id1  ^ "\"->" ^ newlist 
     | Ptyp_tuple a (* of core_type list *)
       ->
       "Ptyp_tuple" ^ emit_core_type_list(a,  s )
@@ -158,6 +158,33 @@ and  decl_emit_constructor_arguments(parent,name,x,s):string =
     (decl_imp_core_type_list_hats (parent,name,a,s,0) ) ^ ")"
   | other  -> "other"
 
+and emit_type_variant_constructor_declaratation_one p h s =
+  match h with
+  |{
+    pcd_name(* : string loc *);
+    pcd_vars(* : string loc list *);
+    pcd_args(* : constructor_arguments *);
+    pcd_res(* : core_type option *);
+    pcd_loc(* : Location.t *);
+    pcd_attributes(* : attributes *); 
+  }->
+    (print_endline (
+        "DBG221EC: let process_"
+        ^ p ^ "__" ^ pcd_name.txt
+        ^ " x :string ="
+        ^ "match x with "));
+    let newtext = (emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
+    let newtext2 = (decl_emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
+    (print_endline ("DBG22EB:" ^ newtext2));
+    (print_endline ("DBG222EC:" ^ newtext)); 
+    let ret =              "constructor:\""^ pcd_name.txt ^ "\""
+                           ^ "{" ^
+                           emit_constructor_arguments(p,pcd_name.txt,pcd_args,s)
+                           ^ "}" 
+    in
+    Printf.printf "DBG22E:constructor_declaration_new: %s\n" ret;
+    ret
+        
 and emit_type_variant_constructor_declaration_list(a:string*constructor_declaration list*string_list):string =
   "\nDEBUG:(emit_type_variant_constructor_declaration_list " ^
   match a with
@@ -165,34 +192,10 @@ and emit_type_variant_constructor_declaration_list(a:string*constructor_declarat
     match x with
     | [] -> "( variant_2 \"" ^ p ^ "\")"
     | h :: t ->
-      match h with
-      |{
-        pcd_name(* : string loc *);
-        pcd_vars(* : string loc list *);
-        pcd_args(* : constructor_arguments *);
-        pcd_res(* : core_type option *);
-        pcd_loc(* : Location.t *);
-        pcd_attributes(* : attributes *); 
-      }->
-        (print_endline (
-            "DBG22EC: let process_"
-            ^ p ^ "__" ^ pcd_name.txt
-            ^ " x :string ="
-            ^ "match x with "));
-        let newtext = (emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
-        let newtext2 = (decl_emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
-        (print_endline ("DBG22EB:" ^ newtext2));
-        (print_endline ("DBG22EC:" ^ newtext)); 
-        let ret =              "constructor:\""^ pcd_name.txt ^ "\""
-                               ^ "{" ^
-                               emit_constructor_arguments(p,pcd_name.txt,pcd_args,s)
-                               ^ "}" ^ "\t::("
-                               ^
-                               (emit_type_variant_constructor_declaration_list (p,t,s))
-                               ^ ")"
-        in
-        Printf.printf "DBG22E:constructor_declaration_new: %s\n" ret;
-        ret
+      (emit_type_variant_constructor_declaratation_one p h s)
+      ^
+      (emit_type_variant_constructor_declaration_list (p,t,s))
+        
 and emit_type_decl_kind((p,x,s,ss)) :string=
   "(emit_type_decl_kind " ^
   (

@@ -1,20 +1,30 @@
+(*in ocaml coq extraction, explain isaset to me like i am 5 yo.*)
+    
 type __ = Obj.t
 type hProptoType = __
 type 'x isofhlevel = __
+type 'x isaprop = 'x isofhlevel
+type ('t, 'p) total2 = { pr1: 't; pr2 : 'p}
+type 'a paths = | Coq_paths_refl (* terminal in proof system reflexive *)
+type 'x isaset = 'x -> 'x -> 'x paths isaprop
+type ('x, 'y) hfiber = ('x, 'y paths) total2 (*x leads to y reflexive*)
+type ('x, 'y) isofhlevelf = 'y -> ('x, 'y) hfiber isofhlevel
+type ('x, 'y) isincl = ('x, 'y) isofhlevelf
 type coq_UU = __
+type hProp = (coq_UU, __ isaprop) total2    
+type coq_HLevel = (coq_UU, __ isofhlevel) total2
+    
+
 type pr1hSet = __
 type node = __
 type arc = __
 type ('x, 'y) issurjective = 'y -> hProptoType
-type ('t, 'p) total2 = { pr1 : 't; pr2 : 'p }
-type 'a paths = | Coq_paths_refl
-type ('x, 'y) hfiber = ('x, 'y paths) total2
 type 't iscontr = ('t, 't -> 't paths) total2
 type ('x, 'y) isweq = 'y -> ('x, 'y) hfiber iscontr
 type ('x, 'y) weq = ('x -> 'y, ('x, 'y) isweq) total2
 type ('a, 'b) coq_PathPair = ('a paths, 'b paths) total2
-type 'x isaprop = 'x isofhlevel
-type hProp = (coq_UU, __ isaprop) total2
+
+
 type 'x istrans = 'x -> 'x -> 'x -> hProptoType -> hProptoType -> hProptoType
 type 'x isrefl = 'x -> hProptoType
 type 'x issymm = 'x -> 'x -> hProptoType -> hProptoType
@@ -37,7 +47,7 @@ type ('a, 'b) coprod =
 | Coq_ii2 of 'b
 type empty = |
 type 'x neg = 'x -> empty
-type 'x isaset = 'x -> 'x -> 'x paths isaprop
+
 type hSet = (coq_UU, __ isaset) total2
 type ('x, 'p) homot = 'x -> 'p paths
 type 'x decidable = ('x, 'x neg) coprod
@@ -68,8 +78,8 @@ type 'x kfinstruct = (nat, (stn -> 'x, (stn, 'x) issurjective) total2) total2
 type 'a vec = __
 type 'a list = (nat, 'a vec) total2
 type 'x brel = 'x -> 'x -> bool
-type ('x, 'y) isofhlevelf = 'y -> ('x, 'y) hfiber isofhlevel
-type ('x, 'y) isincl = ('x, 'y) isofhlevelf
+
+
 type ('x, 'y) isdecincl = 'y -> ('x, 'y) hfiber isdecprop
 type 'x isirrefl = 'x -> hProptoType neg
 type 'x isasymm = 'x -> 'x -> hProptoType -> hProptoType -> empty
@@ -218,7 +228,7 @@ type ('v, 'e) gpaths = (nat, ('v, 'e) gpaths_of_length) total2
 
 type ('v, 'e) symmetric_closure = ('e, 'e) coprod
 
-type coq_HLevel = (coq_UU, __ isofhlevel) total2
+
 
 
 type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
@@ -418,7 +428,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val isofhlevellist : nat -> 'a1 isofhlevel -> 'a1 list isofhlevel *)
 
-(* type 'a maybe = ('a, coq_unit) coprod *)
+ type 'a maybe = ('a, coq_unit) coprod 
 
 (* val just : 'a1 -> 'a1 maybe *)
 
@@ -438,13 +448,14 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 
 
-(* type coq_Tree = *)
-(*   (__, (__ -> __ -> nat, (__ -> nat paths, (__ -> __ -> nat paths -> __ *)
-(*   paths, (__ -> __ -> nat paths, (__ -> __ -> __ -> hProptoType, __ -> __ -> *)
-(*   __ paths neg -> (__, (nat paths, nat paths) dirprod) total2) total2) *)
-(*   total2) total2) total2) total2) total2 *)
+type coq_Tree = 
+  (__, (__ -> __ -> nat, (__ -> nat paths, (__ -> __ -> nat paths -> __ 
+                                              paths, (__ -> __ -> nat paths, (__ -> __ -> __ -> hProptoType, __ -> __ -> 
+                                                                              __ paths neg -> (__, (nat paths, nat paths) dirprod) total2) total2) 
+                                              total2) total2) total2) total2)
+    total2 
 
-(* type mt_set = __ *)
+type mt_set = __ 
 
 (* val mt_dist : coq_Tree -> __ -> __ -> nat *)
 
@@ -557,7 +568,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (* val prefix_remove_self : *)
 (*   decSet -> pr1decSet list -> pr1decSet list maybe paths *)
 
-(* type isprefix = pr1decSet list maybe paths neg *)
+type isprefix = pr1decSet list maybe paths neg 
 
 (* val isprefix_self : decSet -> pr1decSet list -> isprefix *)
 
@@ -578,7 +589,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 
 
-(* type _UU2115_ = nat *)
+ type _UU2115_ = nat 
 
 (* module Uniqueness : *)
 (*  sig *)
@@ -1266,7 +1277,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 
 
-(* type 'p negProp = (coq_UU, (__ isaprop, ('p neg, __) logeq) dirprod) total2 *)
+ type 'p negProp = (coq_UU, (__ isaprop, ('p neg, __) logeq) dirprod) total2 
 
 (* val negProp_to_isaprop : 'a1 negProp -> __ isaprop *)
 
@@ -1278,15 +1289,15 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val neg_to_negProp : 'a1 negProp -> 'a1 neg -> hProptoType *)
 
-(* type ('x, 'p) negPred = 'x -> 'p negProp *)
+ type ('x, 'p) negPred = 'x -> 'p negProp 
 
-(* type ('x, 'p) negReln = 'x -> 'x -> 'p negProp *)
+ type ('x, 'p) negReln = 'x -> 'x -> 'p negProp 
 
-(* type 'x neqProp = 'x paths negProp *)
+ type 'x neqProp = 'x paths negProp 
 
-(* type 'x neqPred = 'x -> 'x paths negProp *)
+ type 'x neqPred = 'x -> 'x paths negProp 
 
-(* type 'x neqReln = 'x -> 'x -> 'x paths negProp *)
+ type 'x neqReln = 'x -> 'x -> 'x paths negProp 
 
 (* val negProp_to_complementary : *)
 (*   'a1 negProp -> (('a1, hProptoType) coprod, ('a1, hProptoType) *)
@@ -1296,7 +1307,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   'a1 negProp -> (('a1 isaprop, ('a1, hProptoType) coprod) dirprod, ('a1, *)
 (*   hProptoType) coprod iscontr) logeq *)
 
-(* type 'x isisolated_ne = 'x -> ('x paths, hProptoType) coprod *)
+ type 'x isisolated_ne = 'x -> ('x paths, hProptoType) coprod 
 
 (* val isisolated_to_isisolated_ne : *)
 (*   'a1 -> 'a1 neqPred -> 'a1 isisolated -> 'a1 isisolated_ne *)
@@ -1304,7 +1315,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (* val isisolated_ne_to_isisolated : *)
 (*   'a1 -> 'a1 neqPred -> 'a1 isisolated_ne -> 'a1 isisolated *)
 
-(* type 't isolated_ne = ('t, 't isisolated_ne) total2 *)
+ type 't isolated_ne = ('t, 't isisolated_ne) total2 
 
 (* val make_isolated_ne : *)
 (*   'a1 -> 'a1 neqReln -> 'a1 isisolated_ne -> 'a1 isolated_ne *)
@@ -1376,17 +1387,17 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val total2_hProp : hProp -> (hProptoType -> hProp) -> hProp *)
 
-(* type 'x paths_from = 'x coconusfromt *)
+ type 'x paths_from = 'x coconusfromt 
 
 (* val point_to : 'a1 -> 'a1 paths_from -> 'a1 *)
 
 (* val paths_from_path : 'a1 -> 'a1 paths_from -> 'a1 paths *)
 
-(* type 'x paths' = 'x paths *)
+ type 'x paths' = 'x paths 
 
 (* val idpath' : 'a1 -> 'a1 paths' *)
 
-(* type 'x paths_to = 'x coconustot *)
+ type 'x paths_to = 'x coconustot 
 
 (* val point_from : 'a1 -> 'a1 paths_to -> 'a1 *)
 
@@ -1402,9 +1413,9 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val squash_path : 'a1 -> 'a1 -> hProptoType paths *)
 
-(* type ('x, 'y) nullHomotopyTo = 'x -> 'y paths *)
+ type ('x, 'y) nullHomotopyTo = 'x -> 'y paths 
 
-(* type ('x, 'y) coq_NullHomotopyTo = ('y, ('x, 'y) nullHomotopyTo) total2 *)
+ type ('x, 'y) coq_NullHomotopyTo = ('y, ('x, 'y) nullHomotopyTo) total2 
 
 (* val coq_NullHomotopyTo_center : *)
 (*   ('a1 -> 'a2) -> ('a1, 'a2) coq_NullHomotopyTo -> 'a2 *)
@@ -1412,9 +1423,9 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (* val coq_NullHomotopyTo_path : *)
 (*   ('a1 -> 'a2) -> ('a1, 'a2) coq_NullHomotopyTo -> ('a1, 'a2) nullHomotopyTo *)
 
-(* type ('x, 'y) nullHomotopyFrom = 'x -> 'y paths *)
+ type ('x, 'y) nullHomotopyFrom = 'x -> 'y paths 
 
-(* type ('x, 'y) coq_NullHomotopyFrom = ('y, ('x, 'y) nullHomotopyFrom) total2 *)
+ type ('x, 'y) coq_NullHomotopyFrom = ('y, ('x, 'y) nullHomotopyFrom) total2 
 
 (* val coq_NullHomotopyFrom_center : *)
 (*   ('a1 -> 'a2) -> ('a1, 'a2) coq_NullHomotopyFrom -> 'a2 *)
@@ -1453,16 +1464,16 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   hSet -> pr1hSet hrel -> hProptoType -> pr1hSet -> pr1hSet -> (hProptoType, *)
 (*   hProptoType) logeq *)
 
-(* type isSmallest = pr1hSet -> hProptoType *)
+ type isSmallest = pr1hSet -> hProptoType 
 
-(* type isBiggest = pr1hSet -> hProptoType *)
+ type isBiggest = pr1hSet -> hProptoType 
 
-(* type isMinimal = pr1hSet -> hProptoType -> pr1hSet paths *)
+ type isMinimal = pr1hSet -> hProptoType -> pr1hSet paths 
 
-(* type isMaximal = pr1hSet -> hProptoType -> pr1hSet paths *)
+ type isMaximal = pr1hSet -> hProptoType -> pr1hSet paths 
 
-(* type consecutive = *)
-(*   ((hProptoType, pr1hSet paths neg) dirprod, pr1hSet -> hProptoType) dirprod *)
+ type consecutive = 
+   ((hProptoType, pr1hSet paths neg) dirprod, pr1hSet -> hProptoType) dirprod 
 
 (* val isaprop_isSmallest : coq_Poset -> pr1hSet -> isSmallest isaprop *)
 
@@ -1504,7 +1515,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   coq_Poset -> coq_Poset -> pr1hSet -> pr1hSet -> consecutive -> *)
 (*   coq_PosetEquivalence -> consecutive *)
 
-(* type coq_OrderedSet = (coq_Poset, pr1hSet istotal) total2 *)
+ type coq_OrderedSet = (coq_Poset, pr1hSet istotal) total2 
 
 (* val underlyingPoset : coq_OrderedSet -> coq_Poset *)
 
@@ -1553,7 +1564,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   coq_OrderedSet -> coq_OrderedSet -> (coq_OrderedSet paths -> 'a1) -> *)
 (*   coq_PosetEquivalence -> 'a1 *)
 
-(* type coq_FiniteOrderedSet = (coq_OrderedSet, hProptoType) total2 *)
+ type coq_FiniteOrderedSet = (coq_OrderedSet, hProptoType) total2 
 
 (* val underlyingOrderedSet : coq_FiniteOrderedSet -> coq_OrderedSet *)
 
@@ -1623,7 +1634,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   coq_FiniteOrderedSet -> (pr1hSet -> coq_FiniteOrderedSet) -> *)
 (*   coq_FiniteOrderedSet *)
 
-(* type coq_FiniteStructure = (nat, coq_PosetEquivalence) total2 *)
+ type coq_FiniteStructure = (nat, coq_PosetEquivalence) total2 
 
 
 (* val apart_isirrefl : *)
@@ -1794,11 +1805,11 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   ('a1, 'a2) total2 -> ('a1, 'a2) total2 -> 'a2 isaprop -> (('a1, 'a2) total2 *)
 (*   paths, 'a1 paths) weq *)
 
-(* type coq_PointedType = (coq_UU, __) total2 *)
+ type coq_PointedType = (coq_UU, __) total2 
 
 (* val pointedType : 'a1 -> coq_PointedType *)
 
-(* type underlyingType = __ *)
+ type underlyingType = __ 
 
 (* val basepoint : coq_PointedType -> __ *)
 
@@ -1820,7 +1831,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val confun : 'a2 -> 'a1 -> 'a2 *)
 
-(* type 'x path_type = 'x *)
+ type 'x path_type = 'x 
 
 (* val path_start : 'a1 -> 'a1 -> 'a1 paths -> 'a1 *)
 
@@ -2553,15 +2564,15 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val iscontrcoconusfromt : 'a1 -> 'a1 coconusfromt iscontr *)
 
-(* type 't pathsspace = ('t, 't coconusfromt) total2 *)
+ type 't pathsspace = ('t, 't coconusfromt) total2 
 
 (* val pathsspacetriple : 'a1 -> 'a1 -> 'a1 paths -> 'a1 pathsspace *)
 
 (* val deltap : 'a1 -> 'a1 pathsspace *)
 
-(* type 't pathsspace' = (('t, 't) dirprod, 't paths) total2 *)
+ type 't pathsspace' = (('t, 't) dirprod, 't paths) total2 
 
-(* type ('x, 'y) coconusf = ('y, ('x, 'y) hfiber) total2 *)
+ type ('x, 'y) coconusf = ('y, ('x, 'y) hfiber) total2 
 
 (* val fromcoconusf : ('a1 -> 'a2) -> ('a1, 'a2) coconusf -> 'a1 *)
 
@@ -2761,8 +2772,8 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   ('a1 -> 'a2) -> ('a2 -> 'a1) -> ('a1 -> 'a1 paths) -> ('a2 -> 'a2 paths) -> *)
 (*   ('a1, 'a2) weq *)
 
-(* type ('x, 'y) coq_UniqueConstruction = *)
-(*   ('y -> ('x, 'y paths) total2, 'x -> 'x -> 'y paths -> 'x paths) dirprod *)
+ type ('x, 'y) coq_UniqueConstruction = 
+   ('y -> ('x, 'y paths) total2, 'x -> 'x -> 'y paths -> 'x paths) dirprod
 
 (* val coq_UniqueConstruction_to_weq : *)
 (*   ('a1 -> 'a2) -> ('a1, 'a2) coq_UniqueConstruction -> ('a1, 'a2) isweq *)
@@ -3042,7 +3053,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val coprodtobool : ('a1, 'a2) coprod -> bool *)
 
-(* type ('x, 'y) boolsumfun = __ *)
+ type ('x, 'y) boolsumfun = __ 
 
 (* val coprodtoboolsum : *)
 (*   ('a1, 'a2) coprod -> (bool, ('a1, 'a2) boolsumfun) total2 *)
@@ -3068,7 +3079,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val boolchoice : bool -> (bool paths, bool paths) coprod *)
 
-(* type bool_to_type = __ *)
+ type bool_to_type = __ 
 
 (* val nopathstruetofalse : bool paths -> empty *)
 
@@ -3086,16 +3097,16 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   'a1 -> ('a1 -> ('a1 paths, 'a2 neg) coprod) -> ('a2, ('a1, 'a2) total2) *)
 (*   isweq *)
 
-(* type ('x, 'y, 'z) complxstr = 'x -> 'z paths *)
+ type ('x, 'y, 'z) complxstr = 'x -> 'z paths 
 
 (* val ezmap : *)
 (*   ('a1 -> 'a2) -> ('a2 -> 'a3) -> 'a3 -> ('a1, 'a2, 'a3) complxstr -> 'a1 -> *)
 (*   ('a2, 'a3) hfiber *)
 
-(* type ('x, 'y, 'z) isfibseq = ('x, ('y, 'z) hfiber) isweq *)
+ type ('x, 'y, 'z) isfibseq = ('x, ('y, 'z) hfiber) isweq 
 
-(* type ('x, 'y, 'z) fibseqstr = *)
-(*   (('x, 'y, 'z) complxstr, ('x, 'y, 'z) isfibseq) total2 *)
+ type ('x, 'y, 'z) fibseqstr = 
+   (('x, 'y, 'z) complxstr, ('x, 'y, 'z) isfibseq) total2 
 
 (* val make_fibseqstr : *)
 (*   ('a1 -> 'a2) -> ('a2 -> 'a3) -> 'a3 -> ('a1, 'a2, 'a3) complxstr -> ('a1, *)
@@ -3321,7 +3332,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   ('a1, 'a2) weq -> ('a1 -> ('a3, 'a4) weq) -> (('a1, 'a3) total2, ('a2, 'a4) *)
 (*   total2) weq *)
 
-(* type ('x, 'x0, 'y, 'z) commsqstr = 'z -> 'y paths *)
+ type ('x, 'x0, 'y, 'z) commsqstr = 'z -> 'y paths 
 
 (* val hfibersgtof' : *)
 (*   ('a1 -> 'a3) -> ('a2 -> 'a3) -> ('a4 -> 'a1) -> ('a4 -> 'a2) -> ('a1, 'a2, *)
@@ -3361,9 +3372,9 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   ('a1 -> 'a3) -> ('a2 -> 'a3) -> ('a4 -> 'a1) -> ('a4 -> 'a2) -> ('a1, 'a2, *)
 (*   'a3, 'a4) commsqstr -> 'a4 -> 'a2 paths *)
 
-(* type ('x, 'x0, 'y) hfpoverX = ('x, ('x0, 'y) hfiber) total2 *)
+ type ('x, 'x0, 'y) hfpoverX = ('x, ('x0, 'y) hfiber) total2 
 
-(* type ('x, 'x0, 'y) hfpoverX' = ('x0, ('x, 'y) hfiber) total2 *)
+ type ('x, 'x0, 'y) hfpoverX' = ('x0, ('x, 'y) hfiber) total2 
 
 (* val weqhfptohfpoverX : *)
 (*   ('a1 -> 'a3) -> ('a2 -> 'a3) -> (('a1, 'a2, 'a3) hfp, ('a1, 'a2, 'a3) *)
@@ -3402,10 +3413,10 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   ('a1 -> 'a3) -> ('a2 -> 'a3) -> (('a1, ('a2, 'a3) hfiber) total2, ('a2, *)
 (*   ('a1, 'a3) hfiber) total2) weq *)
 
-(* type ('x, 'x0, 'y, 'z) ishfsq = ('z, ('x, 'x0, 'y) hfp) isweq *)
+ type ('x, 'x0, 'y, 'z) ishfsq = ('z, ('x, 'x0, 'y) hfp) isweq 
 
-(* type ('x, 'x0, 'y, 'z) hfsqstr = *)
-(*   (('x, 'x0, 'y, 'z) commsqstr, ('z, ('x, 'x0, 'y) hfp) isweq) total2 *)
+ type ('x, 'x0, 'y, 'z) hfsqstr = 
+   (('x, 'x0, 'y, 'z) commsqstr, ('z, ('x, 'x0, 'y) hfp) isweq) total2 
 
 (* val make_hfsqstr : *)
 (*   ('a1 -> 'a3) -> ('a2 -> 'a3) -> ('a4 -> 'a1) -> ('a4 -> 'a2) -> ('a1, 'a2, *)
@@ -3605,7 +3616,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val iscontraprop1inv : ('a1 -> 'a1 iscontr) -> 'a1 isaprop *)
 
-(* type 'x isProofIrrelevant = 'x -> 'x -> 'x paths *)
+ type 'x isProofIrrelevant = 'x -> 'x -> 'x paths 
 
 (* val proofirrelevance : 'a1 isaprop -> 'a1 isProofIrrelevant *)
 
@@ -3643,7 +3654,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 
 
-(* type ('x, 'y) incl = ('x -> 'y, ('x, 'y) isincl) total2 *)
+ type ('x, 'y) incl = ('x -> 'y, ('x, 'y) isincl) total2 
 
 (* val make_incl : ('a1 -> 'a2) -> ('a1, 'a2) isincl -> ('a1, 'a2) incl *)
 
@@ -3887,7 +3898,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val isapropdneg : 'a1 dneg isaprop *)
 
-(* type 'x isaninvprop = ('x, 'x dneg) isweq *)
+ type 'x isaninvprop = ('x, 'x dneg) isweq 
 
 (* val invimpl : 'a1 isaninvprop -> 'a1 dneg -> 'a1 *)
 
@@ -3986,7 +3997,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val iscontrhfibereqbx : 'a1 -> 'a1 isisolated -> ('a1, bool) hfiber iscontr *)
 
-(* type ('x, 'y) bhfiber = ('x, bool) hfiber *)
+ type ('x, 'y) bhfiber = ('x, bool) hfiber 
 
 (* val weqhfibertobhfiber : *)
 (*   ('a1 -> 'a2) -> 'a2 -> 'a2 isisolated -> (('a1, 'a2) hfiber, ('a1, 'a2) *)
@@ -4168,7 +4179,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   ('a1 -> 'a2) -> 'a1 -> ('a1, 'a2) isdecincl -> 'a1 isisolated -> 'a2 *)
 (*   isisolated *)
 
-(* type ('x, 'y) negimage = ('y, ('x, 'y) hfiber neg) total2 *)
+ type ('x, 'y) negimage = ('y, ('x, 'y) hfiber neg) total2 
 
 (* val make_negimage : *)
 (*   ('a1 -> 'a2) -> 'a2 -> ('a1, 'a2) hfiber neg -> ('a2, ('a1, 'a2) hfiber *)
@@ -4178,8 +4189,8 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   ('a1 -> 'a2) -> ('a1, 'a2) isincl -> (('a1, ('a2, ('a1, 'a2) hfiber neg) *)
 (*   total2) coprod, 'a2) isincl *)
 
-(* type ('x, 'y) iscoproj = *)
-(*   (('x, ('y, ('x, 'y) hfiber neg) total2) coprod, 'y) isweq *)
+ type ('x, 'y) iscoproj = 
+   (('x, ('y, ('x, 'y) hfiber neg) total2) coprod, 'y) isweq 
 
 (* val weqcoproj : *)
 (*   ('a1 -> 'a2) -> ('a1, 'a2) iscoproj -> (('a1, ('a1, 'a2) negimage) coprod, *)
@@ -4200,7 +4211,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val sum_of_fibers : ('a1 -> 'a2) -> (('a2, ('a1, 'a2) hfiber) total2, 'a1) weq *)
 
-(* type 'a display = (__, 'a) hfiber *)
+ type 'a display = (__, 'a) hfiber 
 
 (* val totalfst : (__, __ -> 'a1) total2 *)
 
@@ -4482,7 +4493,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 
 
-(* type ('x, 'y) coq_PathOver = __ *)
+type ('x, 'y) coq_PathOver = __ 
 
 (* val coq_PathOverToPathPair : *)
 (*   'a1 -> 'a1 -> 'a1 paths -> 'a2 -> 'a2 -> ('a1, 'a2) coq_PathOver -> ('a1, *)
@@ -4759,7 +4770,7 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 (*   -> 'a3 -> ('a1, 'a2) coq_PathOver -> ('a1, 'a3) coq_PathOver -> ('a1, 'a4) *)
 (*   coq_PathOver *)
 
-(* type ('x, 'x0, 'y) pullBackFamily = 'y *)
+type ('x, 'x0, 'y) pullBackFamily = 'y 
 
 (* val pullBackSection : ('a1 -> 'a2) -> ('a2 -> 'a3) -> 'a1 -> 'a3 *)
 
@@ -7708,7 +7719,9 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (* val isaprop_isatree : coq_TRRGraph -> isatree isaprop *)
 
-(* (\* type coq_Tree = (coq_TRRGraph, isatree) total2 *\) *)
+(* duplicate
+    type coq_Tree = (coq_TRRGraph, isatree) total2
+*)
 
 (* type coq_Tree_iso = coq_TRRGraphiso *)
 
@@ -7892,3 +7905,6 @@ type 'x kfinite_subtype = ('x hsubtype, 'x carrier iskfinite) total2
 
 (*   val nat_dist_anti : nat -> nat -> nat paths -> nat paths *)
 (*  end *)
+let foo = { pr1=1; pr2=1}
+let foo1 a = a.pr1
+let foo2 a = a.pr2
