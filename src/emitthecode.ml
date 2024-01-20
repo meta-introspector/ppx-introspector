@@ -16,6 +16,14 @@ and  emit_id1 a : string =
     -> (emit_id1 (longident))  ^ "."
        ^ (emit_id1 (longident2) ) 
 
+(*
+   Current
+
+*)
+and emit_core_type_desc_gen (x : core_type_desc * string_list):string =
+  "emit_core_type_desc_gen" 
+
+and process_type_decl_core_type_desc x = "process_type_decl_core_type_desc"
 and emit_core_type_desc (x : core_type_desc * string_list):string =
   match x with
     (ctd, s)->
@@ -30,11 +38,10 @@ and emit_core_type_desc (x : core_type_desc * string_list):string =
       id1  
     | Ptyp_tuple a (* of core_type list *)
       ->
-      "Ptyp_tuple" ^ emit_core_type_list(a,  s )
+      "(ptyp_tuple " ^ emit_core_type_list(a,  s ) ^ ")"
     | other -> "FIXME"
         
 and emit_type_decl ((x,s)) =
-  "emit_type_decl"^
   match x with
     {
       ptype_name (* : string loc *);
@@ -46,12 +53,18 @@ and emit_type_decl ((x,s)) =
       ptype_attributes (*: attributes*);
       ptype_loc (*: location*)
     } ->
-    "\nDEBUG2Erec: let process_type_decl_7" ^  ptype_name.txt ^ " (x:" ^ ptype_name.txt
+    "\nDEBUG2Erec: let process_type_decl_" ^  ptype_name.txt ^ " (x:" ^ ptype_name.txt
     ^ "):string = match x with {"
     ^ (emit_type_decl_kind (ptype_name.txt,ptype_kind,s,";"))
     ^ "} ->"
     ^ (emit_type_decl_kind_process (ptype_name.txt,ptype_kind,s,"^"))
+and process_type_decl_location x = "process_type_decl_location"
+and process_type_decl_location_stack x = "process_type_decl_location_stack"
+and process_type_decl_attributes x = "process_type_decl_attributes"
+and process_type_decl_core_type (x:core_type):string = match x with {ptyp_desc(* core_type_desc*);ptyp_loc(* location*);ptyp_loc_stack(* location_stack*);ptyp_attributes(* attributes*)} ->(process_type_decl_core_type_desc ptyp_desc)^(process_type_decl_location ptyp_loc)^(process_type_decl_location_stack ptyp_loc_stack)^(process_type_decl_attributes ptyp_attributes) 
+                                                                                                                                                                                               
 and  emit_core_type(a: core_type * string_list * int):string=
+  "(*emit_core_type*)" ^
   match a with
   | (x,s,n) ->
      match x with  
@@ -63,8 +76,37 @@ and  emit_core_type(a: core_type * string_list * int):string=
     }->
     let td = (emit_core_type_desc (ptyp_desc,s)) in
     td  (* ^ (string_of_int n)  *)
+                           
+and  emit_core_type_numbered(a: core_type * string_list * int):string=
+  "(*emit_core_type_numbered*)" ^
+  match a with
+  | (x,s,n) ->
+     match x with  
+    {
+      ptyp_desc(* : core_type_desc *);
+      ptyp_loc(* : Location.t *);
+      ptyp_loc_stack(* : location_stack *);
+      ptyp_attributes(* : attributes; *)
+    }->
+    let td = (emit_core_type_desc (ptyp_desc,s)) in
+    td  ^ (string_of_int n) 
 
+and emit_constructor_arguments_from_core_type_list(x: core_type_list * string_list*int):string =
+  "(*emit_constructor_arguments_from_core_type_list*)" ^
+  match x with
+  | (a,b,n) ->
+    match a with
+    | [] -> ""
+    | h :: t ->
+      let h1 = emit_core_type_numbered (h,b,n) in
+      if t != [] then
+        let tt = emit_constructor_arguments_from_core_type_list(t,b,n+1)  in      
+        h1 ^ "," ^ tt
+      else
+        h1
+  
 and emit_core_type_list(x: core_type_list * string_list):string =
+  "(*emit_core_type_list*)" ^
   match x with
   | (a,b) ->
     match a with
@@ -90,23 +132,40 @@ and  decl_imp_core_type(a: string*string *core_type * string_list*int):string=
 and  imp_core_type((a,s,n): core_type * string_list*int):string=
 
   let name1 = emit_core_type2(a,s,n) in
-  let name = emit_core_type(a,s,n) in
-  "(process_" ^ name1 ^ " " ^ name  ^ ")"
+  let name = emit_core_type_numbered(a,s,n) in
+  "((*P4*)process_" ^ name1 ^ " " ^ name  ^ ")"
 (* ^"B" ^(string_of_int n) *)
 
 
-and imp_core_type_list(x: core_type_list * string_list*int):string =
+and imp_core_type_list_tail(x: core_type_list * string_list*int):string =
+  (
   match x with
   | (a,b,n) ->
     match a with
     | [] -> ""
     | h :: t ->
-      let tt = imp_core_type_list(t,b,n+1)  in
+      let tt = imp_core_type_list_tail(t,b,n+1)  in
       let one = imp_core_type (h, b,n ) in
       if tt != "" then 
-        one ^ "," ^ tt
+        one ^ ";" ^ tt
       else 
-        one 
+        one
+    ) 
+
+and imp_core_type_list(x: core_type_list * string_list*int):string =
+  "[" ^ (
+  match x with
+  | (a,b,n) ->
+    match a with
+    | [] -> ""
+    | h :: t ->
+      let tt = imp_core_type_list_tail(t,b,n+1)  in
+      let one = imp_core_type (h, b,n ) in
+      if tt != "" then 
+        one ^ ";" ^ tt
+      else 
+        one
+    ) ^"]"
 
 (* calls the function from the constructor*)
 and decl_imp_core_type_list(parent,name,a,b,n) = 
@@ -121,11 +180,12 @@ and decl_imp_core_type_list(parent,name,a,b,n) =
       h1
 
 and  emit_constructor_arguments(a1:(string*string*constructor_arguments*string_list)):string =  let (parent,name,x,s) = a1 in  match x with  | Pcstr_tuple a ->
+    "(*emit_constructor_arguments:*)"  ^
     "| " ^ name
     ^ "("
-    ^ (emit_core_type_list (a,s))
+    ^ (emit_constructor_arguments_from_core_type_list (a,s,0))
     ^ ") -> "
-    ^ "(process_generic_type "
+    ^ "((*P5*)process_generic_type "
     ^ "\"" ^ parent ^ "\""^
     " \""  ^ name   ^ "\""^
     " " ^ imp_core_type_list (a,s,0) ^")"
@@ -148,20 +208,20 @@ and
   | h :: t ->
     let h1 = decl_imp_core_type (parent,name, h, b,n) in
     let t1 = emit_core_type (h, b,n) in    
-    let quoted = "(process_" ^ t1 ^ " " ^ h1 ^ ")" in
+    let quoted = "((*P5*)process_generic_type_" ^ t1 ^ " " ^ h1 ^ ")" in
     let tt = decl_imp_core_type_list_hats(parent,name,t,b,n+1)  in
     if tt != "" then 
-      quoted ^ "^" ^ tt 
+      quoted  ^ tt  
     else 
       quoted
 
 and  decl_emit_constructor_arguments(parent,name,x,s):string =
   match x with
   | Pcstr_tuple a ->
-    "let "^ "process_types_" ^ parent ^ "__" ^ name
+    "let "^ "(*P1*)process_types_" ^ parent ^ "__" ^ name
     ^ "(("    ^  decl_imp_core_type_list (parent,name,a,s,0) ^   "):"
     ^ "("    ^  decl_imp_core_type_list2 (parent,name,a,s,0) ^  ")):string"
-    ^ " = (process_types (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
+    ^ " = (process_generic_type_d \"" ^ parent ^ "\" \"" ^ name ^ "\") " ^
     (decl_imp_core_type_list_hats (parent,name,a,s,0) ) ^ ")"
   | other  -> "other"
 
@@ -183,7 +243,7 @@ and emit_type_variant_constructor_declaratation_one p h s =
     let newtext = (emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
     let newtext2 = (decl_emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
     (print_endline ("DBG22EB:" ^ newtext2));
-    (print_endline ("DBG222EC:" ^ newtext)); 
+    (print_endline ("DBG222EC:emit_constructor_arguments:" ^p ^ ";" ^ pcd_name.txt ^ ":" ^ newtext)); 
     let ret =              "constructor:\""^ pcd_name.txt ^ "\""
                            ^ "{" ^
                            emit_constructor_arguments(p,pcd_name.txt,pcd_args,s)
@@ -262,7 +322,7 @@ and  emit_record_kind_field_process((x,s):label_declaration *string_list):string
      pld_attributes(* : attributes *); 
    } ->
     let pct = (emit_core_type (pld_type,s,1)) in
-    "(process_type_decl_" ^ pct ^ " " ^  pld_name.txt ^ ")"
+    "((*P2*)process_type_decl_" ^ pct ^ " " ^  pld_name.txt ^ ")"
 
 and emit_core_type2(a: core_type * string_list*int):string=
   match a with
@@ -291,7 +351,8 @@ and  decl_emit_record_kind_field_list_process(p,x,s,ss) : string =
     if tail1 != "" then
       one ^ ss ^ tail1
     else
-      one                                            
+      one
+        
 and  decl_emit_record_kind_field_process((x,s):label_declaration *string_list):string =
   match x with
     {
@@ -302,4 +363,4 @@ and  decl_emit_record_kind_field_process((x,s):label_declaration *string_list):s
      pld_attributes(* : attributes *); 
    } ->
     let pct = (emit_core_type2 (pld_type,s,0)) in
-    "(process_type_decl_6" ^ pct ^ " " ^  pld_name.txt ^ ")"
+    "((*P3*)process_type_decl_" ^ pct ^ " " ^  pld_name.txt ^ ")"
