@@ -112,7 +112,7 @@ let rec process_id1 a : string =
     -> (process_id1 (longident))  ^ "."
        ^ (process_id1 (longident2) )
 
-let process_longident_loc ( a :longident_loc):string="ident:" ^ (process_id1 a.txt)
+let process_longident_loc ( a :longident_loc):string="(ident \"" ^ (process_id1 a.txt) ^ "\")"
 let process_module_expr ( amodule_expr0:module_expr):string="FIXME16"
 let process_open_declaration ( aopen_declaration0:open_declaration):string="FIXME17"
 
@@ -166,7 +166,9 @@ and  process_case (a:case) =
   process_expression_option a.pc_guard ^ "|" ^
   process_expression a.pc_rhs) ^
   ")"
-  and process_core_type_list x = "process_core_type_list"
+and process_core_type_list a = 
+  process_generic_list "process_core_type_list" a process_core_type
+and process_type_decl_core_type x = process_core_type x
 and process_string a = "process_string"
 and process_closed_flag x = "process_closed_flag"
 and process_cases ( a:cases):string=
@@ -258,19 +260,31 @@ and process_expression ( x:expression):string= "EXPR:" ^process_expression_desc(
 and process_record_kind4 :label_declaration -> string_list -> string = fun x s -> ""
 and  process_record_kind2(x :label_declaration)(s:string_list) = ""
 and    process_record_kind3 x s = ""
-and process_core_type ( x ):string = (my_process_core_type x)
 and process_string_loc_list x = "process_string_loc_list"
-and process_type_decl_core_type x = process_core_type  x
-and stringlister2 (x:string_list) : string =
+and stringlister3 (x:string_list) : string =
   match x with
-  | [] ->"stringlister"
-  | h :: t -> h ^ stringlister2(t)
+  | [] ->""
+  | h :: t ->
+    if t != [] then
+      let n = stringlister3(t) in
+      h ^ ";"^ n
+    else
+      h
+and stringlister2 (x:string_list) : string = "[" ^
+                                             ( match x with
+                                               | [] ->""
+                                               | h :: t -> h ^ ";"^
+                                                           stringlister3(t)
+                                             )
+                                             ^"]"
 and process_package_type x = "process_package_type"
 and process_generic_type a b c = "(process_generic_type \""
-                                 ^ a ^ "\" \""
-                                 ^ b ^ "\" \""
-                                 ^ (stringlister2 c) ^ "\" \""
-                                 ^ "\")" 
+                                 ^ a
+                                 ^ "\" \""
+                                 ^ b 
+                                 ^ "\" "
+                                 ^ (stringlister2 c)
+                                 ^    ")" 
 and process_core_type_option ( a: core_type option ):string = "((*P20*)process_core_type_option " ^
   (match a with
   | Some x -> (process_core_type x)
@@ -298,15 +312,59 @@ and
     *)
     "((*P21*)process_record_kind \"" ^ pld_name.txt ^ "\" (body " ^ pct ^ "))"
 and process_object_field_list x = "process_object_field_list"
-and
-  
+and process_type_decl_string x = "(string \"" ^ x ^ "\" )"
+and process_type_decl_int x:string = "(int " ^ (string_of_int x) ^ ")"
+and process_type_decl_bool x:string = "(bool " ^ (string_of_bool x) ^ ")"
+and process_type_decl_position (x:position):string = match x with {
+  pos_fname(* string*);pos_lnum(* int*);pos_bol(* int*);pos_cnum(* int*)
+} ->(process_type_decl_string pos_fname)^(process_type_decl_int pos_lnum)^(process_type_decl_int pos_bol)^(process_type_decl_int pos_cnum)
+and process_type_decl_core_type_desc x = gen_process_core_type_desc (x,[])
+and process_type_decl_location (x:location):string = match x with
+    {
+      loc_start(* position *);loc_end(* position *);
+      loc_ghost(* bool*)
+    } ->(process_type_decl_position loc_start)^(process_type_decl_position loc_end)^(process_type_decl_bool loc_ghost)
+and process_type_decl_location_stack a =  process_generic_list "(*P70*)process_type_decl_location_stack" a process_type_decl_location
+and process_type_decl_payload (x: payload):string = 
+  match x with
+  | PPat(pattern, e) ->
+    (process_generic_type
+       "payload"
+       "PPat"
+       [
+         (process_pattern pattern);
+         (process_expression_option e)         ] 
+       )
+  (* | PTyp(core_type) -> (process_generic_type "payload" "PTyp" (process_core_type core_type)) *)
+  (* | PSig(signature) -> (process_generic_type "payload" "PSig" (process_signature signature)) *)
+(* | PStr(structure) -> (process_generic_type "payload" "PStr" (process_structure structure)) *)
+and process_type_decl_loc x =
+  "(process_type_decl_loc "
+  ^ (process_type_decl_string x.txt)
+  ^ " "
+  ^ (process_type_decl_location x.loc)
+  ^ ")"
+
+and process_type_decl_attribute (x:attribute):string =
+  match x with {
+      attr_name(* loc string *);
+      attr_payload(* payload *);
+      attr_loc(* location *)
+    } ->(process_type_decl_loc attr_name)
+        ^(process_type_decl_payload attr_payload)
+        ^(process_type_decl_location attr_loc)
+and process_type_decl_attributes (a:attributes) = process_generic_list "(*P59*)process_attribute" a process_type_decl_attribute
+and process_core_type(x:core_type):string = match x with {ptyp_desc(* core_type_desc*);ptyp_loc(* location*);ptyp_loc_stack(* location_stack*);ptyp_attributes(* attributes*)} ->((*P2*)process_type_decl_core_type_desc ptyp_desc)^((*P2*)process_type_decl_location ptyp_loc)^((*P2*)process_type_decl_location_stack ptyp_loc_stack)
+                                                                                                                                                                                            ^((*P2*)process_type_decl_attributes ptyp_attributes)
+and  
   gen_process_core_type_desc (x : core_type_desc * string_list):string =
+  "(gen_process_core_type_desc " ^
   match x with
     (ctd, s)->
     match ctd with
     (*emit_constructor_arguments:*)| Ptyp_extension((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)extension0) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_extension" [((*P4*)process_extension (*emit_core_type_numbered*)extension0)])
                                    (*emit_constructor_arguments:*)| Ptyp_package((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)package_type0) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_package" [((*P4*)process_package_type (*emit_core_type_numbered*)package_type0)])
-                                   (*emit_constructor_arguments:*)| Ptyp_poly((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)core_type1) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_poly" [((*P4*)process_string_loc_list (*emit_core_type_numbered*)list0);((*P4*)process_core_type (*emit_core_type_numbered*)core_type1)])
+                                   (*emit_constructor_arguments:*)| Ptyp_poly((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)core_type1) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_poly" [((*P4*)process_string_loc_list (*emit_core_type_numbered*)list0);((*P4*)process_core_type(*emit_core_type_numbered*)core_type1)])
                                    (*emit_constructor_arguments:*)| Ptyp_variant((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)closed_flag1,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)option2) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_variant" [((*P4*)process_row_field_list (*emit_core_type_numbered*)list0);((*P4*)process_closed_flag (*emit_core_type_numbered*)closed_flag1);((*P4*)process_string_list_option (*emit_core_type_numbered*)option2)])
                                    (*emit_constructor_arguments:*)| Ptyp_alias((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)core_type0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string1) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_alias" [((*P4*)process_core_type (*emit_core_type_numbered*)core_type0);((*P4*)process_string (*emit_core_type_numbered*)string1)])
                                    (*emit_constructor_arguments:*)| Ptyp_class((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list1) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_class" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0);((*P4*)process_core_type_list (*emit_core_type_numbered*)list1)])
@@ -316,10 +374,10 @@ and
         ((*P4*)process_core_type_list (*emit_core_type_numbered*)list0)])
                                    (*emit_constructor_arguments:*)| Ptyp_arrow((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)arg_label0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)core_type1,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)core_type2) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_arrow" [((*P4*)process_arg_label (*emit_core_type_numbered*)arg_label0);((*P4*)process_core_type (*emit_core_type_numbered*)core_type1);((*P4*)process_core_type (*emit_core_type_numbered*)core_type2)])
                                    (*emit_constructor_arguments:*)| Ptyp_var((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0) -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_var" [((*P4*)process_string (*emit_core_type_numbered*)string0)])
-                                   (*emit_constructor_arguments:*)| Ptyp_any -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_any" [])
-                                                                                                                                  
+                                   (*emit_constructor_arguments:*)| Ptyp_any -> ((*P5*)process_generic_type "core_type_desc" "Ptyp_any" [])                                                                                  ^ ")"                                                                                                                                  
 and
   my_process_core_type_desc (x : core_type_desc * string_list):string =
+  (gen_process_core_type_desc x) ^
   match x with
     (ctd, s)->
     match ctd with
@@ -327,9 +385,7 @@ and
       ->
       let {txt;loc} = a in
       let id1 = process_id1(txt) in
-
       let edge = create_edge ("Ptyp_constr", id1) in
-
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
       let newlist = (my_process_core_type_list (b, s)) in
@@ -425,37 +481,16 @@ let fpp =1
 
 let apply_defer y x = "("^ y ^" \"" ^ x ^ "\" )"
 
-let process_type_decl_string x = "(string \"" ^ x ^ "\" )"
-
-let fp2p =1
-let process_type_decl_int x:string = "(int " ^ (string_of_int x) ^ ")"
-let process_type_decl_bool x:string = "(bool " ^ (string_of_bool x) ^ ")"
-let process_type_decl_position (x:position):string = match x with {
-  pos_fname(* string*);pos_lnum(* int*);pos_bol(* int*);pos_cnum(* int*)
-} ->(process_type_decl_string pos_fname)^(process_type_decl_int pos_lnum)^(process_type_decl_int pos_bol)^(process_type_decl_int pos_cnum)
-
-let process_type_decl_location (x:location):string = match x with
-    {
-      loc_start(* position *);loc_end(* position *);
-      loc_ghost(* bool*)
-    } ->(process_type_decl_position loc_start)^(process_type_decl_position loc_end)^(process_type_decl_bool loc_ghost)
-
 
 let process_location = process_type_decl_location
 
-let process_type_decl_loc x =
-  "(process_type_decl_loc "
-  ^ (process_type_decl_string x.txt)
-  ^ " "
-  ^ (process_type_decl_location x.loc)
-  ^ ")"
 
 let process_types_payload__PPat x = "(*P57*)process_types_payload__PPat"
 
 let process_option_expression x = x
 
 let  core_type ( x ):string = (apply_defer "core_type" x)
-let process_core_type = process_core_type
+
 let process_type_decl_list_string a = process_generic_list "(*P58*)process_type_decl_list_string" a process_type_decl_string
 
 
@@ -491,22 +526,8 @@ and process_types_payload__PSig((asignature):(signature)):string = (process_type
 and proc_list (a,b) = a ^ b
 and process_generic_type  p c d  =
   (apply_defer "(*P58*)process_generic_type_" p ^ c ^ "[" ^ (process_type_decl_list_string d)) ^ "]"
-and process_type_decl_payload (x: payload):string = 
-  match x with
-  | PPat(pattern, e) ->
-    (process_generic_type
-       "payload"
-       "PPat"
-       [
-         (process_pattern pattern);
-         (process_expression_option e)         ] 
-       )
-       
-  (* | PTyp(core_type) -> (process_generic_type "payload" "PTyp" (process_core_type core_type)) *)
-  (* | PSig(signature) -> (process_generic_type "payload" "PSig" (process_signature signature)) *)
-  (* | PStr(structure) -> (process_generic_type "payload" "PStr" (process_structure structure)) *)
 
-and process_type_decl_attributes a = process_generic_list "(*P59*)process_attribute" a process_type_decl_payload
+
 
 and process_type_decl_value_description (x:value_description):string =
   match x with
@@ -538,14 +559,6 @@ and process_signature ( a:signature):string=
 
 let process_types_payload__PSig((asignature0):(signature)):string = (process_types ("payload","PSig") ^(process_signature asignature0))
     
-let process_type_declattribute (x:attribute):string =
-  match x with {
-      attr_name(* loc string *);
-      attr_payload(* payload *);
-      attr_loc(* location *)
-    } ->(process_type_decl_loc attr_name)
-        ^(process_type_decl_payload attr_payload)
-        ^(process_type_decl_location attr_loc)
 
 let rec process_location_stack (x : location list) : string=
   match x with
@@ -714,6 +727,9 @@ let emit_core_type_desc (x : core_type_desc * string_list):string =
     (ppddump ("DBG1:Ptyp_extension:",a )); "extension"
 
 
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+
 let  emit_core_type(a: core_type * string_list*int):string=
   "(*emit_core_type1*)" ^
   match a with
@@ -785,7 +801,7 @@ let emit_constructor_arguments(a1:(string*string*constructor_arguments*string_li
     let ictl = imp_core_type_list (a,s,0) in
     "(*emit_constructor_arguments*)" ^
     "| " ^ name
-    ^ " (emit_core_type_list_special "
+    ^ " ( "
     ^ (emit_core_type_list (a,s,0))
     ^ ") -> (process_types_"
     ^ parent

@@ -64,7 +64,7 @@ and process_type_decl_attributes x = "process_type_decl_attributes"
 and process_type_decl_core_type (x:core_type):string = match x with {ptyp_desc(* core_type_desc*);ptyp_loc(* location*);ptyp_loc_stack(* location_stack*);ptyp_attributes(* attributes*)} ->(process_type_decl_core_type_desc ptyp_desc)^(process_type_decl_location ptyp_loc)^(process_type_decl_location_stack ptyp_loc_stack)^(process_type_decl_attributes ptyp_attributes) 
                                                                                                                                                                                                
 and  emit_core_type(a: core_type * string_list * int):string=
-  "(*emit_core_type*)" ^
+  (*this function is used to concatinate with other strings so you need to leave off the prefixed comments*)
   match a with
   | (x,s,n) ->
      match x with  

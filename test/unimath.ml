@@ -11,13 +11,13 @@ type 'a paths = | Coq_paths_refl (* terminal in proof system reflexive *)
 type 'x isaset = 'x -> 'x -> 'x paths isaprop
     
 type ('x, 'y) hfiber = ('x, 'y paths) total2 (*x leads to y reflexive*)
+
+
 type ('x, 'y) isofhlevelf = 'y -> ('x, 'y) hfiber isofhlevel
 type ('x, 'y) isincl = ('x, 'y) isofhlevelf
 type coq_UU = __
 type hProp = (coq_UU, __ isaprop) total2    
 type coq_HLevel = (coq_UU, __ isofhlevel) total2
-    
-
 type pr1hSet = __
 type node = __
 type arc = __
@@ -26,8 +26,6 @@ type 't iscontr = ('t, 't -> 't paths) total2
 type ('x, 'y) isweq = 'y -> ('x, 'y) hfiber iscontr
 type ('x, 'y) weq = ('x -> 'y, ('x, 'y) isweq) total2
 type ('a, 'b) coq_PathPair = ('a paths, 'b paths) total2
-
-
 type 'x istrans = 'x -> 'x -> 'x -> hProptoType -> hProptoType -> hProptoType
 type 'x isrefl = 'x -> hProptoType
 type 'x issymm = 'x -> 'x -> hProptoType -> hProptoType

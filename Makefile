@@ -1,6 +1,4 @@
 
-
-
 test/test2.txt: log.txt test/test2.ml 
 	./_build/install/default/lib/ppx-introspector/ppx.exe   --impl test/test2.ml > test/test2.txt
 
@@ -18,6 +16,6 @@ clean :
 	dune clean	
 
 log.txt:  src/ppx.ml
-	dune clean
+#	dune clean
 	dune build --trace-file build.trace --verbose > log.txt 2>&1
          # --display=quiet
