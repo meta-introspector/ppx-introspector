@@ -26,8 +26,8 @@ and emit_core_type_desc (x : core_type_desc * string_list):string =
       let id1 = emit_id1(txt) in
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
-      let newlist = (emit_core_type_list (b, s)) in 
-      id1  ^ "\"->" ^ newlist 
+      (* let newlist = (emit_core_type_list (b, s)) in  *)
+      id1  
     | Ptyp_tuple a (* of core_type list *)
       ->
       "Ptyp_tuple" ^ emit_core_type_list(a,  s )
@@ -62,7 +62,7 @@ and  emit_core_type(a: core_type * string_list * int):string=
       ptyp_attributes(* : attributes; *)
     }->
     let td = (emit_core_type_desc (ptyp_desc,s)) in
-    td  ^ (string_of_int n) 
+    td  (* ^ (string_of_int n)  *)
 
 and emit_core_type_list(x: core_type_list * string_list):string =
   match x with
@@ -81,7 +81,7 @@ and  decl_imp_core_type(a: string*string *core_type * string_list*int):string=
   let (parent, parent2, atype, s, n) = a in
   let name = emit_core_type(atype, s, n) in
   let h1 = emit_core_type2(atype, s, n) in
-  (print_endline ("DBG22A:" ^ "let process_8" ^ h1 ^ " x : " ^ h1 ^ "= x"));  
+  (print_endline ("DBG22A:" ^ "let process_" ^ h1 ^ " x : " ^ h1 ^ "= x"));  
   "a" ^ name  
 (* ":" ^ name1  *)
 (* ")" *)
@@ -91,7 +91,7 @@ and  imp_core_type((a,s,n): core_type * string_list*int):string=
 
   let name1 = emit_core_type2(a,s,n) in
   let name = emit_core_type(a,s,n) in
-  "(process_10" ^ name1 ^ " " ^ name  ^ ")"
+  "(process_" ^ name1 ^ " " ^ name  ^ ")"
 (* ^"B" ^(string_of_int n) *)
 
 
@@ -121,8 +121,14 @@ and decl_imp_core_type_list(parent,name,a,b,n) =
       h1
 
 and  emit_constructor_arguments(a1:(string*string*constructor_arguments*string_list)):string =  let (parent,name,x,s) = a1 in  match x with  | Pcstr_tuple a ->
-    "| " ^ name ^ " ("^ (emit_core_type_list (a,s))  ^ ") -> " ^ "("
-    ^ "process_types1_" ^ parent ^ "__"^ name^  "(" ^ imp_core_type_list (a,s,0) ^"))"
+    "| " ^ name
+    ^ "("
+    ^ (emit_core_type_list (a,s))
+    ^ ") -> "
+    ^ "(process_generic_type "
+    ^ "\"" ^ parent ^ "\""^
+    " \""  ^ name   ^ "\""^
+    " " ^ imp_core_type_list (a,s,0) ^")"
                                                                                                                                              | other  -> "other"
 and
  decl_imp_core_type_list2((parent,name,a,b,n): string*string*core_type_list * string_list*int):string = 
@@ -141,7 +147,8 @@ and
   | [] -> ""
   | h :: t ->
     let h1 = decl_imp_core_type (parent,name, h, b,n) in
-    let quoted = "(core_type \"" ^ h1 ^ "\")" in
+    let t1 = emit_core_type (h, b,n) in    
+    let quoted = "(process_" ^ t1 ^ " " ^ h1 ^ ")" in
     let tt = decl_imp_core_type_list_hats(parent,name,t,b,n+1)  in
     if tt != "" then 
       quoted ^ "^" ^ tt 
@@ -151,10 +158,10 @@ and
 and  decl_emit_constructor_arguments(parent,name,x,s):string =
   match x with
   | Pcstr_tuple a ->
-    "let "^ "process_types2_" ^ parent ^ "__" ^ name
+    "let "^ "process_types_" ^ parent ^ "__" ^ name
     ^ "(("    ^  decl_imp_core_type_list (parent,name,a,s,0) ^   "):"
     ^ "("    ^  decl_imp_core_type_list2 (parent,name,a,s,0) ^  ")):string"
-    ^ " = (process_types3 (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
+    ^ " = (process_types (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
     (decl_imp_core_type_list_hats (parent,name,a,s,0) ) ^ ")"
   | other  -> "other"
 
@@ -169,7 +176,7 @@ and emit_type_variant_constructor_declaratation_one p h s =
     pcd_attributes(* : attributes *); 
   }->
     (print_endline (
-        "DBG221EC: let process_4"
+        "DBG221EC: let process_"
         ^ p ^ "__" ^ pcd_name.txt
         ^ " x :string ="
         ^ "match x with "));
@@ -255,7 +262,7 @@ and  emit_record_kind_field_process((x,s):label_declaration *string_list):string
      pld_attributes(* : attributes *); 
    } ->
     let pct = (emit_core_type (pld_type,s,1)) in
-    "(process_type_decl_5_" ^ pct ^ " " ^  pld_name.txt ^ ")"
+    "(process_type_decl_" ^ pct ^ " " ^  pld_name.txt ^ ")"
 
 and emit_core_type2(a: core_type * string_list*int):string=
   match a with

@@ -110,7 +110,7 @@ let process_longident_loc ( a :longident_loc):string="ident:" ^ (process_id1 a.t
 let process_module_expr ( amodule_expr0:module_expr):string="FIXME16"
 let process_open_declaration ( aopen_declaration0:open_declaration):string="FIXME17"
 
-let process_types (a,b) = "(process_types_20 \"" ^ a ^"\",\"" ^ b ^ "\")"
+let process_types (a,b) = "(process_types \"" ^ a ^"\",\"" ^ b ^ "\")"
 
 let process_types_rec_flag__Nonrecursive:string = (process_types ("rec_flag","Nonrecursive") )
 let process_types_rec_flag__Recursive:string = (process_types ("rec_flag","Recursive") )
@@ -279,7 +279,7 @@ and
     (*
        this is a field in a record
     *)
-    "process_record_kind:\"" ^ pld_name.txt ^ "|" ^ "\" body:" ^ pct
+    "(process_record_kind \"" ^ pld_name.txt ^ "\" (body " ^ pct ^ "))"
 and
   my_process_core_type_desc (x : core_type_desc * string_list):string =
   match x with
@@ -304,7 +304,7 @@ and
          "context",s,
          "id1", id1
        ));
-      "Ptyp_constr:\"" ^ id1 ^ "|" ^ "\"->" ^ newlist
+      "(Ptyp_constr:\"" ^ id1 ^ "|" ^ "\") ->" ^ newlist
     | Ptyp_tuple a (* of core_type list *)
       ->
       (ppddump ("DBG1:Ptyp_tuple:", a ));
@@ -412,32 +412,65 @@ let process_type_decl_loc x =
   ^ (process_type_decl_location x.loc)
   ^ ")"
 
-let process_types1_payload__PPat x = "process_types1_payload__PPat"
-let process_10pattern x = x
-let process_10option_expression x = x
-let process_types_23 = process_types
+let process_types_payload__PPat x = "process_types_payload__PPat"
+
+let process_option_expression x = x
+
 let  core_type ( x ):string = (apply_defer "core_type" x)
-let process_10core_type = process_core_type
+let process_core_type = process_core_type
 let process_type_decl_list_string a = process_generic_list "process_type_decl_list_string" a process_type_decl_string
 
 
     
 
-let process_types_payload__PTyp((acore_type0):(string)):string = (process_types_23 ("payload","PTyp") ^(core_type acore_type0))
+
+let rec  process_type_declsignature_item_desc (x:signature_item_desc):string = match x with
+  | Psig_value value_description0 -> (process_types_signature_item_desc__Psig_value((process_value_description value_description0)))
+  (* | Psig_type (rec_flag0,list1) -> (process_types_signature_item_desc__Psig_type((process_rec_flag rec_flag0),(process_list list1))) *)
+  (* | Psig_typesubst ( list0) -> (process_types_signature_item_desc__Psig_typesubst((process_list list0))) *)
+  (* | Psig_typext ( type_extension0) -> (process_types_signature_item_desc__Psig_typext((process_type_extension type_extension0))) *)
+  (* | Psig_exception ( type_exception0) -> (process_types_signature_item_desc__Psig_exception((process_type_exception type_exception0))) *)
+  (* | Psig_module ( module_declaration0) -> (process_types_signature_item_desc__Psig_module((process_module_declaration module_declaration0))) *)
+  (* | Psig_modsubst ( module_substitution0) -> (process_types_signature_item_desc__Psig_modsubst((process_module_substitution module_substitution0))) *)
+  (* | Psig_recmodule ( list0) -> (process_types_signature_item_desc__Psig_recmodule((process_list list0))) *)
+  (* | Psig_modtype ( module_type_declaration0) -> (process_types_signature_item_desc__Psig_modtype((process_module_type_declaration module_type_declaration0))) *)
+  (* | Psig_modtypesubst ( module_type_declaration0) -> (process_types_signature_item_desc__Psig_modtypesubst((process_module_type_declaration module_type_declaration0))) *)
+  (* | Psig_open ( open_description0) -> (process_types_signature_item_desc__Psig_open((process_open_description open_description0))) *)
+  (* | Psig_include ( include_description0) -> (process_types_signature_item_desc__Psig_include((process_include_description include_description0))) *)
+  (* | Psig_class ( list0) -> (process_types_signature_item_desc__Psig_class((process_list list0))) *)
+  (* | Psig_class_type ( list0) -> (process_types_signature_item_desc__Psig_class_type((process_list list0))) *)
+  (* | Psig_attribute ( attribute0) -> (process_types_signature_item_desc__Psig_attribute((process_attribute attribute0))) *)
+  (* | Psig_extension ( extension0,attributes1) -> (process_types_signature_item_desc__Psig_extension((process_extension extension0),(process_attributes attributes1))) *)
+  (* | Psig_exception ( type_exception0) -> (process_types_signature_item_desc__Psig_exception((process_type_exception type_exception0))) *)
 
 
-let process_types_signature_item_desc__Psig_value((avalue_description):(string)):string = (process_types ("signature_item_desc","Psig_value") ^( avalue_description))
-                                                                                          
-let process_type_decl_payload (x: payload):string = "(fixme process_type_decl_payload)"
-  (* matcha x with *)
-  (* | PPat (apattern, expression) -> (process_types_payload__PPat((process_10pattern apattern),(process_10option_expression expression))) *)
-  (* | PTyp ct -> (process_types1_payload__PTyp((process_10core_type ct))) *)
-  (* | PSig (signature) -> (process_types_payload__PSig((process_10signature signature))) *)
-  (* | PStr (structure) -> (process_types_payload__PStr((process_10structure structure))) *)
 
-let process_type_decl_attributes a = process_generic_list "process_attribute" a process_type_decl_payload
+and process_types_signature_item_desc__Psig_value((avalue_description):(string)):string = (process_types ("signature_item_desc","Psig_value") ^( avalue_description))
+and process_types_payload__PPat((apattern,aoption):(pattern*expression option)):string = (process_types ("payload","PPat") ^(process_pattern apattern)^(process_expression_option aoption))
+                                                                             
+and process_types_payload__PTyp((acore_type):(core_type)):string = (process_types ("payload","PTyp") ^(process_core_type acore_type))
+and process_types_payload__PSig((asignature):(signature)):string = (process_types ("payload","PSig") ^(process_signature asignature))
+and proc_list (a,b) = a ^ b
+and process_generic_type  p c d  =
+  (apply_defer "process_generic_type" p ^ c ^ (process_type_decl_list_string d))
+and process_type_decl_payload (x: payload):string = 
+  match x with
+  | PPat(pattern, e) ->
+    (process_generic_type
+       "payload"
+       "PPat"
+       [
+         (process_pattern pattern);
+         (process_expression_option e)         ] 
+       )
+       
+  (* | PTyp(core_type) -> (process_generic_type "payload" "PTyp" (process_core_type core_type)) *)
+  (* | PSig(signature) -> (process_generic_type "payload" "PSig" (process_signature signature)) *)
+  (* | PStr(structure) -> (process_generic_type "payload" "PStr" (process_structure structure)) *)
 
-let process_type_decl_value_description (x:value_description):string =
+and process_type_decl_attributes a = process_generic_list "process_attribute" a process_type_decl_payload
+
+and process_type_decl_value_description (x:value_description):string =
   match x with
     {
       pval_name(* loc->string*);
@@ -453,38 +486,19 @@ let process_type_decl_value_description (x:value_description):string =
     (* ^(process_type_decl_location pval_loc) *)
 
 
-let process_value_description x = process_type_decl_value_description x
+and process_value_description x = process_type_decl_value_description x
 
-let rec  process_type_declsignature_item_desc (x:signature_item_desc):string = match x with
-  | Psig_value value_description0 -> (process_types_signature_item_desc__Psig_value((process_value_description value_description0)))
-  (* | Psig_type (rec_flag0,list1) -> (process_types_21_signature_item_desc__Psig_type((process_rec_flag rec_flag0),(process_list list1))) *)
-  (* | Psig_typesubst ( list0) -> (process_types_21_signature_item_desc__Psig_typesubst((process_list list0))) *)
-  (* | Psig_typext ( type_extension0) -> (process_types_21_signature_item_desc__Psig_typext((process_type_extension type_extension0))) *)
-  (* | Psig_exception ( type_exception0) -> (process_types_21_signature_item_desc__Psig_exception((process_type_exception type_exception0))) *)
-  (* | Psig_module ( module_declaration0) -> (process_types_21_signature_item_desc__Psig_module((process_module_declaration module_declaration0))) *)
-  (* | Psig_modsubst ( module_substitution0) -> (process_types_21_signature_item_desc__Psig_modsubst((process_module_substitution module_substitution0))) *)
-  (* | Psig_recmodule ( list0) -> (process_types_21_signature_item_desc__Psig_recmodule((process_list list0))) *)
-  (* | Psig_modtype ( module_type_declaration0) -> (process_types_21_signature_item_desc__Psig_modtype((process_module_type_declaration module_type_declaration0))) *)
-  (* | Psig_modtypesubst ( module_type_declaration0) -> (process_types_21_signature_item_desc__Psig_modtypesubst((process_module_type_declaration module_type_declaration0))) *)
-  (* | Psig_open ( open_description0) -> (process_types_21_signature_item_desc__Psig_open((process_open_description open_description0))) *)
-  (* | Psig_include ( include_description0) -> (process_types_21_signature_item_desc__Psig_include((process_include_description include_description0))) *)
-  (* | Psig_class ( list0) -> (process_types_21_signature_item_desc__Psig_class((process_list list0))) *)
-  (* | Psig_class_type ( list0) -> (process_types_21_signature_item_desc__Psig_class_type((process_list list0))) *)
-  (* | Psig_attribute ( attribute0) -> (process_types_21_signature_item_desc__Psig_attribute((process_attribute attribute0))) *)
-  (* | Psig_extension ( extension0,attributes1) -> (process_types_21_signature_item_desc__Psig_extension((process_extension extension0),(process_attributes attributes1))) *)
-  (* | Psig_exception ( type_exception0) -> (process_types_21_signature_item_desc__Psig_exception((process_type_exception type_exception0))) *)
-
-and process_type_decl_signature_item (x:signature_item):string = match x with { psig_desc(* signature_item_desc*);psig_loc(* location*)} ->
-  "process_type_decl_signature_item"
+and process_signature_item (x:signature_item):string = match x with { psig_desc(* signature_item_desc*);psig_loc(* location*)} ->
+  "process_signature_item"
   (* ( *)
-    (* process_type_decl_signature_item_desc psig_desc)^(process_type_decl_location psig_loc) *)
+    (* process_signature_item_desc psig_desc)^(process_type_decl_location psig_loc) *)
 
 
-and process_type_decl_signature ( a:signature):string=
-  process_generic_list "process_signature" a process_type_decl_signature_item
+and process_signature ( a:signature):string=
+  process_generic_list "process_signature" a process_signature_item
 
 
-let process_types_payload__PSig((asignature0):(signature)):string = (process_types_23 ("payload","PSig") ^(process_type_decl_signature asignature0))
+let process_types_payload__PSig((asignature0):(signature)):string = (process_types ("payload","PSig") ^(process_signature asignature0))
     
 let process_type_declattribute (x:attribute):string =
   match x with {
@@ -730,7 +744,7 @@ let emit_constructor_arguments(a1:(string*string*constructor_arguments*string_li
     "| " ^ name
     ^ " (emit_core_type_list "
     ^ (emit_core_type_list (a,s,0))
-    ^ ") -> (process_types_21_"
+    ^ ") -> (process_types_"
     ^ parent
     ^ "__"
     ^ name
@@ -748,8 +762,6 @@ let  decl_imp_core_type(a: string*string *core_type * string_list*int):string=
 (* ":" ^ name1  *)
 (* ")" *)
 (* :string=\""^parent  ^ "__" ^ parent2  ^ "_" ^ name1  ^"\" ^ \"a" ^ name ^ "\"\n" *)
-
-
 let ff =1
 let rec decl_imp_core_type_list(parent,name,a,b,n) =
   match a with
@@ -780,7 +792,7 @@ let rec decl_imp_core_type_list_hats((parent,name,a,b,n): string*string*core_typ
   | [] -> ""
   | h :: t ->
     let h1 = decl_imp_core_type (parent,name, h, b,n) in
-    let quoted = "(core_type \"" ^ h1 ^ "\")" in
+    let quoted = "(core_type2 \"" ^ h1 ^ "\")" in
     let tt = decl_imp_core_type_list_hats(parent,name,t,b,n+1)  in
     if tt != "" then
       quoted ^ "^" ^ tt
@@ -790,10 +802,10 @@ let rec decl_imp_core_type_list_hats((parent,name,a,b,n): string*string*core_typ
 let decl_emit_constructor_arguments(parent,name,x,s):string =
   match x with
   | Pcstr_tuple a ->
-    "let "^ "process_types_22_" ^ parent ^ "__" ^ name
+    "let "^ "process_types_" ^ parent ^ "__" ^ name
     ^ "(("    ^  decl_imp_core_type_list (parent,name,a,s,0) ^   "):"
     ^ "("    ^  decl_imp_core_type_list2 (parent,name,a,s,0) ^  ")):string"
-    ^ " = (process_types_23 (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
+    ^ " = (process_types (\"" ^ parent ^ "\",\"" ^ name ^ "\") ^" ^
     (decl_imp_core_type_list_hats (parent,name,a,s,0) ) ^ ")"
   | other  -> "other"
 
