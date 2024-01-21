@@ -18,4 +18,4 @@ Dune context:
  }
 Done: 0% (0/0, 0 left) (jobs: 1)                                Actual targets:
 - alias @@default
-Done: 0% (0/0, 0 left) (jobs: 1)                                
+Done: 0% (0/0, 0 left) (jobs: 1)                                Done: 88% (190/215, 25 left) (jobs: 0)                                      
