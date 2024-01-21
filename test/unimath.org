@@ -12,7 +12,10 @@ Let me break down the different types used here:
 * `hProptoType`: A type that has a specific property, which is not defined in this snippet.
 * `'x isofhlevel`: A type that represents the level of a subset or inclusion relationship between two sets. In other words, it tells us how the first set is related to the second set.
 * `'x isaprop`: A type that represents an element of a set with the property that it is part of a specific subset or inclusion relationship.
-* `('t, 'p) total2`: A type that represents a total relation between two types, where `t` is the first type and `p` is the second type. It has two fields: `pr1` for the first type and `pr2` for the second type.
+* `('t, 'p) total2`:
+A type that represents a total relation between two types, where `t`
+is the first type and `p` is the second type. It has two fields: `pr1`
+for the first type and `pr2` for the second type.
 * `Coq_paths_refl`: A type that represents a path in the proof system, specifically the reflexive path between an element and itself.
 
 I hope this explanation helps! Let me know if you have any further questions.
@@ -114,7 +117,8 @@ The type `'x isofhlevel` represents a level of complexity for combining balls of
 
 The type `'x isaprop` represents the ability to combine two balls of color `'x`. For example, if we have two red balls, we can combine them into one big red ball, so we would say that their combination level is 1.
 
-The type `('t, 'p) total2` is like a bag where we can store multiple balls of different colors and levels.
+The type `('t, 'p) total2` is like a bag where we can store multiple
+balls of different colors and levels.
 
 The type `'a paths` is like a path or a sequence of moves in the game.
 

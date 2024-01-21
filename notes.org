@@ -143,3 +143,7 @@ let process_rec_flag__Recursive x :string =match x with
 
 
 *** handle a list of items
+
+*** generate v7
+grep -e "DBG221EC" -e "DBG222EC" test/test2.txt  |cut -d: -f2- > ./src/gen7.ml
+

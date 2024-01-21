@@ -38,7 +38,7 @@ and emit_core_type_desc (x : core_type_desc * string_list):string =
       id1  
     | Ptyp_tuple a (* of core_type list *)
       ->
-      "(ptyp_tuple " ^ emit_core_type_list(a,  s ) ^ ")"
+      emit_constructor_arguments_item_tuple_core_type_list(a,  s )
     | other -> "FIXME"
         
 and emit_type_decl ((x,s)) =
@@ -105,6 +105,20 @@ and emit_constructor_arguments_from_core_type_list(x: core_type_list * string_li
       else
         h1
   
+and emit_constructor_arguments_item_tuple_core_type_list(x: core_type_list * string_list):string =
+  "(*emit_constructor_arguments_item_tuple_core_type_list*)" ^
+  match x with
+  | (a,b) ->
+    match a with
+    | [] -> ""
+    | h :: t ->
+      let h1 = emit_core_type (h,b,0) in
+      if t != [] then
+        let tt = emit_constructor_arguments_item_tuple_core_type_list(t,b)  in
+        h1 ^ ";" ^ tt
+      else 
+        h1
+          
 and emit_core_type_list(x: core_type_list * string_list):string =
   "(*emit_core_type_list*)" ^
   match x with
@@ -181,10 +195,14 @@ and decl_imp_core_type_list(parent,name,a,b,n) =
 
 and  emit_constructor_arguments(a1:(string*string*constructor_arguments*string_list)):string =  let (parent,name,x,s) = a1 in  match x with  | Pcstr_tuple a ->
     "(*emit_constructor_arguments:*)"  ^
-    "| " ^ name
-    ^ "("
-    ^ (emit_constructor_arguments_from_core_type_list (a,s,0))
-    ^ ") -> "
+    "| " ^ name ^
+      if a != [] then
+        "("
+        ^ (emit_constructor_arguments_from_core_type_list (a,s,0))
+        ^ ")"
+      else
+        ""
+    ^ "-> "
     ^ "((*P5*)process_generic_type "
     ^ "\"" ^ parent ^ "\""^
     " \""  ^ name   ^ "\""^
@@ -224,8 +242,14 @@ and  decl_emit_constructor_arguments(parent,name,x,s):string =
     ^ " = (process_generic_type_d \"" ^ parent ^ "\" \"" ^ name ^ "\") " ^
     (decl_imp_core_type_list_hats (parent,name,a,s,0) ) ^ ")"
   | other  -> "other"
+and emit_type_variant_constructor_declaration_header p  =
+    (print_endline (
+        "DBG221EC: let process_"
+        ^ p 
+        ^ " x :string ="
+        ^ "match x with "));
 
-and emit_type_variant_constructor_declaratation_one p h s =
+and emit_type_variant_constructor_declaration_one p h s =
   match h with
   |{
     pcd_name(* : string loc *);
@@ -235,15 +259,10 @@ and emit_type_variant_constructor_declaratation_one p h s =
     pcd_loc(* : Location.t *);
     pcd_attributes(* : attributes *); 
   }->
-    (print_endline (
-        "DBG221EC: let process_"
-        ^ p ^ "__" ^ pcd_name.txt
-        ^ " x :string ="
-        ^ "match x with "));
     let newtext = (emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
     let newtext2 = (decl_emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
     (print_endline ("DBG22EB:" ^ newtext2));
-    (print_endline ("DBG222EC:emit_constructor_arguments:" ^p ^ ";" ^ pcd_name.txt ^ ":" ^ newtext)); 
+    (print_endline ("DBG222EC:" ^ newtext)); 
     let ret =              "constructor:\""^ pcd_name.txt ^ "\""
                            ^ "{" ^
                            emit_constructor_arguments(p,pcd_name.txt,pcd_args,s)
@@ -259,7 +278,7 @@ and emit_type_variant_constructor_declaration_list(a:string*constructor_declarat
     match x with
     | [] -> "( variant_2 \"" ^ p ^ "\")"
     | h :: t ->
-      (emit_type_variant_constructor_declaratation_one p h s)
+      (emit_type_variant_constructor_declaration_one p h s)
       ^
       (emit_type_variant_constructor_declaration_list (p,t,s))
         
@@ -270,6 +289,7 @@ and emit_type_decl_kind((p,x,s,ss)) :string=
       emit_record_kind_field_list(p,a,s,ss)
     | Ptype_abstract -> "(terminal_ptype_abstract)"
     | Ptype_variant a -> (*  of constructor_declaration list *)
+      (emit_type_variant_constructor_declaration_header p) ;
       "(ptype_variant " ^
       (emit_type_variant_constructor_declaration_list (p,a,s))                                          ^ ")"
     | Ptype_open  -> "OPEN"

@@ -16,6 +16,7 @@ let ppddump x = () (*stub to hide batteries dump*)
 
 let process_apply (a,c) :string = "apply:" ^ a ^ "|" ^ c
 let process_coerce a = "FIXME122"
+let process_char_option a = "FIXME1221"
 let process_constraint (a,b) = "(*P31*)process_constraint" ^ a ^ "|" ^b
 let process_construct (a,b) = "(*P32*)process_construct" ^a^ "|" ^b
 let process_field (a,b) = "(*P33*)process_field" ^ a ^ "|" ^b
@@ -113,6 +114,8 @@ let rec process_id1 a : string =
        ^ (process_id1 (longident2) )
 
 let process_longident_loc ( a :longident_loc):string="(ident \"" ^ (process_id1 a.txt) ^ "\")"
+let process_longident ( a :longident):string="(ident \"" ^ (process_id1 a) ^ "\")"
+                                                     
 let process_module_expr ( amodule_expr0:module_expr):string="FIXME16"
 let process_open_declaration ( aopen_declaration0:open_declaration):string="FIXME17"
 
@@ -388,7 +391,7 @@ and
       let edge = create_edge ("Ptyp_constr", id1) in
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
-      let newlist = (my_process_core_type_list (b, s)) in
+      let newlist = (emit_constructor_arguments_list (b, s)) in
       Printf.printf "DBG1:Ptyp_constr1 '%s' %s" id1 newlist;
       (* "id" ^ a ^ " id2 " ^ myid  *)
       (ppddump (
@@ -402,7 +405,9 @@ and
     | Ptyp_tuple a (* of core_type list *)
       ->
       (ppddump ("DBG1:Ptyp_tuple:", a ));
-      "Ptyp_tuple" ^ my_process_core_type_list(a,  s )
+      (*this constructs the parameters to recieve the constructor*)
+      emit_constructor_arguments_list(a,  s )
+        
     (*not in test*)
     | Ptyp_any  -> (ppddump ("DBG1:Ptyp_any:")); "any"
     | Ptyp_var name ->(ppddump ("DBG1:Ptyp_var:"  , name)); "var-name"
@@ -416,7 +421,7 @@ and
   | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
     ->
     let myid = (process_id1 a.txt) in
-    (* my_process_core_type_list(b, y :: myid); *)
+    (* emit_constructor_arguments_list(b, y :: myid); *)
     (ppddump ("DBG1:Ptyp_arrow7:" )); "class"
   | Ptyp_alias (a,b) (* of core_type * string loc  *)
     ->
@@ -453,13 +458,13 @@ and
     }->
     let td = (my_process_core_type_desc (ptyp_desc, [])) in
     "ptyp_desc:" ^ td
-and my_process_core_type_list(x: core_type_list * string_list):string =
+and emit_constructor_arguments_list(x: core_type_list * string_list):string =
   match x with
   | (a,b) ->
     match a with
-    | [] -> "my_process_core_type_list:"
+    | [] -> "emit_constructor_arguments_list:"
     | h :: t ->
-      my_process_core_type  h ^ "," ^ my_process_core_type_list(t,b)
+      my_process_core_type  h ^ "," ^ emit_constructor_arguments_list(t,b)
 
 
 let print_value_binding_list2 (x : value_binding) : string =
@@ -497,7 +502,7 @@ let process_type_decl_list_string a = process_generic_list "(*P58*)process_type_
     
 
 
-let rec  process_type_declsignature_item_desc (x:signature_item_desc):string = match x with
+let rec  process_type_decl_signature_item_desc (x:signature_item_desc):string = match x with
   | Psig_value value_description0 -> (process_types_signature_item_desc__Psig_value((process_value_description value_description0)))
   (* | Psig_type (rec_flag0,list1) -> (process_types_signature_item_desc__Psig_type((process_rec_flag rec_flag0),(process_list list1))) *)
   (* | Psig_typesubst ( list0) -> (process_types_signature_item_desc__Psig_typesubst((process_list list0))) *)
@@ -682,11 +687,11 @@ let emit_core_type_desc (x : core_type_desc * string_list):string =
       let id1 = emit_id1(txt) in
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
-      (* let newlist = (my_process_core_type_list (b, s)) in *)
+      (* let newlist = (emit_constructor_arguments_list (b, s)) in *)
       id1 (* ^ "\"->" ^ newlist *)
     | Ptyp_tuple a (* of core_type list *)
       ->
-      "Ptyp_tuple" ^ my_process_core_type_list(a,  s )
+      "Ptyp_tuple" ^ emit_constructor_arguments_list(a,  s )
 
     (*not in test*)
     | Ptyp_any  -> (ppddump ("DBG1:Ptyp_any:")); "any"
@@ -702,7 +707,7 @@ let emit_core_type_desc (x : core_type_desc * string_list):string =
   | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
     ->
     let myid = (process_id1 a.txt ) in
-    (* my_process_core_type_list(b, y :: myid); *)
+    (* emit_constructor_arguments_list(b, y :: myid); *)
     (ppddump ("DBG1:Ptyp_arrow7:" )); "class"
   | Ptyp_alias (a,b) (* of core_type * string loc  *)
     ->
@@ -886,7 +891,7 @@ let print_constructor_arguments(a) =
     match x with
     | Pcstr_tuple a ->
       (ppddump ("DBG1:Pcstr_tuple:"  , a));
-      "Pcstr_tuple:" ^ (my_process_core_type_list (a,s))
+      "Pcstr_tuple:" ^ (emit_constructor_arguments_list (a,s))
 
     | Pcstr_record a ->
       (ppddump ("DBG1:Pcstr_record:"  , a));

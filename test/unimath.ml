@@ -6,7 +6,11 @@ type hProptoType = __
 type 'x isofhlevel = __
 type 'x isaprop = 'x isofhlevel
 type ('t, 'p) total2 = { pr1: 't; pr2 : 'p}
-type 'a paths = | Coq_paths_refl (* terminal in proof system reflexive *)
+type 'a paths = | Coq_paths_refl (* terminal in proof system reflexive
+                                    the proof system occupies this spot with a reflexive proof.
+                                    witness to the truth.
+                                    a path to truth. basically an identity in cat thoery, pointing at itself and saying I am true because I witnessed my truth.
+                                 *)
 (*"An isaset function takes in two elements, x and y, and returns a path connecting them."*)
 type 'x isaset = 'x -> 'x -> 'x paths isaprop
     
@@ -152,7 +156,12 @@ type smaller =
   (nat, (hProptoType, (minimal, hProptoType) dirprod) dirprod) total2
 
 type precgraph =
-  (coq_UU, (coq_UU, (__ -> __, __ -> __) dirprod) total2) total2
+  (coq_UU,
+   (coq_UU, (__ -> __,
+             __ -> __)
+              dirprod)
+     total2)
+    total2
 
 type cgraph = (precgraph, (node isaset, arc isaset) dirprod) total2
 
