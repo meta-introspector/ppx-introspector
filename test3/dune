@@ -23,3 +23,12 @@
  ;       ppx-introspector -- -no-merge))
 
 )
+(test
+ (name test4)
+ (modules test4)
+ (libraries alcotest ppxlib )
+   (preprocess
+    (pps ppxlib.metaquot
+         ppx-introspector -- -no-merge))
+
+)

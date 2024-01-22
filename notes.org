@@ -147,3 +147,80 @@ let process_rec_flag__Recursive x :string =match x with
 *** generate v7
 grep -e "DBG221EC" -e "DBG222EC" test/test2.txt  |cut -d: -f2- > ./src/gen7.ml
 
+
+* Counts of Pexp
+      6 "Pexp_apply
+      7 "Pexp_tuple"
+      9 "Pexp_constant"
+      9 "Pexp_fun"
+     18 "Pexp_construct"
+     53 "Pexp_constant"
+    106 "Pexp_apply"
+    113 "Pexp_ident"
+
+
+    grep generic_type test3/test3.txt | fold -w 40 -s | grep Ppat_ |sort |uniq -c |sort -n
+      1 "pattern_desc" "Ppat_construct" [(ident 
+      1 "pattern_desc" "Ppat_var"
+      1 "Pconst_string" [(string "Ppat_var" 
+     23 "pattern_desc" "Ppat_var" [(process_loc 
+
+    so Ppat_construct and Ppat_var as pattern_desc
+
+
+    grep generic_type test3/test3.txt | fold -w 40 -s | grep Pstr_ |sort |uniq -c |sort -n
+      1 "Pconst_string" [(string "Pstr_value" 
+      1 "Pstr_value" [(process_generic_type 
+      1 "structure_item_desc" "Pstr_value"
+     12 "structure_item_desc" "Pstr_value" 
+
+     so  "Pstr_value" only
+
+
+     and the const values
+
+
+           1 "Pconst_integer" [(string "10" 
+      1 "Pconst_string" [(string "1" 
+      1 "Pconst_string" [(string "attributes" 
+      1 "Pconst_string" [(string "constant" 
+      1 "Pconst_string" [(string "foo" 
+      1 "Pconst_string" [(string "Nonrecursive" 
+      1 "Pconst_string" [(string "pattern_desc" 
+      1 "Pconst_string" [(string "Ppat_var" 
+      1 "Pconst_string" [(string "Pstr_value" 
+      1 "Pconst_string" [(string "rec_flag" 
+      2 "Pconst_integer" [(string "4" 
+      2 "Pconst_integer" [(string "7" 
+      3 "Pconst_integer" [(string "11" 
+      6 "Pconst_string" [(string "process_loc" 
+     10 "Pconst_integer" [(string "1" 
+     12 "Pconst_integer" [(string "0" 
+     18 "Pconst_string" [(string
+     
+
+*counts from strings from 4
+
+grep generic_type test4.ml | fold -w 60 -s | grep Pconst_string |sort |uniq -c |sort -n
+
+
+      1 "constant" "Pconst_string" [(string "attributes" 
+      1 "constant" "Pconst_string" [(string "ident" 
+      1 "constant" "Pconst_string" [(string "Ppat_construct" 
+      1 "constant" "Pconst_string" [(string "process_generic_type" 
+      2 "constant" "Pconst_string" [(string "process_string" 
+      6 "constant" "Pconst_string" [(string "process_loc" 
+      7 "constant" "Pconst_string" [(string "Pexp_tuple" 
+      8 "constant" "Pconst_string" [(string 
+     11 "constant" "Pconst_string" [(string "Pexp_fun" 
+     13 "constant" "Pconst_string" [(string "Nonrecursive" 
+     13 "constant" "Pconst_string" [(string "Pstr_value" 
+     19 "constant" "Pconst_string" [(string "Pexp_construct" 
+     23 "constant" "Pconst_string" [(string "Ppat_var" 
+     30 "constant" "Pconst_string" [(string "Pconst_integer" 
+     34 "constant" "Pconst_string" [(string "Pconst_string" 
+     64 "constant" "Pconst_string" [(string "Pexp_constant" 
+    122 "constant" "Pconst_string" [(string "Pexp_apply" 
+    127 "constant" "Pconst_string" [(string "Pexp_ident" 
+    194 "constant" "Pconst_string" [(string "Nolabel" 
+   1852 [(process_generic_type "constant" "Pconst_string" [(string 

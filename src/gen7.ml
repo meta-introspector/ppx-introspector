@@ -41,7 +41,8 @@ and process_generic_type a b c =
   ^ (stringlister2 c)
   ^    ")"
   
-let rec process_generic_list_tail name a f :string=
+let rec
+process_generic_list_tail name a f :string=
  ( match a with
   | [] -> ""
   | a :: t ->
@@ -65,7 +66,12 @@ and process_generic_list name a f :string=
       v1
  ) ^ "] )"
 
-let rec process_string_loc_list_pattern_option x = "process_string_loc_list_pattern_option"
+let rec  process_structure_items x =
+  "let ()=(print_endline " ^
+  process_generic_list "process_structure_items" x process_structure_item
+  ^ ")"
+and process_string_loc_list_pattern_option x = "process_string_loc_list_pattern_option"
+
 and  process_arg_label_expression (a,b)=
   "(process_arg_label_expression "
   ^ process_arg_label a
@@ -112,8 +118,6 @@ and process_package_type (x:package_type) =
 and process_string_list x =
   process_generic_list "process_string_list" x process_string
 
-and process_structure_items x =
-  process_generic_list "process_structure_items" x process_structure_item
 
 
 and process_class_type_fields_list x=
