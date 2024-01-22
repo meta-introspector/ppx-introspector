@@ -1,4 +1,5 @@
 open Ppxlib
+let process_int x = "process_int"
 let process_attributes x : string= "attributes"
 let process_row_field_desc x : string= "process_row_field_desc"
 let   process_object_field_desc x = "process_object_field_desc"
@@ -14,7 +15,7 @@ let process_payload x : string= "loc"
 let process_attribute x : string= ""
 let process_bool x : string= "bool"
 let process_position x : string= "post"
-let process_int x : string= string_of_int(x)
+
 let process_expression x : string= "x"
 let process_extension x : string= "x"
 let process_functor_parameter x : string= "x"
