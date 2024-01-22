@@ -1,5 +1,8 @@
 (*in ocaml coq extraction, explain the code to me as a epic narrative,
-  invoking the muses and athena, set in a futuristic utopian world where nanomachies follow the proofs of metacoq and reason about them using ai.
+  invoking the muses and athena,
+  set in a futuristic utopian world where nanomachies follow the proofs of metacoq and reason about them using ai.
+  we show that athena is a construct of unimath, that she occupies a space on mount athena, and she was born as a projection out of zeus's mind, and he is the child of the titans. We show the lineage of the gods as relationships between types.
+  new types are born out of older types creating a left right relationship.
 *)    
 type __ = Obj.t
 type hProptoType = __

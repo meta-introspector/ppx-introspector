@@ -16,7 +16,7 @@ let rec stringlister3 (x:string_list) : string =
   | h :: t ->
     if t != [] then
       let n = stringlister3(t) in
-      h ^ ";"^ n
+      h ^ ";(*L1*)"^ n
     else
       h
 and stringlister2 (x:string_list) : string =
@@ -25,7 +25,7 @@ and stringlister2 (x:string_list) : string =
     | [] ->""
     | h :: t ->
       if t != [] then
-        h ^ ";"^
+        h ^ ";(*L2*)"^
         stringlister3(t)
       else
         h
@@ -47,7 +47,7 @@ let rec process_generic_list_tail name a f :string=
   | a :: t ->
     let v1 = (f a) in
     if t != [] then
-      v1 ^ ";" ^ (process_generic_list_tail name t f )
+      v1 ^ ";(*L3*)" ^ (process_generic_list_tail name t f )
     else
       v1
  )
@@ -60,7 +60,7 @@ and process_generic_list name a f :string=
   | a :: t ->
     let v1 = (f a) in
     if t != [] then
-      v1 ^ ";" ^ (process_generic_list_tail name t f )
+      v1 ^ ";(*L4*)" ^ (process_generic_list_tail name t f )
     else
       v1
  ) ^ "] )"
@@ -86,7 +86,7 @@ and process_generic_list_tail2 (name:string) (a:(longident_loc * core_type) list
   | a :: t ->
     let v1 = (process_longident_loc_core_type  a) in
     if t != [] then
-      v1 ^ ";" ^ (process_generic_list_tail2 name t  )
+      v1 ^ ";(*L5*)" ^ (process_generic_list_tail2 name t  )
     else
       v1
  )
@@ -98,7 +98,7 @@ and process_generic_list2 (name:string) (a:(longident_loc * core_type) list )  :
   | a :: t ->
     let v1 = (process_longident_loc_core_type  a) in
     if t != [] then
-      v1 ^ ";" ^ (process_generic_list_tail2 name t  )
+      v1 ^ ";(*L6*)" ^ (process_generic_list_tail2 name t  )
     else
       v1
  ) ^ "] )"
@@ -268,7 +268,7 @@ and process_value_binding_list (x : value_binding list) : string=
   | h :: t ->
     let v1 =     (process_value_binding h) in
     if t != [] then
-      v1   ^ ";" ^(process_value_binding_list t)
+      v1   ^ ";(*L7*)" ^(process_value_binding_list t)
     else
       v1
 

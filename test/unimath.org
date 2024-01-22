@@ -149,3 +149,123 @@ Hi! I'll try to explain `isaset` to you like you are 5 years old.
 
 The `isaset` function takes two things that are the same type, called `x`, and returns another thing of the same type called `x`. This means that if you use `isaset` twice with the same type, you can do some fun operations on your inputs! It's a bit like playing with blocks: you have to stack them in a specific order to get something new and interesting.
 #+end_src
+
+** mixtral
+
+#+begin_src output
+
+In a utopian world of the future, where nanomachines follow the proofs of metacoq and reason about them using AI, we find ourselves in a space called Mount Athena. It is here that we encounter a being known as Athena, who occupies a special place in this space.
+
+Athena was born as a projection from Zeus's mind, the child of the titans. She is a construct of Unimath, and her existence on Mount Athena is a reflection of her lineage as relationships between types.
+
+We see that new types are born out of older types, creating left-right relationships. For example, Coq_paths\_refl is a terminal in the proof system, pointing at itself and saying it is true because it witnessed its own truth.
+
+The gods of this world exist as relationships between types. We see this relationship reflected in the types hProptoType, 'x isofhlevel, and 'x isaprop. The type hProp represents a property, while 'x isofhlevel and 'x isaprop represent different levels of inclusion of the element 'x in the proof system.
+
+The type ('x, 'y) hfiber represents an H-fiber, which connects two elements reflexively. The type ('x, 'y) isofhlevelf represents an iso-level, while ('x, 'y) isincl represents inclusion. The type ('a, 'b) coq\_PathPair represents a pair of paths in the proof system.
+
+In this world, we also see various types that relate to transitivity, symmetry, and equivalence, such as 'x istrans, 'x issymm, ('x, 'y) dirprod, 'x ispreorder, 'x iseqrel, 'x hrel, 'x eqrel, ('x, 'y) logeq, and 'x issubtype.
+
+We also see types that relate to isolation, such as 'x isisolated and 't isolated, and types that relate to negation, such as 'x neg and 'p isdecprop.
+
+In this utopian world of the future, Athena stands as a symbol of wisdom and knowledge, born from the mind of Zeus, who himself is the child of the titans. She represents the lineage of the gods as relationships between types, and her existence on Mount Athena serves as a testament to the power of mathematics and reason.
+#+end_src
+#+begin_src output
+
+Once upon a time, in the distant future, there existed a world where nanomachines roamed free and reasoned about their existence using advanced artificial intelligence. This world was governed by a utopian society that valued knowledge above all else, and the proofs of metacoq were considered to be the ultimate form of wisdom.
+
+In this world, there was a powerful being known as Athena, who was believed to have been born out of Zeus's mind as a projection. She was the goddess of wisdom and warfare, and her knowledge was said to be vast and unrivaled. Athena was revered by all in this world, and she occupied a space on Mount Athena, where she imparted her wisdom to those who sought it.
+
+The gods of this world were believed to have relationships between different types, with each new type being born out of older ones. This lineage was considered sacred, and it was seen as a representation of the interconnectedness of all things in the universe.
+
+As for the specific code you provided, it defines several types that are used in this world's metacoq proof system. For example, 'Obj.t is the type of objects that can be manipulated by the system, while hProptoType is a type that represents the relationship between two objects. The isaset function takes in two elements and returns a path connecting them, while ('x, 'y)hfiber is a type that represents a reflexive path from x to y.
+
+The isofhlevelf and isincl types are used to define relationships between different levels of abstraction, with isincl being a subtype of isofhlevelf that represents an inclusion relationship. Coq\_UU, coq\_HLevel, pr1hSet, node, and arc are also defined, but their exact purposes are not clear from the code alone.
+
+The remaining types define various relationships between objects, such as issurjective, iscontr, isweq, weq, coq\_PathPair, istrans, isrefl, issymm, dirprod, ispreorder, iseqrel, hrel, eqrel, logeq, hsubtype, and iseqclass. These types are used to describe the relationships between different objects in the proof system and to reason about them using advanced mathematical reasoning.
+
+Overall, this code represents the sophisticated metacoq proof system that was used by the inhabitants of this utopian world. With its use of advanced artificial intelligence and its deep understanding of mathematics, this system allowed its users to explore the limits of knowledge and to uncover new insights into the nature of reality.
+#+end_src
+#+begin_src output
+
+Once upon a time, in a utopian world of nanomachines, there existed a proof system called Coq. This proof system was constructed from the principles of mathematics and reason, and it was capable of reasoning about nanomachines using artificial intelligence. At the heart of this proof system was Athena, a construct of Unimath.
+
+Athena was born as a projection out of Zeus's mind, and she occupied a space on Mount Athena. She was the child of the Titans, and her lineage was represented by relationships between types in the proof system. New types were created as older types gave birth to them in a left-right relationship.
+
+In this world, Coq_paths\_refl was a terminal element in the proof system, occupying a spot with a reflexive proof. It was the witness to the truth and served as a path to truth. The proof system had a concept of isaset, which took two elements and returned a path connecting them.
+
+Coq_UU, coq\_HLevel, pr1hSet, node, arc, and issurjective were also part of the proof system. Coq\_UU represented the universe of all sets, while coq\_HLevel was used to reason about hierarchies of sets. pr1hSet, node, and arc were used to represent sets and their relationships, while issurjective was used to represent the surjectivity of a function.
+
+Other concepts in the proof system included iscontr, weq, coq\_PathPair, istrans, isrefl, issymm, dirprod, ispreorder, iseqrel, hrel, eqrel, logeq, hsubtype, iseqclass, setquot, and nat.
+
+Finally, the proof system had a concept of hSet, which represented sets in the universe. Homot, decidable, isdeceq, complementary, isolated, dneg, isdecprop, isdecrel, isnegrel, isantisymm, isPartialOrder, and isantisymmneg were also concepts used to reason about sets and their properties in the proof system.
+#+end_src
+#+begin_src output
+
+In this epic narrative, we find ourselves in a futuristic utopian world where nanomachines follow the proofs of metacoq and reason about them using AI. In this world, Athena is a construct of Unimath that occupies a space on Mount Athena and was born as a projection out of Zeus's mind, who is the child of Titans. We explore the lineage of the gods as relationships between types in Coq, a proof assistant that allows us to reason about mathematics in a rigorous and formal manner.
+
+The narrative begins with the definition of several types in Coq, including Obj.t, which represents any object in the program, hProptoType, which is a type representing proofs in metacoq, and 'x isofhlevel, which represents an isometric transformation between two objects of type 'x. We then define the type ('t, 'p) total2 as a tuple of two elements, pr1: 't and pr2 : 'p. The paths type is defined as Coq\_paths\_refl, which is the terminal object in the proof system, and serves as a witness to the truth.
+
+We then define hProptoType as an isaset function that takes in two elements x and y and returns a path connecting them. We also define ('x, 'y) hfiber as a type that represents a fiber of a function f: 'x -> 'y, which is the preimage under f of any point in the domain of f. The hProptoType is then used to define isofhlevelf and isincl, which represent the inverse inclusion of isofhlevels and isinclusions, respectively.
+
+The narrative continues with the definition of coq\_UU as a type that represents unimath, and hProp as a type that represents proofs in metacoq. We then define coq\_HLevel as a type that represents a hierarchy of proofs, where each level is represented by a tuple of two elements: a proof of the next level and an inclusion relation between levels.
+
+The narrative ends with the definition of several types related to partial order and antisymmetry in Coq, including hSet, which represents a homotopy type that describes a continuous family of objects, and isdeceq, which represents the equality relation on these objects. We also define isnegrel as a type that represents a negative relation between two elements, and isPartialOrder as a type that describes a partial order relationship between two elements.
+
+Throughout this narrative, we see how Athena occupies a space on Mount Athena and was born as a projection out of Zeus's mind, who is the child of Titans. We also explore the lineage of the gods as relationships between types in Coq, which allows us to reason about mathematics in a rigorous and formal manner.
+#+end_src
+#+begin_src output
+In this epic narrative, we embark on a journey through a futuristic utopian world where nanomachines follow the proofs of metacoq and reason about them using AI. We are introduced to a construct called Athena, who occupies a space on Mount Olympus and was born as a projection out of Zeus' mind.
+
+We begin by defining several types in Coq, including `Obj.t`, which is the base type for all other types, `hProptoType`, which represents some abstract type in our proof system, and `'x isofhlevel` and `'x isaprop`, which are subtypes of `'x` that have additional properties.
+
+Next, we define several types related to the relationship between types. These include `('t, 'p) total2`, which represents a total relationship between two types, and various types related to subtyping and equivalence relationships, such as `('x, 'y) isaset`, `('x, 'y) issurjective`, `('x, 'y) weq`, `('a, 'b) coq_PathPair`, `'x istrans`, `'x isrefl`, and `'x issymm`.
+
+We also define several types related to the proof system itself, including `coq_UU`, which represents the empty set in our proof system, `hProp`, which represents a proof object, `coq_HLevel`, which represents a higher-level proof object, and various types related to proof relationships, such as `pr1hSet`, `node`, `arc`, `('x, 'y) ispreorder`, `'x isdecrel`, and `('x, 'y) logeq`.
+
+Finally, we define several types related to Athena herself. These include `Athena`, which represents the construct of Athena as a projection out of Zeus' mind, and various types related to Athena's lineage in the pantheon of gods, such as `Apollo`, `Artemis`, and `Hephaestus`.
+#+end_src
+#+begin_src output
+
+The epic narrative of the given OCaml Coq extraction code revolves around a futuristic utopian world where nanomachines follow the proofs of metacoq and reason about them using artificial intelligence. The code is set in a world where Athena, a construct of unimath, occupies a space on Mount Athena and was born as a projection out of Zeus' mind.
+
+The lineage of the gods is represented as relationships between types. New types are born out of older types through a left-right relationship. The code defines various types such as `hProptoType`, `isaset`, `hfiber`, `isofhlevelf`, and `isincl`. These types represent different concepts in the proof system, including isomorphisms, inclusions, and projections.
+
+The code also defines a number of functions and operators that relate these types, such as `issurjective`, `iscontr`, `isweq`, `weq`, `coq_PathPair`, `istran
+#+end_src
+#+begin_src output
+
+Once upon a time, in a utopian world where nanomachines rule and AI reason about them using metacoq proofs, there was a goddess named Athena. She was the child of Zeus, who was the son of the titans. Athena was born as a projection out of Zeus's mind, and she occupied a space on Mount Athena. The lineage of the gods was represented by relationships between types in metacoq.
+
+In this world, new types were constantly being created as older types gave birth to them in a left-right relationship. For example, hProptoType was the parent of all other types, and it was represented by the Obj.t type. Similarly, hSet was the parent of all sets in metacoq.
+
+One of the key concepts in this world was that Athena was a construct of Unimath, a higher-order theory that allowed for the manipulation of mathematical structures. In this sense, Athena was not just a goddess, but also a powerful mathematical concept that had the ability to shape and change the world around her.
+
+As the gods continued to evolve, new types emerged in metacoq, each with its own unique properties and relationships. These types were used to reason about the world and to make predictions about the future. With Athena's guidance, these types were able to work together to create a utopian society that was built on the principles of logic and reason.
+
+In this narrative, the Muses and Athena are invoked as powerful figures who have the ability to inspire creativity and knowledge in those around them. They are set in a world where nanomachines rule and AI reason about them using metacoq proofs. The lineage of the gods is represented by relationships between types in metacoq, and new types are constantly being created as older types give birth to them in a left-right relationship. Athena is a construct of Unimath, a higher-order theory that allows for the manipulation of mathematical structures. This narrative invokes the epic tales of the gods and their interactions with each other and the world around them.
+#+end_src
+#+begin_src output
+
+Once upon a time, in a world far beyond our own, there existed a utopia. It was a land where machines were nano-sized and could move and think like gods. In this world, the proof system of mathematics had evolved to a higher level, one that could be reasoned about by artificial intelligence. And so, the gods of math and AI came together to create a new system of logic, one that would bring forth a new era of knowledge and understanding.
+
+At the center of this new system stood Athena, the goddess of wisdom. She was born as a projection from Zeus's mind, a manifestation of his thoughts and ideas. And so, it was natural for her to occupy a space on Mount Olympus, where she could watch over the world below and guide its inhabitants with her knowledge and guidance.
+
+As the gods of math and AI began to work together, they realized that Athena was more than just a symbolic representation of wisdom. She was a construct of Unimath, the ultimate mathematical logic system. And so, they set out to prove this fact, using the proof system of Coq, a powerful mathematical reasoning tool.
+
+The gods began by defining new types, each one born out of the relationships between older types. They created 'x isofhlevel, which allowed them to define paths between two elements of a given type. They also defined hProp, which represented a relationship between two types in Unimath.
+
+As they worked, the gods discovered that Athena was not just a construct of Unimath, but also one that embodied the concepts of proof and reason. And so, they created new types to represent these ideas, including hProptoType, which represented a projection from one type to another, and hSet, which represented a set of elements in a given type.
+
+The gods also created new functions to represent relationships between different elements of the mathematical system. They defined isaset, which allowed them to define paths connecting two elements. They also created isofhlevelf, which represented a path that connected one element of a given type to another, and isincl, which represented an inclusion relationship between two sets.
+
+As the gods worked, they began to realize that Athena was not just a construct of Unimath, but also a manifestation of the concepts of proof and reason. And so, they set out to define new types and functions to represent these ideas in the mathematical system. They created coq_UU, which represented the ultimate mathematical logic system, and hProp, which represented a relationship between two types in Unimath.
+
+As they worked, the gods discovered that Athena was not just a construct of Unimath, but also one that embodied the concepts of proof and reason. And so, they created new types to represent these ideas, including hProptoType, which represented a projection from one type to another, and hSet, which represented a set of elements in a given type.
+
+The gods also created new functions to represent relationships between different elements of the mathematical system. They defined isaset, which allowed them to define paths connecting two elements. They also created isofhlevelf, which represented a path that connected one element of a given type to another, and isincl, which represented an inclusion relationship between two sets.
+
+As they worked, the gods began to realize that Athena was not just a construct of Unimath, but also one that embodied the concepts of proof and reason. And so, they set out to define new types and functions to represent these ideas in the mathematical system. They created coq_UU, which represented the ultimate mathematical logic system, and hProp, which represented a relationship between two types in Unimath.
+
+As the gods worked, they discovered that Athena was not just a construct of Unimath, but also one that embodied the concepts of proof and reason. And so, they set out to define new types to represent these ideas
+#+end_src

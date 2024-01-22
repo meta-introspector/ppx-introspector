@@ -5,6 +5,9 @@ test/test2.txt: log.txt test/test2.ml
 test3/test3.txt:
 	./_build/install/default/lib/ppx-introspector/ppx.exe   --impl test3/test.ml > test3/test3.txt
 
+test3/test4.txt:
+	./_build/install/default/lib/ppx-introspector/ppx.exe   --impl test3/test3.ml > test3/test4.txt
+
 
 report: log.txt
 	grep DEBUG2B: log.txt | cut -d: -f2- 
