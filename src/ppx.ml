@@ -1046,7 +1046,7 @@ let print_structure_item_desc(a :structure_item_desc*string_list) :string =
   ^ ")" (*end of print_desc*)
 
 let print_one_structure_item (x : structure_item) :string =
-  (Gen7.process_structure_item x)
+  "(Gen7.process_structure_item x)"
   (* match x with *)
   (* |{ *)
   (*   pstr_desc; (\*structure_item_desc*\) *)
@@ -1062,9 +1062,11 @@ let process_all_structure_items proc lst : string =
 
 let transform x (*ast, bytecodes of the interface *) =
   (ppddump ("DBG13:",x));
-  (print_endline ("DBG12AA:" ^ "open Ppxlib"));
-  let foo = (process_all_structure_items print_one_structure_item x) in
-  x
+  (print_endline ("open Ppxlib"));
+  (print_endline 
+  (Gen7.process_structure_items x));
+  (* let foo = (process_all_structure_items print_one_structure_item x) in *)
+    x 
 
 let process_bool x = "bool"
 

@@ -67,13 +67,18 @@ and process_generic_list name a f :string=
 
 let rec process_string_loc_list_pattern_option x = "process_string_loc_list_pattern_option"
 and  process_arg_label_expression (a,b)=
-  process_arg_label a
+  "(process_arg_label_expression "
+  ^ process_arg_label a
+  ^ " "
   ^  process_expression b
+  ^ ")"
 
 and process_longident_loc_core_type (a,b)  =
-  "process_longident_loc_core_type"
+  "(process_longident_loc_core_type "
   ^ process_longident_loc a
+  ^ " "
   ^ process_core_type b
+  ^ ")"
 
 and process_generic_list_tail2 (name:string) (a:(longident_loc * core_type) list)  :string=
  ( match a with
@@ -106,6 +111,9 @@ and process_package_type (x:package_type) =
 
 and process_string_list x =
   process_generic_list "process_string_list" x process_string
+
+and process_structure_items x =
+  process_generic_list "process_structure_items" x process_structure_item
 
 
 and process_class_type_fields_list x=
@@ -723,9 +731,9 @@ and process_module_expr_include_infos (x(*:include_infos*)):string = match x wit
   ((*P2*)process_module_expr pincl_mod)
   ^ "^" ^ ((*P2*)process_location pincl_loc)^ "^" ^ ((*P2*)process_attributes pincl_attributes)
 
-and process_include_infos (x(*:include_infos*)):string = match x with {pincl_mod(* FIXME*);pincl_loc(* location*);pincl_attributes(* attributes*)} ->
-  "((*P2*)process_FIXME pincl_mod)"
-  ^ "^" ^ ((*P2*)process_location pincl_loc)^ "^" ^ ((*P2*)process_attributes pincl_attributes)
+(* and process_include_infos (x(\*:include_infos*\)):string = match x with {pincl_mod(\* FIXME*\);pincl_loc(\* location*\);pincl_attributes(\* attributes*\)} -> *)
+(*   ((\*P2*\)process_ pincl_mod) *)
+(*   ^ "^" ^ ((\*P2*\)process_location pincl_loc)^ "^" ^ ((\*P2*\)process_attributes pincl_attributes) *)
 
 
 

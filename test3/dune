@@ -14,3 +14,12 @@
  (preprocess
   (pps ppxlib.metaquot
        ppx-introspector -- -no-merge)))
+(test
+ (name test3)
+ (modules test3)
+ (libraries alcotest ppxlib )
+ ; (preprocess
+ ;  (pps ppxlib.metaquot
+ ;       ppx-introspector -- -no-merge))
+
+)
