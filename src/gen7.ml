@@ -23,8 +23,12 @@ and stringlister2 (x:string_list) : string =
   "[" ^
   ( match x with
     | [] ->""
-    | h :: t -> h ^ ";"^
-                stringlister3(t)
+    | h :: t ->
+      if t != [] then
+        h ^ ";"^
+        stringlister3(t)
+      else
+        h
   )
   ^"]"
 and process_generic_type a b c =
@@ -40,7 +44,12 @@ and process_generic_type a b c =
 let rec process_generic_list_tail name a f :string=
  ( match a with
   | [] -> ""
-  | a :: t -> (f a) ^ ";" ^ (process_generic_list_tail name t f )
+  | a :: t ->
+    let v1 = (f a) in
+    if t != [] then
+      v1 ^ ";" ^ (process_generic_list_tail name t f )
+    else
+      v1
  )
 
 and process_generic_list name a f :string=
@@ -48,7 +57,12 @@ and process_generic_list name a f :string=
   "(" ^ name ^ "[" ^
  ( match a with
   | [] -> ""
-  | a :: t -> (f a) ^ ";" ^ (process_generic_list_tail name t f )
+  | a :: t ->
+    let v1 = (f a) in
+    if t != [] then
+      v1 ^ ";" ^ (process_generic_list_tail name t f )
+    else
+      v1
  ) ^ "] )"
 
 let rec process_string_loc_list_pattern_option x = "process_string_loc_list_pattern_option"
@@ -64,14 +78,24 @@ and process_longident_loc_core_type (a,b)  =
 and process_generic_list_tail2 (name:string) (a:(longident_loc * core_type) list)  :string=
  ( match a with
   | [] -> ""
-  | a :: t -> (process_longident_loc_core_type  a) ^ ";" ^ (process_generic_list_tail2 name t  )
+  | a :: t ->
+    let v1 = (process_longident_loc_core_type  a) in
+    if t != [] then
+      v1 ^ ";" ^ (process_generic_list_tail2 name t  )
+    else
+      v1
  )
 
 and process_generic_list2 (name:string) (a:(longident_loc * core_type) list )  :string=
   "(" ^ name ^ "[" ^
  ( match a with
   | [] -> ""
-  | a :: t -> (process_longident_loc_core_type  a) ^ ";" ^ (process_generic_list_tail2 name t  )
+  | a :: t ->
+    let v1 = (process_longident_loc_core_type  a) in
+    if t != [] then
+      v1 ^ ";" ^ (process_generic_list_tail2 name t  )
+    else
+      v1
  ) ^ "] )"
 
 and process_package_type (x:package_type) =
@@ -169,8 +193,12 @@ and process_directive_argument (x:directive_argument):string = match x with {pdi
 
 
 and process_string_option x = "process_string_option"
-and process_char_option a = "FIXME1221"
-and process_attributes x =     "(attributes)"
+and process_char_option a = 
+    process_generic_option
+      process_char  a
+
+and process_attributes x = 
+    process_generic_list "process_attribute_list" x process_attribute
 and process_directive_argument_option x = "process_directive_argument_option"
 
 and  process_object_field_desc (x:object_field_desc) :string =
@@ -230,8 +258,11 @@ and process_value_binding_list (x : value_binding list) : string=
   match x with
   | [] -> "process_value_binding_list"
   | h :: t ->
-    (process_value_binding h)
-    ^ ";" ^(process_value_binding_list t) 
+    let v1 =     (process_value_binding h) in
+    if t != [] then
+      v1   ^ ";" ^(process_value_binding_list t)
+    else
+      v1
 
 and process_longident_loc ( a :longident_loc):string="(ident \"" ^ (process_id1 a.txt) ^ "\")"
 and process_module_expr_desc x :string =match x with
