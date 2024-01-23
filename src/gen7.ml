@@ -69,10 +69,12 @@ and process_generic_list name a f :string=
       v1
  ) ^ "] )"
 
+  
 let rec  process_structure_items x =
-  "let ()=(print_endline " ^
+
   process_generic_list "process_structure_items" x process_structure_item
-  ^ ")"
+
+
 and process_string_loc_list_pattern_option x = "process_string_loc_list_pattern_option"
 
 and  process_arg_label_expression (a,b)=
@@ -142,6 +144,7 @@ and process_location_stack x ="(loc_stack)"
     
 and process_row_field_list x =
   process_generic_list "process_row_field_list" x process_row_field
+
 
     
     
@@ -749,8 +752,13 @@ and process_module_expr_include_infos (x(*:include_infos*)):string = match x wit
 
 and process_module_expr (x:module_expr):string = match x with {pmod_desc(* module_expr_desc*);pmod_loc(* location*);pmod_attributes(* attributes*)} ->((*P2*)process_module_expr_desc pmod_desc)^ "^" ^ ((*P2*)process_location pmod_loc)^ "^" ^ ((*P2*)process_attributes pmod_attributes)
 and process_structure (x:structure):string =
-    process_generic_list "process_structure" x process_structure_item
-and process_structure_item (x:structure_item):string =
+  process_generic_list "process_structure" x process_structure_item
+and process_structure_item x=
+  let ff = (process_structure_item_internal x) in
+  let ss = "let foo1=" ^ ff  in 
+  print_endline ss;
+  ""
+and process_structure_item_internal (x:structure_item):string =
   (* (print_endline "process_structure_item") ; *)
   match x with {
     pstr_desc;
