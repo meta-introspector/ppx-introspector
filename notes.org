@@ -228,3 +228,13 @@ grep generic_type test4.ml | fold -w 60 -s | grep Pconst_string |sort |uniq -c |
    * next steps:
      finalize compilable output from gen7 and then write drivers to emit unimath theorems about the types found.
      
+* overview
+
+generate and test the code 
+#+begin_src shell
+  dune build
+  make test/unimathcore.txt -B
+  grep foo1 test/unimathcore.txt >> test/unimathcore_refl.ml
+
+  dune build
+#+end_src

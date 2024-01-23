@@ -8,7 +8,7 @@ let process_generic_option f a =
   (* (print_endline "process_generic_option"); *)
   match a with
   | Some x -> (f x)
-  | None -> ""
+  | None -> "(none)"
 
 let rec stringlister3 (x:string_list) : string =
   match x with
@@ -51,9 +51,9 @@ process_generic_list_tail name a f :string=
   | a :: t ->
     let v1 = (f a) in
     if t != [] then
-      v1 ^ ";(*L3*)" ^ (process_generic_list_tail name t f )
+      "(*L31*)" ^ v1 ^ ";(*L3*)" ^ (process_generic_list_tail name t f )
     else
-      v1
+     "(*L32*)" ^ v1
  )
 
 and process_generic_list name a f :string=
@@ -64,9 +64,9 @@ and process_generic_list name a f :string=
   | a :: t ->
     let v1 = (f a) in
     if t != [] then
-      v1 ^ ";(*L4*)" ^ (process_generic_list_tail name t f )
+      "(*L41*)" ^v1 ^ ";(*L4*)" ^ (process_generic_list_tail name t f )
     else
-      v1
+      "(*L42*)" ^v1 ^ "(*L43*)" 
  ) ^ "] )"
 
   
@@ -139,8 +139,8 @@ and process_string_loc_list x =
 and process_int x : string= "(mint " ^ string_of_int(x) ^ ")"
 and process_extension_constructor_list x=
     process_generic_list "process_constructors_list" x process_extension_constructor
-and process_location_stack x ="(loc_stack)"
-  (* process_generic_list "process_location_stack" x process_location *)
+(* and process_location_stack x ="(loc_stack)" *)
+(*   (\* process_generic_list "process_location_stack" x process_location *\) *)
     
 and process_row_field_list x =
   process_generic_list "process_row_field_list" x process_row_field
@@ -207,7 +207,7 @@ and process_class_declaration (x:class_declaration ) =
 and process_class_declaration_list a =
   process_generic_list "process_class_declaration_list" a process_class_declaration
 
-and process_directive_argument (x:directive_argument):string = match x with {pdira_desc(* directive_argument_desc*);pdira_loc(* location*)} ->((*P2*)process_directive_argument_desc pdira_desc)^ "^" ^ ((*P2*)process_location pdira_loc)
+and process_directive_argument (x:directive_argument):string = match x with {pdira_desc(* directive_argument_desc*);pdira_loc(* location*)} ->((*P2*)process_directive_argument_desc pdira_desc)(* ^ "^" ^ ((\*P2*\)process_location pdira_loc) *)
 
 
 and process_string_option x = "process_string_option"
@@ -215,8 +215,8 @@ and process_char_option a =
     process_generic_option
       process_char  a
 
-and process_attributes x = 
-    process_generic_list "process_attribute_list" x process_attribute
+(* and process_attributes x = "(attributes)" *)
+    (* process_generic_list "process_attribute_list" x process_attribute *)
 and process_directive_argument_option x = "process_directive_argument_option"
 
 and  process_object_field_desc (x:object_field_desc) :string =
@@ -232,7 +232,7 @@ and   process_row_field_desc x :string =match x with
 and process_pattern_option a =
   match a with
   | Some x -> (process_pattern x)
-  | None -> ""
+  | None -> "(none)"
 
 and process_generic_string_option_loc  (a:string option loc):string = "\"FIXMEprocess_generic_string_option_loc\""
 
@@ -256,7 +256,7 @@ and process_expression_option
 and process_module_type_option (x:module_type option):string = process_generic_option process_module_type x
 and process_include_description (x:include_description):string = match x with {pincl_mod(* FIXME*);pincl_loc(* location*);pincl_attributes(* attributes*)} ->
   ((*P2*)process_module_type pincl_mod)
-  ^ "^" ^ ((*P2*)process_location pincl_loc)^ "^" ^ ((*P2*)process_attributes pincl_attributes)
+  (* ^ "^" ^ ((\*P2*\)process_location pincl_loc)^ "^" ^ ((\*P2*\)process_attributes pincl_attributes) *)
 
 (* and include_description = module_type include_infos *)
 (*
@@ -296,11 +296,11 @@ and process_module_expr_desc x :string =match x with
 (* and open_declaration = module_expr open_infos*)
 and process_open_declaration (x:open_declaration):string = match x with {popen_expr(* FIXME*);popen_override(* override_flag*);popen_loc(* location*);popen_attributes(* attributes*)} ->
   ((*P2*)process_module_expr  popen_expr)
-  ^ "^" ^ ((*P2*)process_override_flag popen_override)^ "^" ^ ((*P2*)process_location popen_loc)^ "^" ^ ((*P2*)process_attributes popen_attributes)
+  ^ "^" ^ ((*P2*)process_override_flag popen_override)(* ^ "^" ^ ((\*P2*\)process_location popen_loc)^ "^" ^ ((\*P2*\)process_attributes popen_attributes) *)
 (*and open_description = longident_loc open_infos*)
 and process_open_description (x:open_description):string = match x with {popen_expr(* FIXME*);popen_override(* override_flag*);popen_loc(* location*);popen_attributes(* attributes*)} ->
   ((*P2*)process_longident_loc  popen_expr)
-  ^ "^" ^ ((*P2*)process_override_flag popen_override)^ "^" ^ ((*P2*)process_location popen_loc)^ "^" ^ ((*P2*)process_attributes popen_attributes)
+  ^ "^" ^ ((*P2*)process_override_flag popen_override)(* ^ "^" ^ ((\*P2*\)process_location popen_loc)^ "^" ^ ((\*P2*\)process_attributes popen_attributes) *)
 
 
 and process_include_declaration x =(*= module_expr include_infos*)
@@ -315,11 +315,11 @@ and process_directive_argument_desc x :string =match x with
 and process_toplevel_phrase x :string =match x with
 (*emit_constructor_arguments:*)| Ptop_dir((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)toplevel_directive0) -> ((*P5*)process_generic_type "toplevel_phrase" "Ptop_dir" [((*P4*)process_toplevel_directive (*emit_core_type_numbered*)toplevel_directive0)])
 (*emit_constructor_arguments:*)| Ptop_def((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)structure0) -> ((*P5*)process_generic_type "toplevel_phrase" "Ptop_def" [((*P4*)process_structure (*emit_core_type_numbered*)structure0)])
-and process_class_type (x:class_type):string = match x with {pcty_desc(* class_type_desc*);pcty_loc(* location*);pcty_attributes(* attributes*)} ->((*P2*)process_class_type_desc pcty_desc)^ "^" ^ ((*P2*)process_location pcty_loc)^ "^" ^ ((*P2*)process_attributes pcty_attributes)
+and process_class_type (x:class_type):string = match x with {pcty_desc(* class_type_desc*);pcty_loc(* location*);pcty_attributes(* attributes*)} ->((*P2*)process_class_type_desc pcty_desc)(* ^ "^" ^ ((\*P2*\)process_location pcty_loc) *)(* ^ "^" ^ ((\*P2*\)process_attributes pcty_attributes) *)
 and process_structure_item_desc x :string =
   (* (print_endline ("process_structure_item_desc")) ; *)
   match x with
-(*emit_constructor_arguments:*)| Pstr_extension((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)extension0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attributes1) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_extension" [((*P4*)process_extension (*emit_core_type_numbered*)extension0);((*P4*)process_attributes (*emit_core_type_numbered*)attributes1)])
+(*emit_constructor_arguments:*)| Pstr_extension((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)extension0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attributes1) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_extension" [((*P4*)process_extension (*emit_core_type_numbered*)extension0)(* ;((\*P4*\)process_attributes (\*emit_core_type_numbered*\)attributes1) *)])
 (*emit_constructor_arguments:*)| Pstr_attribute((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attribute0) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_attribute" [((*P4*)process_attribute (*emit_core_type_numbered*)attribute0)])
 (*emit_constructor_arguments:*)| Pstr_include((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)include_declaration0) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_include" [((*P4*)process_include_declaration (*emit_core_type_numbered*)include_declaration0)])
                                (*emit_constructor_arguments:*)| Pstr_class_type((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_class_type"
@@ -344,7 +344,7 @@ and process_structure_item_desc x :string =
 (*emit_constructor_arguments:*)| Pstr_type((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)rec_flag0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list1) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_type" [((*P4*)process_rec_flag (*emit_core_type_numbered*)rec_flag0);((*P4*)process_type_declaration_list (*emit_core_type_numbered*)list1)])
 (*emit_constructor_arguments:*)| Pstr_primitive((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)value_description0) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_primitive" [((*P4*)process_value_description (*emit_core_type_numbered*)value_description0)])
 (*emit_constructor_arguments:*)| Pstr_value((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)rec_flag0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list1) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_value" [((*P4*)process_rec_flag (*emit_core_type_numbered*)rec_flag0);((*P4*)process_value_binding_list (*emit_core_type_numbered*)list1)])
-(*emit_constructor_arguments:*)| Pstr_eval((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)expression0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attributes1) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_eval" [((*P4*)process_expression (*emit_core_type_numbered*)expression0);((*P4*)process_attributes (*emit_core_type_numbered*)attributes1)])
+(*emit_constructor_arguments:*)| Pstr_eval((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)expression0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attributes1) -> ((*P5*)process_generic_type "structure_item_desc" "Pstr_eval" [((*P4*)process_expression (*emit_core_type_numbered*)expression0)(* ;((\*P4*\)process_attributes (\*emit_core_type_numbered*\)attributes1) *)])
 and process_with_constraint x :string =match x with
 (*emit_constructor_arguments:*)| Pwith_modsubst((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc1) -> ((*P5*)process_generic_type "with_constraint" "Pwith_modsubst" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0);((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc1)])
 (*emit_constructor_arguments:*)| Pwith_typesubst((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)type_declaration1) -> ((*P5*)process_generic_type "with_constraint" "Pwith_typesubst" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0);((*P4*)process_type_declaration (*emit_core_type_numbered*)type_declaration1)])
@@ -354,12 +354,7 @@ and process_with_constraint x :string =match x with
 (*emit_constructor_arguments:*)| Pwith_type((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)type_declaration1) -> ((*P5*)process_generic_type "with_constraint" "Pwith_type" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0);((*P4*)process_type_declaration (*emit_core_type_numbered*)type_declaration1)])
 and process_string x = "(string \"" ^ (String.escaped x) ^ "\" )"
                        
-and process_loc x = "(loc)"
-  (* "(process_loc " *)
-  (* ^ (process_string x.txt) *)
-  (* ^ "^" *)
-  (* ^ (process_location x.loc) *)
-  (* ^ ")" *)
+and process_loc x = (process_string x.txt)
 
 
 and process_string_option_loc x = process_generic_string_option_loc x
@@ -367,10 +362,10 @@ and process_string_option_loc x = process_generic_string_option_loc x
 and process_module_type_declaration (x:module_type_declaration):string = match x with {pmtd_name(* loc*);pmtd_type(* option*);pmtd_attributes(* attributes*);pmtd_loc(* location*)} ->
   ((*P2*)process_loc pmtd_name)^
   ((*P2*)process_module_type_option pmtd_type)
-  ^ "^" ^ ((*P2*)process_attributes pmtd_attributes)
-  ^ "^" ^ ((*P2*)process_location pmtd_loc)
+  (* ^ "^" ^ ((\*P2*\)process_attributes pmtd_attributes) *)
+  (* ^ "^" ^ ((\*P2*\)process_location pmtd_loc) *)
 and process_signature_item_desc x :string =match x with
-(*emit_constructor_arguments:*)| Psig_extension((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)extension0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attributes1) -> ((*P5*)process_generic_type "signature_item_desc" "Psig_extension" [((*P4*)process_extension (*emit_core_type_numbered*)extension0);((*P4*)process_attributes (*emit_core_type_numbered*)attributes1)])
+(*emit_constructor_arguments:*)| Psig_extension((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)extension0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attributes1) -> ((*P5*)process_generic_type "signature_item_desc" "Psig_extension" [((*P4*)process_extension (*emit_core_type_numbered*)extension0)(* ;((\*P4*\)process_attributes (\*emit_core_type_numbered*\)attributes1) *)])
 (*emit_constructor_arguments:*)| Psig_attribute((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attribute0) -> ((*P5*)process_generic_type "signature_item_desc" "Psig_attribute" [((*P4*)process_attribute (*emit_core_type_numbered*)attribute0)])
 (*emit_constructor_arguments:*)| Psig_class_type((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) -> ((*P5*)process_generic_type "signature_item_desc" "Psig_class_type" [((*P4*)process_class_type_declaration_list (*emit_core_type_numbered*)list0)])
 (*emit_constructor_arguments:*)| Psig_class((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) -> ((*P5*)process_generic_type "signature_item_desc" "Psig_class" [((*P4*)process_class_type_declaration_list (*emit_core_type_numbered*)list0)])
@@ -414,7 +409,8 @@ and process_class_field_kind x :string =match x with
 
 
 and  process_class_expr (x:class_expr):string = match x with {pcl_desc(* class_expr_desc*);pcl_loc(* location*);pcl_attributes(* attributes*)} ->
-  ((*P2*)process_class_expr_desc pcl_desc)^ "^" ^ ((*P2*)process_location pcl_loc)^  "^" ^ ((*P2*)process_attributes pcl_attributes)
+  ((*P2*)process_class_expr_desc pcl_desc)
+  (* ^ "^" ^ ((\*P2*\)process_location pcl_loc)(\* ^  "^" ^ ((\\*P2*\\)process_attributes pcl_attributes) *\) *)
 and process_class_field_desc x :string =match x with
 (*emit_constructor_arguments:*)| Pcf_extension((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)extension0) -> ((*P5*)process_generic_type "class_field_desc" "Pcf_extension" [((*P4*)process_extension (*emit_core_type_numbered*)extension0)])
 (*emit_constructor_arguments:*)| Pcf_attribute((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attribute0) -> ((*P5*)process_generic_type "class_field_desc" "Pcf_attribute" [((*P4*)process_attribute (*emit_core_type_numbered*)attribute0)])
@@ -489,11 +485,13 @@ and process_extension_constructor_kind x :string =match x with
     ((*P4*)process_constructor_arguments (*emit_core_type_numbered*)constructor_arguments1);((*P4*)process_core_type_option (*emit_core_type_numbered*)option2)])
 and process_constructor_arguments x :string =match x with
   (*emit_constructor_arguments:*)
-  | Pcstr_record((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) -> ((*P5*)process_generic_type "constructor_arguments" "Pcstr_record" [
+  | Pcstr_record((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) ->
+    ((*P5*)process_generic_type "constructor_arguments" "Pcstr_record" [
     ((*P4*)process_label_declaration_list (*emit_core_type_numbered*)list0)])
-  (*emit_constructor_arguments:*)| Pcstr_tuple((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) -> ((*P5*)process_generic_type "constructor_arguments"
-                                                                                                                                              "Pcstr_tuple" [
-                                                                                                                                              ((*P4*)process_core_type_list (*emit_core_type_numbered*)list0)])
+  (*emit_constructor_arguments:*)| Pcstr_tuple((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) ->
+    ((*P5*)process_generic_type "constructor_arguments"
+            "Pcstr_tuple" [
+            ((*P4*)process_core_type_list (*emit_core_type_numbered*)list0)])
 and process_type_kind x :string =match x with
 (*emit_constructor_arguments:*)| Ptype_open -> ((*P5*)process_generic_type "type_kind" "Ptype_open" [])
 (*emit_constructor_arguments:*)| Ptype_record((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)list0) -> ((*P5*)process_generic_type "type_kind" "Ptype_record" [((*P4*)process_label_declaration_list (*emit_core_type_numbered*)list0)])
@@ -590,7 +588,10 @@ and process_payload x :string =match x with
 (*emit_constructor_arguments:*)| PStr((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)structure0) -> ((*P5*)process_generic_type "payload" "PStr" [((*P4*)process_structure (*emit_core_type_numbered*)structure0)])
 and process_constant x :string =match x with
 (*emit_constructor_arguments:*)| Pconst_float((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)option1) -> ((*P5*)process_generic_type "constant" "Pconst_float" [((*P4*)process_string (*emit_core_type_numbered*)string0);((*P4*)process_char_option (*emit_core_type_numbered*)option1)])
-(*emit_constructor_arguments:*)| Pconst_string((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)location1,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)option2) -> ((*P5*)process_generic_type "constant" "Pconst_string" [((*P4*)process_string (*emit_core_type_numbered*)string0);((*P4*)process_location (*emit_core_type_numbered*)location1);((*P4*)process_string_option (*emit_core_type_numbered*)option2)])
+                               (*emit_constructor_arguments:*)| Pconst_string((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)location1,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)option2) -> ((*P5*)process_generic_type "constant" "Pconst_string" [
+    ((*P4*)process_string (*emit_core_type_numbered*)string0)
+    (* ;((\*P4*\)process_location (\*emit_core_type_numbered*\)location1); *);
+    ((*P4*)process_string_option (*emit_core_type_numbered*)option2)])
 (*emit_constructor_arguments:*)| Pconst_char((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)char0) -> ((*P5*)process_generic_type "constant" "Pconst_char" [((*P4*)process_char (*emit_core_type_numbered*)char0)])
 (*emit_constructor_arguments:*)| Pconst_integer((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)option1) -> ((*P5*)process_generic_type "constant" "Pconst_integer" [((*P4*)process_string (*emit_core_type_numbered*)string0);((*P4*)process_char_option (*emit_core_type_numbered*)option1)])
 and process_injectivity x :string =match x with
@@ -628,12 +629,12 @@ and process_longident x :string =match x with
 (*emit_constructor_arguments:*)| Lapply((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident1) -> ((*P5*)process_generic_type "longident" "Lapply" [((*P4*)process_longident (*emit_core_type_numbered*)longident0);((*P4*)process_longident (*emit_core_type_numbered*)longident1)])
 (*emit_constructor_arguments:*)| Ldot((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string1) -> ((*P5*)process_generic_type "longident" "Ldot" [((*P4*)process_longident (*emit_core_type_numbered*)longident0);((*P4*)process_string (*emit_core_type_numbered*)string1)])
 (*emit_constructor_arguments:*)| Lident((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0) -> ((*P5*)process_generic_type "longident" "Lident" [((*P4*)process_string (*emit_core_type_numbered*)string0)])
-and process_position (x:position):string ="(pos)"
+(* and process_position (x:position):string ="(pos)" *)
   (* match x with {pos_fname(\* string*\);pos_lnum(\* int*\);pos_bol(\* int*\);pos_cnum(\* int*\)} -> *)
   (*   "(pos " ^ *)
   (*   ((\*P2*\)process_string pos_fname)^ "^" ^ ((\*P2*\)process_int pos_lnum)^ "^" ^ ((\*P2*\)process_int pos_bol)^ "^" ^ ((\*P2*\)process_int pos_cnum) ^ ")" *)
                                                                                                                                                                                     
-and process_location (x:location):string = "(loc2)"
+(* and process_location (x:location):string = "(loc2)" *)
   (* (\* (print_endline ("process_location")) ; *\) *)
   (* "(process_location " ^ *)
   (* match x with {loc_start(\* position*\);loc_end(\* position*\);loc_ghost(\* bool*\)} ->((\*P2*\)process_position loc_start)^ "^" ^ ((\*P2*\)process_position loc_end)^ "^" ^ ((\*P2*\)process_bool loc_ghost) *)
@@ -647,20 +648,20 @@ and process_loc_longident x b = process_loc_abstract x process_longident
 and process_string_loc (x:string loc):string  =
   match x with {txt(* FIXME*);loc(* location*)} ->
     (process_string(*P2*) txt)
-    ^ "^" ^ ((*P2*)process_location loc)
+    (* ^ "^" ^ ((\*P2*\)process_location loc) *)
 and process_attribute (x:attribute):string = match x with {attr_name(* loc*);attr_payload(* payload*);attr_loc(* location*)}
   ->
   ((*P2*)process_loc attr_name)
-  ^ "^" ^ ((*P2*)process_payload attr_payload)^ "^" ^ ((*P2*)process_location attr_loc)
+  ^ "^" ^ ((*P2*)process_payload attr_payload)(* ^ "^" ^ ((\*P2*\)process_location attr_loc) *)
 and process_extension (x:extension):string = process_extension x
-and process_core_type (x:core_type):string = match x with {ptyp_desc(* core_type_desc*);ptyp_loc(* location*);ptyp_loc_stack(* location_stack*);ptyp_attributes(* attributes*)} ->((*P2*)process_core_type_desc ptyp_desc)^ "^" ^ ((*P2*)process_location ptyp_loc)^ "^" ^ ((*P2*)process_location_stack ptyp_loc_stack)^ "^" ^ ((*P2*)process_attributes ptyp_attributes)
-and process_row_field (x:row_field):string = match x with {prf_desc(* row_field_desc*);prf_loc(* location*);prf_attributes(* attributes*)} ->((*P2*)process_row_field_desc prf_desc)^ "^" ^ ((*P2*)process_location prf_loc)^ "^" ^ ((*P2*)process_attributes prf_attributes)
+and process_core_type (x:core_type):string = match x with {ptyp_desc(* core_type_desc*);ptyp_loc(* location*);ptyp_loc_stack(* location_stack*);ptyp_attributes(* attributes*)} ->((*P2*)process_core_type_desc ptyp_desc)                                                                                                                                                                                 (* "^" ^ ((\*P2*\)process_location ptyp_loc)^ "^" ^ ((\*P2*\)process_location_stack ptyp_loc_stack)^ "^" ^ ((\*P2*\)process_attributes ptyp_attributes) *)
+and process_row_field (x:row_field):string = match x with {prf_desc(* row_field_desc*);prf_loc(* location*);prf_attributes(* attributes*)} ->((*P2*)process_row_field_desc prf_desc)(* ^ "^" ^ ((\*P2*\)process_location prf_loc)^ "^" ^ ((\*P2*\)process_attributes prf_attributes) *)
 
-and process_object_field (x:object_field):string = match x with {pof_desc(* object_field_desc*);pof_loc(* location*);pof_attributes(* attributes*)} ->((*P2*)process_object_field_desc pof_desc)^ "^" ^ ((*P2*)process_location pof_loc)^ "^" ^ ((*P2*)process_attributes pof_attributes)
+and process_object_field (x:object_field):string = match x with {pof_desc(* object_field_desc*);pof_loc(* location*);pof_attributes(* attributes*)} ->((*P2*)process_object_field_desc pof_desc)(* ^ "^" ^ ((\*P2*\)process_location pof_loc)^ "^" ^ ((\*P2*\)process_attributes pof_attributes) *)
 
-and process_pattern (x:pattern):string = match x with {ppat_desc(* pattern_desc*);ppat_loc(* location*);ppat_loc_stack(* location_stack*);ppat_attributes(* attributes*)} ->((*P2*)process_pattern_desc ppat_desc)^ "^" ^ ((*P2*)process_location ppat_loc)^ "^" ^ ((*P2*)process_location_stack ppat_loc_stack)^ "^" ^ ((*P2*)process_attributes ppat_attributes)
+and process_pattern (x:pattern):string = match x with {ppat_desc(* pattern_desc*);ppat_loc(* location*);ppat_loc_stack(* location_stack*);ppat_attributes(* attributes*)} ->((*P2*)process_pattern_desc ppat_desc) (* "^" ^ ((\*P2*\)process_location ppat_loc)^ "^" ^ ((\*P2*\)process_location_stack ppat_loc_stack)^ "^" ^ ((\*P2*\)process_attributes ppat_attributes) *)
 
-and process_expression (x:expression):string = match x with {pexp_desc(* expression_desc*);pexp_loc(* location*);pexp_loc_stack(* location_stack*);pexp_attributes(* attributes*)} ->((*P2*)process_expression_desc pexp_desc)^ "^" ^ ((*P2*)process_location pexp_loc)^ "^" ^ ((*P2*)process_location_stack pexp_loc_stack)^ "^" ^ ((*P2*)process_attributes pexp_attributes)
+and process_expression (x:expression):string = match x with {pexp_desc(* expression_desc*);pexp_loc(* location*);pexp_loc_stack(* location_stack*);pexp_attributes(* attributes*)} ->((*P2*)process_expression_desc pexp_desc) (* "^" ^ ((\*P2*\)process_location pexp_loc)^ "^" ^ ((\*P2*\)process_location_stack pexp_loc_stack)^ "^" ^ ((\*P2*\)process_attributes pexp_attributes) *)
 
 and process_case (x:case):string = match x with {pc_lhs(* pattern*);pc_guard(* option*);pc_rhs(* expression*)}
   ->
@@ -669,7 +670,7 @@ and process_case (x:case):string = match x with {pc_lhs(* pattern*);pc_guard(* o
                                                                                                                            ^ "^" ^ ((*P2*)process_expression pc_rhs)
 
 and process_vars_list a =
-  process_generic_list "process_var_list" a process_string_loc
+  process_generic_list "process_vars_list" a process_string_loc
 and process_binding_op_list a =
   process_generic_list "process_binding_op_list" a process_binding_op
 and process_prim_list a =
@@ -685,64 +686,71 @@ and process_letop (x:letop):string = match x with {let_(* binding_op*);ands(* li
     (*P2*)process_binding_op let_)
   ^ "^" ^ ((*P2*)process_binding_op_list ands)
   ^ "^" ^ ((*P2*)process_expression body)
-and process_binding_op (x:binding_op):string = match x with {pbop_op(* loc*);pbop_pat(* pattern*);pbop_exp(* expression*);pbop_loc(* location*)} ->((*P2*)process_loc pbop_op)^ "^" ^ ((*P2*)process_pattern pbop_pat)^ "^" ^ ((*P2*)process_expression pbop_exp)^ "^" ^ ((*P2*)process_location pbop_loc)
-and process_value_description (x:value_description):string = match x with {pval_name(* loc*);pval_type(* core_type*);pval_prim(* list*);pval_attributes(* attributes*);pval_loc(* location*)} ->((*P2*)process_loc pval_name)^ "^" ^ ((*P2*)process_core_type pval_type)^ "^" ^ ((*P2*)process_prim_list pval_prim)^ "^" ^ ((*P2*)process_attributes pval_attributes)^ "^" ^ ((*P2*)process_location pval_loc)
-and process_type_declaration (x:type_declaration):string = match x with {ptype_name(* loc*);ptype_params(* list*);ptype_cstrs(* list*);ptype_kind(* type_kind*);ptype_private(* private_flag*);ptype_manifest(* option*);ptype_attributes(* attributes*);ptype_loc(* location*)} ->((*P2*)process_loc ptype_name)^ "^" ^ ((*P2*)process_params_list ptype_params)^ "^" ^ ((*P2*)process_cstrs_list ptype_cstrs)^ "^" ^ ((*P2*)process_type_kind ptype_kind)^ "^" ^ ((*P2*)process_private_flag ptype_private)
-                                                                                                                                                                                                                                                                                             ^ "^" ^ ((*P2*)process_manifest_option ptype_manifest)^
-                                                                                                                                                                                                                                                                                             ((*P2*)process_attributes ptype_attributes)^
-                                                                                                                                                                                                                                                                                             ((*P2*)process_location ptype_loc)
+and process_binding_op (x:binding_op):string = match x with {pbop_op(* loc*);pbop_pat(* pattern*);pbop_exp(* expression*);pbop_loc(* location*)} ->((*P2*)process_loc pbop_op)^ "^" ^ ((*P2*)process_pattern pbop_pat)^ "^" ^ ((*P2*)process_expression pbop_exp)(* ^ "^" ^ ((\*P2*\)process_location pbop_loc) *)
+and process_value_description (x:value_description):string = match x with {pval_name(* loc*);pval_type(* core_type*);pval_prim(* list*);pval_attributes(* attributes*);pval_loc(* location*)} ->((*P2*)process_loc pval_name)^ "^" ^ ((*P2*)process_core_type pval_type)^ "^" ^ ((*P2*)process_prim_list pval_prim)(* ^ "^" ^ ((\*P2*\)process_attributes pval_attributes)^ "^" ^ ((\*P2*\)process_location pval_loc) *)
 
-and process_label_declaration (x:label_declaration):string = match x with {pld_name(* loc*);pld_mutable(* mutable_flag*);pld_type(* core_type*);pld_loc(* location*);pld_attributes(* attributes*)} ->((*P2*)process_loc pld_name)^ "^" ^ ((*P2*)process_mutable_flag pld_mutable)^ "^" ^ ((*P2*)process_core_type pld_type)^ "^" ^ ((*P2*)process_location pld_loc)^ "^" ^ ((*P2*)process_attributes pld_attributes)
+and process_type_declaration (x:type_declaration):string = match x with {ptype_name(* loc*);ptype_params(* list*);ptype_cstrs(* list*);ptype_kind(* type_kind*);ptype_private(* private_flag*);ptype_manifest(* option*);ptype_attributes(* attributes*);ptype_loc(* location*)} ->
+  ((*P2*)process_loc ptype_name)
+  ^ "^" ^ ((*P2*)process_params_list ptype_params)
+  ^ "^" ^ ((*P2*)process_cstrs_list ptype_cstrs)
+  ^ "^" ^ ((*P2*)process_type_kind ptype_kind)
+  ^ "^" ^ ((*P2*)process_private_flag ptype_private)
+  ^ "^" ^ ((*P2*)process_manifest_option ptype_manifest)
+(* ((\*P2*\)process_attributes ptype_attributes)^ *)
+(* ((\*P2*\)process_location ptype_loc) *)
 
-and process_constructor_declaration (x:constructor_declaration):string = match x with {pcd_name(* loc*);pcd_vars(* list*);pcd_args(* constructor_arguments*);pcd_res(* option*);pcd_loc(* location*);pcd_attributes(* attributes*)} ->(
-    (*P2*)process_loc pcd_name)^ "^" ^ ((*P2*)process_vars_list pcd_vars)
+
+and process_label_declaration (x:label_declaration):string = match x with {pld_name(* loc*);pld_mutable(* mutable_flag*);pld_type(* core_type*);pld_loc(* location*);pld_attributes(* attributes*)} ->((*P2*)process_loc pld_name)^ "^" ^ ((*P2*)process_mutable_flag pld_mutable)^ "^" ^ ((*P2*)process_core_type pld_type)(* ^ "^" ^ ((\*P2*\)process_location pld_loc)^ "^" ^ ((\*P2*\)process_attributes pld_attributes) *)
+
+and process_constructor_declaration (x:constructor_declaration):string = match x with {pcd_name(* loc*);pcd_vars(* list*);pcd_args(* constructor_arguments*);pcd_res(* option*);pcd_loc(* location*);pcd_attributes(* attributes*)} ->
+    "(*PVL1*)" ^ ((*P2*)process_vars_list pcd_vars)
     ^ "^" ^ ((*P2*)process_constructor_arguments pcd_args)
     ^ "^" ^ ((*P2*)process_core_type_option pcd_res)
-    ^ "^" ^ ((*P2*)process_location pcd_loc)
-    ^ "^" ^ ((*P2*)process_attributes pcd_attributes)
+    (* ^ "^" ^ ((\*P2*\)process_location pcd_loc) *)
+    (* ^ "^" ^ ((\*P2*\)process_attributes pcd_attributes) *)
 
 and process_type_extension (x:type_extension):string = match x with {ptyext_path(* longident_loc*);ptyext_params(* list*);ptyext_constructors(* list*);ptyext_private(* private_flag*);ptyext_loc(* location*);ptyext_attributes(* attributes*)} ->((*P2*)process_longident_loc ptyext_path)^ "^" ^ ((*P2*)process_params_list ptyext_params)
-                                                                                                                                                                                                               ^ "^" ^ ((*P2*)process_extension_constructor_list ptyext_constructors)^ "^" ^ ((*P2*)process_private_flag ptyext_private)^ "^" ^ ((*P2*)process_location ptyext_loc)^ "^" ^ ((*P2*)process_attributes ptyext_attributes)
-and process_extension_constructor (x:extension_constructor):string = match x with {pext_name(* loc*);pext_kind(* extension_constructor_kind*);pext_loc(* location*);pext_attributes(* attributes*)} ->((*P2*)process_loc pext_name)^ "^" ^ ((*P2*)process_extension_constructor_kind pext_kind)^ "^" ^ ((*P2*)process_location pext_loc)^ "^" ^ ((*P2*)process_attributes pext_attributes)
-and process_type_exception (x:type_exception):string = match x with {ptyexn_constructor(* extension_constructor*);ptyexn_loc(* location*);ptyexn_attributes(* attributes*)} ->((*P2*)process_extension_constructor ptyexn_constructor)^ "^" ^ ((*P2*)process_location ptyexn_loc)^ "^" ^ ((*P2*)process_attributes ptyexn_attributes)
+                                                                                                                                                                                                               ^ "^" ^ ((*P2*)process_extension_constructor_list ptyext_constructors)^ "^" ^ ((*P2*)process_private_flag ptyext_private)(* ^ "^" ^ ((\*P2*\)process_location ptyext_loc)^ "^" ^ ((\*P2*\)process_attributes ptyext_attributes) *)
+and process_extension_constructor (x:extension_constructor):string = match x with {pext_name(* loc*);pext_kind(* extension_constructor_kind*);pext_loc(* location*);pext_attributes(* attributes*)} ->((*P2*)process_loc pext_name)^ "^" ^ ((*P2*)process_extension_constructor_kind pext_kind)(* ^ "^" ^ ((\*P2*\)process_location pext_loc)^ "^" ^ ((\*P2*\)process_attributes pext_attributes) *)
+and process_type_exception (x:type_exception):string = match x with {ptyexn_constructor(* extension_constructor*);ptyexn_loc(* location*);ptyexn_attributes(* attributes*)} ->((*P2*)process_extension_constructor ptyexn_constructor)(* ^ "^" ^ ((\*P2*\)process_location ptyexn_loc)^ "^" ^ ((\*P2*\)process_attributes ptyexn_attributes) *)
 
 
 and process_class_signature (x:class_signature):string = match x with {pcsig_self(* core_type*);pcsig_fields(* list*)} ->((*P2*)process_core_type pcsig_self)^ "^" ^ ((*P2*)process_class_type_fields_list pcsig_fields)
-and process_class_type_field (x:class_type_field):string = match x with {pctf_desc(* class_type_field_desc*);pctf_loc(* location*);pctf_attributes(* attributes*)} ->((*P2*)process_class_type_field_desc pctf_desc)^ "^" ^ ((*P2*)process_location pctf_loc)^ "^" ^ ((*P2*)process_attributes pctf_attributes)
+and process_class_type_field (x:class_type_field):string = match x with {pctf_desc(* class_type_field_desc*);pctf_loc(* location*);pctf_attributes(* attributes*)} ->((*P2*)process_class_type_field_desc pctf_desc)(* ^ "^" ^ ((\*P2*\)process_location pctf_loc)^ "^" ^ ((\*P2*\)process_attributes pctf_attributes) *)
 
 and process_class_infos x:string = match x with {pci_virt(* virtual_flag*);pci_params(* list*);pci_name(* loc*);pci_expr(* FIXME*);pci_loc(* location*);pci_attributes(* attributes*)} ->((*P2*)process_virtual_flag pci_virt)^ "^" ^ ((*P2*)process_params_list pci_params)^ "^" ^ ((*P2*)process_loc pci_name)
                                                                                                                                                                                                    ^ "^" ^ ((*P2*)"process_FIXME pci_expr")
-                                                                                                                                                                                                   ^ "^" ^ ((*P2*)process_location pci_loc)^ "^" ^ ((*P2*)process_attributes pci_attributes)
+                                                                                                                                                                                                   (* ^ "^" ^ ((\*P2*\)process_location pci_loc)^ "^" ^ ((\*P2*\)process_attributes pci_attributes) *)
 
 and process_class_expr_class_infos x:string = match x with {pci_virt(* virtual_flag*);pci_params(* list*);pci_name(* loc*);pci_expr(* FIXME*);pci_loc(* location*);pci_attributes(* attributes*)} ->((*P2*)process_virtual_flag pci_virt)^ "^" ^ ((*P2*)process_params_list pci_params)^ "^" ^ ((*P2*)process_loc pci_name)
                                                                                                                                                                                                    ^(process_class_expr pci_expr)
-                                                                                                                                                                                                   ^ "^" ^ ((*P2*)process_location pci_loc)^ "^" ^ ((*P2*)process_attributes pci_attributes)
+                                                                                                                                                                                                   (* ^ "^" ^ ((\*P2*\)process_location pci_loc)^ "^" ^ ((\*P2*\)process_attributes pci_attributes) *)
 
 and process_class_structure (x:class_structure):string = match x with {pcstr_self(* pattern*);pcstr_fields(* list*)} ->((*P2*)process_pattern pcstr_self)
                                                                                     ^ "^" ^ ((*P2*)process_class_fields_list pcstr_fields)
 
-and process_class_field (x:class_field):string = match x with {pcf_desc(* class_field_desc*);pcf_loc(* location*);pcf_attributes(* attributes*)} ->((*P2*)process_class_field_desc pcf_desc)^ "^" ^ ((*P2*)process_location pcf_loc)^ "^" ^ ((*P2*)process_attributes pcf_attributes)
+and process_class_field (x:class_field):string = match x with {pcf_desc(* class_field_desc*);pcf_loc(* location*);pcf_attributes(* attributes*)} ->((*P2*)process_class_field_desc pcf_desc)(* ^ "^" ^ ((\*P2*\)process_location pcf_loc)^ "^" ^ ((\*P2*\)process_attributes pcf_attributes) *)
 
-and process_module_type (x:module_type):string = match x with {pmty_desc(* module_type_desc*);pmty_loc(* location*);pmty_attributes(* attributes*)} ->((*P2*)process_module_type_desc pmty_desc)^ "^" ^ ((*P2*)process_location pmty_loc)^ "^" ^ ((*P2*)process_attributes pmty_attributes)
+and process_module_type (x:module_type):string = match x with {pmty_desc(* module_type_desc*);pmty_loc(* location*);pmty_attributes(* attributes*)} ->((*P2*)process_module_type_desc pmty_desc)(* ^ "^" ^ ((\*P2*\)process_location pmty_loc)^ "^" ^ ((\*P2*\)process_attributes pmty_attributes) *)
 
 
 and process_signature ( a:signature):string=
   process_generic_list "(*P61*)process_signature" a process_signature_item
 
-and process_signature_item (x:signature_item):string = match x with {psig_desc(* signature_item_desc*);psig_loc(* location*)} ->((*P2*)process_signature_item_desc psig_desc)^ "^" ^ ((*P2*)process_location psig_loc)
+and process_signature_item (x:signature_item):string = match x with {psig_desc(* signature_item_desc*);psig_loc(* location*)} ->((*P2*)process_signature_item_desc psig_desc)(* ^ "^" ^ ((\*P2*\)process_location psig_loc) *)
 
 and process_module_declaration (x:module_declaration):string = match x with {pmd_name(* loc*);pmd_type(* module_type*);pmd_attributes(* attributes*);pmd_loc(* location*)} ->
   ((*P2*)process_string_option_loc pmd_name)^
-  ((*P2*)process_module_type pmd_type)^ "^" ^ ((*P2*)process_attributes pmd_attributes)^ "^" ^ ((*P2*)process_location pmd_loc)
-and process_module_substitution (x:module_substitution):string = match x with {pms_name(* loc*);pms_manifest(* longident_loc*);pms_attributes(* attributes*);pms_loc(* location*)} ->((*P2*)process_loc pms_name)^ "^" ^ ((*P2*)process_longident_loc pms_manifest)^ "^" ^ ((*P2*)process_attributes pms_attributes)^ "^" ^ ((*P2*)process_location pms_loc)
+  ((*P2*)process_module_type pmd_type)(* ^ "^" ^ ((\*P2*\)process_attributes pmd_attributes)^ "^" ^ ((\*P2*\)process_location pmd_loc) *)
+and process_module_substitution (x:module_substitution):string = match x with {pms_name(* loc*);pms_manifest(* longident_loc*);pms_attributes(* attributes*);pms_loc(* location*)} ->((*P2*)process_loc pms_name)^ "^" ^ ((*P2*)process_longident_loc pms_manifest)(* ^ "^" ^ ((\*P2*\)process_attributes pms_attributes)^ "^" ^ ((\*P2*\)process_location pms_loc) *)
 
 and process_open_infos (x(*:open_infos*)):string = match x with {popen_expr(* FIXME*);popen_override(* override_flag*);popen_loc(* location*);popen_attributes(* attributes*)} ->
   "((*P2*)process_FIXME popen_expr)"
-  ^ "^" ^ ((*P2*)process_override_flag popen_override)^ "^" ^ ((*P2*)process_location popen_loc)^ "^" ^ ((*P2*)process_attributes popen_attributes)
+  ^ "^" ^ ((*P2*)process_override_flag popen_override)(* ^ "^" ^ ((\*P2*\)process_location popen_loc)^ "^" ^ ((\*P2*\)process_attributes popen_attributes) *)
 
 and process_module_expr_include_infos (x(*:include_infos*)):string = match x with {pincl_mod(* FIXME*);pincl_loc(* location*);pincl_attributes(* attributes*)} ->
   ((*P2*)process_module_expr pincl_mod)
-  ^ "^" ^ ((*P2*)process_location pincl_loc)^ "^" ^ ((*P2*)process_attributes pincl_attributes)
+  (* ^ "^" ^ ((\*P2*\)process_location pincl_loc)^ "^" ^ ((\*P2*\)process_attributes pincl_attributes) *)
 
 (* and process_include_infos (x(\*:include_infos*\)):string = match x with {pincl_mod(\* FIXME*\);pincl_loc(\* location*\);pincl_attributes(\* attributes*\)} -> *)
 (*   ((\*P2*\)process_ pincl_mod) *)
@@ -750,7 +758,7 @@ and process_module_expr_include_infos (x(*:include_infos*)):string = match x wit
 
 
 
-and process_module_expr (x:module_expr):string = match x with {pmod_desc(* module_expr_desc*);pmod_loc(* location*);pmod_attributes(* attributes*)} ->((*P2*)process_module_expr_desc pmod_desc)^ "^" ^ ((*P2*)process_location pmod_loc)^ "^" ^ ((*P2*)process_attributes pmod_attributes)
+and process_module_expr (x:module_expr):string = match x with {pmod_desc(* module_expr_desc*);pmod_loc(* location*);pmod_attributes(* attributes*)} ->((*P2*)process_module_expr_desc pmod_desc)(* ^ "^" ^ ((\*P2*\)process_location pmod_loc)^ "^" ^ ((\*P2*\)process_attributes pmod_attributes) *)
 and process_structure (x:structure):string =
   process_generic_list "process_structure" x process_structure_item
 and process_structure_item x=
@@ -764,14 +772,14 @@ and process_structure_item_internal (x:structure_item):string =
     pstr_desc;
     pstr_loc
   } ->
-    ((*P2*)process_structure_item_desc pstr_desc)^ "^" ^ ((*P2*)process_location pstr_loc) 
-and process_value_binding (x:value_binding):string = match x with {pvb_pat(* pattern*);pvb_expr(* expression*);pvb_attributes(* attributes*);pvb_loc(* location*)} ->((*P2*)process_pattern pvb_pat)^ "^" ^ ((*P2*)process_expression pvb_expr)^ "^" ^ ((*P2*)process_attributes pvb_attributes)^ "^" ^ ((*P2*)process_location pvb_loc)
+    ((*P2*)process_structure_item_desc pstr_desc)(* ^ "^" ^ ((\*P2*\)process_location pstr_loc)  *)
+and process_value_binding (x:value_binding):string = match x with {pvb_pat(* pattern*);pvb_expr(* expression*);pvb_attributes(* attributes*);pvb_loc(* location*)} ->((*P2*)process_pattern pvb_pat)^ "^" ^ ((*P2*)process_expression pvb_expr)(* ^ "^" ^ ((\*P2*\)process_attributes pvb_attributes)^ "^" ^ ((\*P2*\)process_location pvb_loc) *)
 
-and process_module_binding (x:module_binding):string = match x with {pmb_name(* loc*);pmb_expr(* module_expr*);pmb_attributes(* attributes*);pmb_loc(* location*)} ->((*P2*)process_string_option_loc pmb_name)^ "^" ^ ((*P2*)process_module_expr pmb_expr)^ "^" ^ ((*P2*)process_attributes pmb_attributes)^ "^" ^ ((*P2*)process_location pmb_loc)
+and process_module_binding (x:module_binding):string = match x with {pmb_name(* loc*);pmb_expr(* module_expr*);pmb_attributes(* attributes*);pmb_loc(* location*)} ->((*P2*)process_string_option_loc pmb_name)^ "^" ^ ((*P2*)process_module_expr pmb_expr)(* ^ "^" ^ ((\*P2*\)process_attributes pmb_attributes)^ "^" ^ ((\*P2*\)process_location pmb_loc) *)
 
 
 
 and process_toplevel_directive (x:toplevel_directive):string = match x with {pdir_name(* loc*);pdir_arg(* option*);pdir_loc(* location*)} ->
   ((*P2*)process_loc pdir_name)
-  ^ "^" ^ ((*P2*)process_directive_argument_option pdir_arg)^ "^" ^ ((*P2*)process_location pdir_loc)
+  ^ "^" ^ ((*P2*)process_directive_argument_option pdir_arg)(* ^ "^" ^ ((\*P2*\)process_location pdir_loc) *)
 
