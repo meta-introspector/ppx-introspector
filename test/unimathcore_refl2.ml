@@ -68,6 +68,10 @@ and process_generic_list name a f : string =
   ^ "] )"
 
 and process_generic_type (a : string) (b : string) (c : string list) =
+  print_endline("Definition umcr_n_role_" ^a ^": UU := umcr_refl.");
+  print_endline("Definition umcr_n_type_" ^b ^": UU := umcr_refl.");
+  print_endline("Definition umcr_r_rel_" ^a ^ "_" ^b ^": UU := umcr_refl.");
+  print_endline("Definition umcr_r_rel_a_" ^a ^ "_" ^b ^" {X Y : UU} UU := umcr_n_role_" ^a ^": UU x .");
   print_endline("(process_generic_type " ^a ^ "^" ^ b ^ "^" ^ (
       process_generic_list
         "gen_type"

@@ -10,6 +10,9 @@ First we take Univalent Mathematics
  }
 Unimath [Coq](https://coq.inria.fr/) library aims to formalize a substantial body of mathematics using the
 [univalent point of view](https://en.wikipedia.org/wiki/Univalent_foundations).
+
+`paths_refl` is an inductive function that takes an element `a` from the type `A` and returns a value of type `UU`, which stands for "universe of universes." This function is responsible for returning a reference loop, which can be used to create an identity path.
+
 First we extract unimath into ocaml using metacoq,
    then we extract the core types into ocaml.
    here are the foundations:
