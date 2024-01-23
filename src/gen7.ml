@@ -137,8 +137,8 @@ and process_string_loc_list x =
 and process_int x : string= "(mint " ^ string_of_int(x) ^ ")"
 and process_extension_constructor_list x=
     process_generic_list "process_constructors_list" x process_extension_constructor
-and process_location_stack x =
-  process_generic_list "process_location_stack" x process_location
+and process_location_stack x ="(loc_stack)"
+  (* process_generic_list "process_location_stack" x process_location *)
     
 and process_row_field_list x =
   process_generic_list "process_row_field_list" x process_row_field
@@ -174,7 +174,7 @@ and process_longident_loc_expression_list a =
   process_generic_list "process_longident_loc_expression_list" a process_loc_expression
 
 
-and process_label_loc_expression x = "fixme:process_label_loc_expression"
+and process_label_loc_expression x = "\"fixme:process_label_loc_expression\""
 and process_label_loc_expression_list a =
   process_generic_list "process_label_loc_expression" a
     process_label_loc_expression
@@ -231,7 +231,7 @@ and process_pattern_option a =
   | Some x -> (process_pattern x)
   | None -> ""
 
-and process_generic_string_option_loc  (a:string option loc):string = "FIXMEprocess_generic_string_option_loc"
+and process_generic_string_option_loc  (a:string option loc):string = "\"FIXMEprocess_generic_string_option_loc\""
 
 and process_string_list_option x =
   process_generic_option
@@ -349,13 +349,14 @@ and process_with_constraint x :string =match x with
 (*emit_constructor_arguments:*)| Pwith_modtype((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)module_type1) -> ((*P5*)process_generic_type "with_constraint" "Pwith_modtype" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0);((*P4*)process_module_type (*emit_core_type_numbered*)module_type1)])
 (*emit_constructor_arguments:*)| Pwith_module((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc1) -> ((*P5*)process_generic_type "with_constraint" "Pwith_module" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0);((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc1)])
 (*emit_constructor_arguments:*)| Pwith_type((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)type_declaration1) -> ((*P5*)process_generic_type "with_constraint" "Pwith_type" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0);((*P4*)process_type_declaration (*emit_core_type_numbered*)type_declaration1)])
-and process_string x = "(string \"" ^ x ^ "\" )"
-and process_loc x =
-  "(process_loc "
-  ^ (process_string x.txt)
-  ^ "^"
-  ^ (process_location x.loc)
-  ^ ")"
+and process_string x = "(string \"" ^ (String.escaped x) ^ "\" )"
+                       
+and process_loc x = "(loc)"
+  (* "(process_loc " *)
+  (* ^ (process_string x.txt) *)
+  (* ^ "^" *)
+  (* ^ (process_location x.loc) *)
+  (* ^ ")" *)
 
 
 and process_string_option_loc x = process_generic_string_option_loc x
@@ -403,7 +404,7 @@ and process_module_type_desc x :string =match x with
 (*emit_constructor_arguments:*)| Pmty_functor((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)functor_parameter0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)module_type1) -> ((*P5*)process_generic_type "module_type_desc" "Pmty_functor" [((*P4*)process_functor_parameter (*emit_core_type_numbered*)functor_parameter0);((*P4*)process_module_type (*emit_core_type_numbered*)module_type1)])
 (*emit_constructor_arguments:*)| Pmty_signature((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)signature0) -> ((*P5*)process_generic_type "module_type_desc" "Pmty_signature" [((*P4*)process_signature (*emit_core_type_numbered*)signature0)])
 (*emit_constructor_arguments:*)| Pmty_ident((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident_loc0) -> ((*P5*)process_generic_type "module_type_desc" "Pmty_ident" [((*P4*)process_longident_loc (*emit_core_type_numbered*)longident_loc0)])
-and process_str_loc_option x = "FIXME:process_str_loc_option"
+and process_str_loc_option x = "\"FIXME:process_str_loc_option\""
 and process_class_field_kind x :string =match x with
 (*emit_constructor_arguments:*)| Cfk_concrete((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)override_flag0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)expression1) -> ((*P5*)process_generic_type "class_field_kind" "Cfk_concrete" [((*P4*)process_override_flag (*emit_core_type_numbered*)override_flag0);((*P4*)process_expression (*emit_core_type_numbered*)expression1)])
 (*emit_constructor_arguments:*)| Cfk_virtual((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)core_type0) -> ((*P5*)process_generic_type "class_field_kind" "Cfk_virtual" [((*P4*)process_core_type (*emit_core_type_numbered*)core_type0)])
@@ -624,18 +625,20 @@ and process_longident x :string =match x with
 (*emit_constructor_arguments:*)| Lapply((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident1) -> ((*P5*)process_generic_type "longident" "Lapply" [((*P4*)process_longident (*emit_core_type_numbered*)longident0);((*P4*)process_longident (*emit_core_type_numbered*)longident1)])
 (*emit_constructor_arguments:*)| Ldot((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)longident0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string1) -> ((*P5*)process_generic_type "longident" "Ldot" [((*P4*)process_longident (*emit_core_type_numbered*)longident0);((*P4*)process_string (*emit_core_type_numbered*)string1)])
 (*emit_constructor_arguments:*)| Lident((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0) -> ((*P5*)process_generic_type "longident" "Lident" [((*P4*)process_string (*emit_core_type_numbered*)string0)])
-and process_position (x:position):string =
-  match x with {pos_fname(* string*);pos_lnum(* int*);pos_bol(* int*);pos_cnum(* int*)} ->
-    "(pos " ^
-    ((*P2*)process_string pos_fname)^ "^" ^ ((*P2*)process_int pos_lnum)^ "^" ^ ((*P2*)process_int pos_bol)^ "^" ^ ((*P2*)process_int pos_cnum) ^ ")"
+and process_position (x:position):string ="(pos)"
+  (* match x with {pos_fname(\* string*\);pos_lnum(\* int*\);pos_bol(\* int*\);pos_cnum(\* int*\)} -> *)
+  (*   "(pos " ^ *)
+  (*   ((\*P2*\)process_string pos_fname)^ "^" ^ ((\*P2*\)process_int pos_lnum)^ "^" ^ ((\*P2*\)process_int pos_bol)^ "^" ^ ((\*P2*\)process_int pos_cnum) ^ ")" *)
                                                                                                                                                                                     
-and process_location (x:location):string =
-  (* (print_endline ("process_location")) ; *)
-  "(process_location " ^
-  match x with {loc_start(* position*);loc_end(* position*);loc_ghost(* bool*)} ->((*P2*)process_position loc_start)^ "^" ^ ((*P2*)process_position loc_end)^ "^" ^ ((*P2*)process_bool loc_ghost)
-                                                                                                                                                        ^ ")"
+and process_location (x:location):string = "(loc2)"
+  (* (\* (print_endline ("process_location")) ; *\) *)
+  (* "(process_location " ^ *)
+  (* match x with {loc_start(\* position*\);loc_end(\* position*\);loc_ghost(\* bool*\)} ->((\*P2*\)process_position loc_start)^ "^" ^ ((\*P2*\)process_position loc_end)^ "^" ^ ((\*P2*\)process_bool loc_ghost) *)
+  (*                                                                                                                                                       ^ ")" *)
 
-and process_loc_abstract x b = match x with {txt(* FIXME*);loc(* location*)} ->((*P2*)b txt)^ "^" ^ ((*P2*)process_location loc)
+and process_loc_abstract x b = match x with
+    {txt(* FIXME*);loc(* location*)} ->
+    ((*P2*)b txt) (* "^" ^ ((\*P2*\)process_location loc) *)
 and process_loc_longident x b = process_loc_abstract x process_longident
 
 and process_string_loc (x:string loc):string  =
@@ -668,10 +671,10 @@ and process_binding_op_list a =
   process_generic_list "process_binding_op_list" a process_binding_op
 and process_prim_list a =
     process_generic_list "process_prim" a process_string
-and process_cstr x  = "FIXME:cstr(core_type * core_type * location)"
+and process_cstr x  = "\"FIXME:cstr(core_type * core_type * location)\""
 and process_cstrs_list a =
   process_generic_list "process_cstrs" a process_cstr
-and process_params x  = "FIXME:process_params (core_type * (variance * injectivity))"
+and process_params x  = "\"FIXME:process_params(core_type * (variance * injectivity))\""
 and process_params_list a =
   process_generic_list "process_params" a process_params
 and process_letop (x:letop):string = match x with {let_(* binding_op*);ands(* list*);body(* expression*)} ->
