@@ -16,7 +16,10 @@ let rec stringlister3 (x:string_list) : string =
   | h :: t ->
     if t != [] then
       let n = stringlister3(t) in
-      h ^ ";(*L1*)"^ n
+      if h != "" then
+        h ^ ";(*L1*)"^ n
+      else
+        "(*L10*)"^ n
     else
       h
 and stringlister2 (x:string_list) : string =

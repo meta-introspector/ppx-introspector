@@ -7,36 +7,42 @@
  (name test)
  (modules test)
  (libraries alcotest ppxlib )
- (preprocess
-  (pps ppxlib.metaquot ppx-introspector -- -no-merge)))
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
 (test
  (name test2)
  (modules test2)
  (libraries alcotest ppxlib )
- (preprocess
-  (pps ppxlib.metaquot ppx-introspector -- -no-merge)))
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
 (test
  (name test2a)
  (modules test2a)
  (libraries alcotest ppxlib )
- (preprocess
-  (pps ppxlib.metaquot ppx-introspector -- -no-merge)))
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
 (test
  (name unimath)
  (modules unimath)
  (libraries alcotest ppxlib )
- (preprocess
-  (pps ppxlib.metaquot ppx-introspector -- -no-merge)))
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
 (test
  (name unimath_graph)
  (modules unimath_graph)
  (libraries alcotest ppxlib )
- (preprocess
-  (pps ppxlib.metaquot ppx-introspector -- -no-merge)))
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
 (test
  (name test3)
  (modules test3)
  (libraries alcotest ppxlib )
- (preprocess
-  (pps ppxlib.metaquot ppx-introspector -- -no-merge)))
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
 

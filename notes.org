@@ -224,3 +224,7 @@ grep generic_type test4.ml | fold -w 60 -s | grep Pconst_string |sort |uniq -c |
     127 "constant" "Pconst_string" [(string "Pexp_ident" 
     194 "constant" "Pconst_string" [(string "Nolabel" 
    1852 [(process_generic_type "constant" "Pconst_string" [(string 
+
+   * next steps:
+     finalize compilable output from gen7 and then write drivers to emit unimath theorems about the types found.
+     

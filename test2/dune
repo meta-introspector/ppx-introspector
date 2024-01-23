@@ -6,5 +6,6 @@
 (test
  (name test2)
  (libraries alcotest ppxlib )
- (preprocess
-  (pps ppxlib.metaquot ppx-introspector -- -no-merge)))
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
