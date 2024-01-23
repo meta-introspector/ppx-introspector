@@ -1,8 +1,18 @@
-(*in ocaml coq extraction, explain the code to me as a epic narrative,
-  invoking the muses and athena,
-  set in a futuristic utopian world where nanomachies follow the proofs of metacoq and reason about them using ai.
-  we show that athena is a construct of unimath, that she occupies a space on mount athena, and she was born as a projection out of zeus's mind, and he is the child of the titans. We show the lineage of the gods as relationships between types.
-  new types are born out of older types creating a left right relationship.
+(*
+First we take Univalent Mathematics 
+@Misc{UniMath,
+    author = {Voevodsky, Vladimir and Ahrens, Benedikt and Grayson, Daniel and others},
+    title = {UniMath --- a computer-checked library of univalent mathematics},
+    url = {https://github.com/UniMath/UniMath},
+    howpublished = {available at \url{http://unimath.org}},
+    doi          = {10.5281/zenodo.8427604},
+    url          = {https://doi.org/10.5281/zenodo.8427604}
+ }
+Unimath [Coq](https://coq.inria.fr/) library aims to formalize a substantial body of mathematics using the
+[univalent point of view](https://en.wikipedia.org/wiki/Univalent_foundations).
+First we extract unimath into ocaml using metacoq,
+   then we extract the core types into ocaml.
+   here are the foundations:
 *)    
 type __ = Obj.t
 type hProptoType = __
@@ -55,3 +65,11 @@ type ('a, 'b) coprod =
 | Coq_ii2 of 'b
 type empty = |
 type 'x neg = 'x -> empty
+
+(*
+    Now we want to condense these instructions
+for processing the rest of the data.
+we want to lift the ast types into unimath and construct types.
+    so we can take the node type and create subtype for all the type of ast nodes.
+     new types are born out of older types creating a left right relationship.
+*)

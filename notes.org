@@ -230,7 +230,10 @@ grep generic_type test4.ml | fold -w 60 -s | grep Pconst_string |sort |uniq -c |
      
 * overview
 
-generate and test the code 
+generate and test the code .
+first we build the ppx,
+then the extraction from the unimath core
+then we compile that and extract it again, but that breaks the compiler.
 #+begin_src shell
   dune build
   make test/unimathcore.txt -B
@@ -238,3 +241,5 @@ generate and test the code
 
   dune build
 #+end_src
+
+*** unimath extract
