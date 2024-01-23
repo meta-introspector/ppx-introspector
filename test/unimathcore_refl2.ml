@@ -35,8 +35,6 @@ let process_value_binding_list = "process_value_binding_list"
 let pos a = "process_loc"
 let b a = "process_loc"
 let mint a = "process_loc"
-let process_string a = "process_string" ^ a
-let process_attribute_list a = "process_attribute_list"
 let process_string_option = "process_attribute_list"
 let string a = "process_string"
 let process_structure_items x = "process_structure_items" ^ x
@@ -46,25 +44,36 @@ let rec process_generic_list_tail name a f : string =
   | [] -> ""
   | a :: t ->
       let v1 = f a in
-      if t != [] then v1 ^ "\n\n;(*L3*)" ^ process_generic_list_tail name t f
-      else v1
+      if t != [] then ";(*L31*)" ^ v1 ^ ";(*L3*)" ^ process_generic_list_tail name t f
+      else "(*L32*)" ^ v1 ^ "(*L33*)" 
+
+and quot a b = "(" ^ a ^ " \"" ^ b ^ "\"" ^ ")"
+and process_attribute_list a = quot_list "attribute" process_attribute a
+and quot_list n fn ls =
+  let quot_a c = quot n  (fn c) in
+  process_generic_list     ("quot_list" ^ n)    ls    quot_a
+    
+and process_string a = quot "process_string"  a
+and process_attribute a = quot "process_attribute"  a
+
 
 and process_generic_list name a f : string =
-  "(" ^ name ^ "["
+  "(process_generic_list " ^ name ^ " ["
   ^ (match a with
     | [] -> ""
     | a :: t ->
         let v1 = f a in
-        if t != [] then v1 ^ "\n\n;(*L4*)" ^ process_generic_list_tail name t f
+        if t != [] then v1 ^ ";(*L4*)" ^ process_generic_list_tail name t f
         else v1)
   ^ "] )"
 
 and process_generic_type (a : string) (b : string) (c : string list) =
-  print_endline("process_generic_type" ^a ^ b ^ (process_generic_list
-                                                   "process_generic_type"
-                                                   c
-                                                   process_string
-                                                ));
+  print_endline("(process_generic_type " ^a ^ "^" ^ b ^ "^" ^ (
+      process_generic_list
+        "gen_type"
+        c
+        process_string
+    ));
   "process_generic_type"
 
 and process_structure_item x = "process_structure_item"
