@@ -411,7 +411,7 @@ and process_class_field_kind x :string =match x with
 
 
 and  process_class_expr (x:class_expr):string = match x with {pcl_desc(* class_expr_desc*);pcl_loc(* location*);pcl_attributes(* attributes*)} ->
-  ((*P2*)process_class_expr_desc pcl_desc)^ "^" ^ ((*P2*)process_location pcl_loc)^ "^" ^ ((*P2*)process_attributes pcl_attributes)
+  ((*P2*)process_class_expr_desc pcl_desc)^ "^" ^ ((*P2*)process_location pcl_loc)^  "^" ^ ((*P2*)process_attributes pcl_attributes)
 and process_class_field_desc x :string =match x with
 (*emit_constructor_arguments:*)| Pcf_extension((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)extension0) -> ((*P5*)process_generic_type "class_field_desc" "Pcf_extension" [((*P4*)process_extension (*emit_core_type_numbered*)extension0)])
 (*emit_constructor_arguments:*)| Pcf_attribute((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)attribute0) -> ((*P5*)process_generic_type "class_field_desc" "Pcf_attribute" [((*P4*)process_attribute (*emit_core_type_numbered*)attribute0)])

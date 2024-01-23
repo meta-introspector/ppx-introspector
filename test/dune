@@ -46,3 +46,18 @@
  ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
 )
 
+(test
+ (name unimathcore_refl)
+ (modules unimathcore_refl)
+ (libraries alcotest ppxlib )
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
+(test
+ (name unimathcore_refl2)
+ (modules unimathcore_refl2)
+ (libraries alcotest ppxlib )
+ ; (preprocess
+ ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+)
+
