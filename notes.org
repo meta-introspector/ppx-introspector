@@ -246,3 +246,14 @@ then we compile that and extract it again, but that breaks the compiler.
 
 we are working on extracting now to unimath here.
 dune exec test/unimathcore_refl2.exe
+
+
+***json
+
+here are some processing of the json
+
+   dune exec test/unimathcore_refl2.exe > test.json
+   gron -s test.json | cut -d[ -f3-   | sort |uniq -c |sort -n
+   gron -s test.json | cut -d= -f2-   | sort |uniq -c |sort -n
+  
+gron -s test.json | cut -d= -f2-   | sort |uniq -c |sort -n

@@ -1,3 +1,8 @@
+test_refl:
+	dune exec test/unimathcore_refl2.exe 
+test/unimathcore_refl3.txt:
+	./_build/install/default/lib/ppx-introspector/ppx.exe   --impl test/unimathcore_refl2.ml  > test/unimathcore_refl3.txt
+
 
 test/test2.txt: log.txt test/test2.ml 
 	./_build/install/default/lib/ppx-introspector/ppx.exe   --impl test/test2.ml > test/test2.txt

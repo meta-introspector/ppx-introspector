@@ -1,4 +1,5 @@
 
+    
 type simple_ast_root  = {
     sa_role : string;
     sa_type : string;
@@ -41,6 +42,9 @@ and ast_desc  =
   | Ad_process_arg_label_expression_list of ast_desc_list
   | Ad_pos
 [@@deriving yojson]
+type string_list = string list [@@deriving yojson]
+
+
 let process_core_type_list x = Ad_list x
   
 let ident a  =  Ad_Ident a
@@ -124,9 +128,7 @@ and def_pair (a : string)(b:string)(a1:string)(b1:string) =
            ^ " T."  in 
   ( print_endline tt);
   tt
-
-and process_generic_type (a : string) (b : string) (c : ast_desc_list) =
-  let yj = Yojson.Safe.to_string (ast_desc_list_to_yojson c) in
+and process_generic_type2 a b c =
   let baset = "umcr_type" in
   let at = "umcr_n_role_" ^ a in
   let bt = "umcr_n_type_" ^ b in  
@@ -134,7 +136,37 @@ and process_generic_type (a : string) (b : string) (c : ast_desc_list) =
   let f1 = (def_basic at baset) in 
   let f2 = (def_basic bt baset) in 
   let f3 = (def_pair ct baset at bt ) in
+           ""
+
+and dolist al : string = 
+  match al with
+  | [] -> ""
+  | h :: t ->
+    extract_root h ^"^"^ dolist t
+
+and extract_root x: string  =
+  match x with
+  | Ad_root { sa_role=arole; sa_type=atype; sa_list=alist} ->
+    arole ^"^" ^  atype ^"^" ^ (dolist alist)
+  | other ->"OTHER"
+
+and process_root_list a  =
+  match a with
+   | [] -> ""
+   | x :: t ->
+     let v1 = extract_root x in
+     if t != []
+     then
+       v1 ^ "^" ^ process_root_list t
+     else
+       v1
+
+and process_generic_type (a : string) (b : string) (c : ast_desc_list) =
+  let yj = Yojson.Safe.to_string (ast_desc_list_to_yojson c) in
   (print_endline yj);
+  
+  let yj1 = (process_root_list c) in
+  (print_endline yj1);
   Ad_root {
     sa_role =a;
     sa_type =b;
@@ -144,7 +176,7 @@ and process_generic_type (a : string) (b : string) (c : ast_desc_list) =
 and process_structure_item x = Ad_process_structure_item x
 and process_structure_item_desc x = Ad_process_structure_item_desc x
 
-let process_structure_items x =
+and process_structure_items x =
   process_generic_list "process_structure_items" x process_structure_item
  
 
