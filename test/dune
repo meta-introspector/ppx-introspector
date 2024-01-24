@@ -7,8 +7,7 @@
  (name test)
  (modules test)
  (libraries alcotest ppxlib )
- ; (preprocess
- ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
+
 )
 (test
  (name test2)
@@ -53,18 +52,26 @@
  ; (preprocess
  ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
 )
-(test
+(executable
  (name unimathcore_refl2)
  (modules unimathcore_refl2)
- (libraries alcotest ppxlib )
+ 
+   (libraries alcotest ppxlib ppx_yojson_conv_lib yojson  ppx_deriving_yojson.runtime   )
+
+ (preprocess (pps ppx_deriving_yojson ))
+
+
  ; (preprocess
  ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
 )
 
-(test
+(executable 
  (name unimathcore_refl2b)
  (modules unimathcore_refl2b)
- (libraries alcotest ppxlib )
+ (libraries alcotest ppxlib ppx_yojson_conv_lib yojson  ppx_deriving_yojson.runtime   )
+
+ (preprocess (pps ppx_deriving_yojson ))
+
  ; (preprocess
  ;  (pps ppxlib.metaquot ppx-introspector -- -no-merge))
 )

@@ -1,11 +1,10 @@
 
-
 type simple_ast_root  = {
     sa_role : string;
     sa_type : string;
     sa_list : ast_desc_list
-  }
-and ast_desc_list= ast_desc list
+  }  [@@deriving yojson]
+and ast_desc_list= ast_desc list [@@deriving yojson]
 and ast_desc  = 
   | Ad_None
   | Ad_NoString (*optional string none*)
@@ -34,15 +33,14 @@ and ast_desc  =
   | Ad_quote of string * ast_desc
   | Ad_process_generic_list of string *ast_desc_list
   | Ad_attributes
-
   | Ad_process_value_binding_list
   | Ad_process_loc of ast_desc
   | Ad_process_string_loc_list_pattern_option
   | Ad_process_arg_label_expression
     of ast_desc * ast_desc
   | Ad_process_arg_label_expression_list of ast_desc_list
-
   | Ad_pos
+[@@deriving yojson]
 let process_core_type_list x = Ad_list x
   
 let ident a  =  Ad_Ident a
@@ -127,7 +125,8 @@ and def_pair (a : string)(b:string)(a1:string)(b1:string) =
   ( print_endline tt);
   tt
 
-and process_generic_type (a : string) (b : string) (c : ast_desc list) =
+and process_generic_type (a : string) (b : string) (c : ast_desc_list) =
+  let yj = Yojson.Safe.to_string (ast_desc_list_to_yojson c) in
   let baset = "umcr_type" in
   let at = "umcr_n_role_" ^ a in
   let bt = "umcr_n_type_" ^ b in  
@@ -135,6 +134,7 @@ and process_generic_type (a : string) (b : string) (c : ast_desc list) =
   let f1 = (def_basic at baset) in 
   let f2 = (def_basic bt baset) in 
   let f3 = (def_pair ct baset at bt ) in
+  (print_endline yj);
   Ad_root {
     sa_role =a;
     sa_type =b;
