@@ -3,9 +3,6 @@
   (flags
    (:standard -warn-error -8-9-26-27-37-34-11-11-32-39 -dtypedtree -dparsetree -dump-into-file -dlambda -annot -dlocations -dsource  -drawlambda  ))))
 
-(library
- (modules myruntime)
- (name myruntime))
 
 (test
  (name test)

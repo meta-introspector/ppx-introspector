@@ -67,17 +67,27 @@ and process_generic_list name a f : string =
         else v1)
   ^ "] )"
 
+and def_basic (a : string)(b:string) =
+  let t = "Definition " ^ a ^ "(T : "^ b ^ "): UU := umcr_refl. " in
+  (print_endline t);
+  t
+
+and def_pair (a : string)(b:string)(a1:string)(b1:string) =
+  let tt = "Definition " ^ a ^ "(T : "^ b^ "): UU := " ^ a1
+           ^ " T ×u " ^  b1
+           ^ " T."  in 
+  ( print_endline tt);
+  tt
+
 and process_generic_type (a : string) (b : string) (c : string list) =
-  print_endline("Definition umcr_n_role_" ^a ^": UU := umcr_refl.");
-  print_endline("Definition umcr_n_type_" ^b ^": UU := umcr_refl.");
-  print_endline("Definition umcr_r_rel_" ^a ^ "_" ^b ^": UU := umcr_refl.");
-  print_endline("Definition umcr_r_rel_a_" ^a ^ "_" ^b ^" {X Y : UU} UU := umcr_n_role_" ^a ^": UU x .");
-  print_endline("(process_generic_type " ^a ^ "^" ^ b ^ "^" ^ (
-      process_generic_list
-        "gen_type"
-        c
-        process_string
-    ));
+  let baset = "umcr_type" in
+  let at = "umcr_n_role_" ^ a in
+  let bt = "umcr_n_type_" ^ b in  
+  let ct = "umcr_r_rel_" ^ a ^ "__"^ b in
+
+  let f1 = (def_basic at baset) in 
+  let f2 = (def_basic bt baset) in 
+  let f3 = (def_pair ct baset at bt ) in
   "process_generic_type"
 
 and process_structure_item x = "process_structure_item"
