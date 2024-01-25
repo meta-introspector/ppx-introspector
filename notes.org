@@ -257,3 +257,98 @@ here are some processing of the json
    gron -s test.json | cut -d= -f2-   | sort |uniq -c |sort -n
   
 gron -s test.json | cut -d= -f2-   | sort |uniq -c |sort -n
+
+ 2  "foo1";
+      2  "loc2";
+      2  "loc_stack";
+      2  "none";
+      3  " none ";
+      4  "Pexp_constraint";
+      4  "Pstr_type";
+      4  "structure_item_desc";
+      4  "y";
+      5  "b";
+      6  "c";
+      6  "list";
+      6  "process_arg_constructor_declaration";
+      6  "process_expression_list";
+      6  "process_label_declaration_list";
+      6  "process_loc";
+      6  "process_string_loc_list_pattern_option";
+      6  "process_vars_list";
+      7  "process_arg_label_expression";
+      7  "process_structure_items";
+      7  "Recursive";
+      9  "Ppat_constraint";
+     10  "a";
+     11  "loc";
+     13  "__";
+     14  "process_type_declaration_list";
+     16  "Ptype_abstract";
+     16  "type_kind";
+     17  "private_flag";
+     17  "Public";
+     19  "Nonrecursive";
+     19  "process_params";
+     20  "Obj.t";
+     20  "process_cstrs";
+     21  "Pexp_fun";
+     25  "ident";
+     26  "rec_flag";
+     27  "process_core_type_list";
+     28  "Ad_list";
+     34  "string";
+     37  "x";
+     40  "core_type_desc";
+     40  "Ptyp_constr";
+     50  "::";
+     50  "Pexp_tuple";
+     55  "Ad_arg_label_expression_list";
+     60  "Ppat_var";
+     65  "process_generic_type";
+     69  "^";
+     69  "pattern_desc";
+    122  "[]";
+    158  "Pexp_construct";
+    160  "Ad_None";
+    168  "Pexp_constant";
+    178  "Pexp_apply";
+    195  "Ad_process_arg_label_expression_list";
+    198  "constant";
+    198  "Pconst_string";
+    198  "Pexp_ident";
+    228  "Ad_NoString";
+    324  "Ad_String";
+    360  "Ad_process_arg_label_expression";
+    398  "arg_label";
+    398  "Nolabel";
+    416  "Ad_Ident";
+    777  "expression_desc";
+   1484  {};
+   1484  "Ad_root";
+   5277  [];
+
+
+ ** backtrace
+
+ OCAMLRUNPARAM=b dune exec test/unimathcore_refl2.exe
+
+** example output of new debug
+ #+begin_src input
+rewrite and reinterpret creatively preserving main ideas """(rec_root rec_flag^Nonrecursive^)^(rec_root pattern_desc^Ppat_var^(Ad_String "foo1"))^(rec_root expression_desc^Pexp_apply^(rec_root expression_desc^Pexp_ident^(Ad_Ident "process_generic_type)")^(process_generic_type3 ast_desc^Ad_process_arg_label_expression_list[[]]))"""
+#+end_src
+#+begin_src output
+
+Original:
+```css
+(rec_root rec_flag^Nonrecursive^)^(rec_root pattern_desc^Ppat_var^(Ad_String "foo1"))^(rec_root expression_desc^Pexp_apply^(rec_root expression_desc^Pexp_ident^(Ad_Ident "process_generic_type)")^(process_generic_type3 ast_desc^Ad_process_arg_label_expression_list[[]]))
+```
+
+Rewritten:
+```css
+Let's start with a non-recursive root that contains a pattern description for "foo1". Then, we have an expression root that applies a function to another expression root. The function being applied is the process generic type, which takes one argument: an expression root that identifies "process\_generic\_type". This expression root has no arguments and returns nothing. However, it is used in the application of the process generic type function, which takes a list of arguments consisting of a single expression root that does not have any arguments but applies another expression root to itself.
+```
+
+Interpreted creatively:
+Imagine a puzzle where we have three pieces of information: a non-recursive pattern for "foo1", an expression that applies a function to another expression, and a function that takes one argument and returns nothing. Now, let's put these pieces together like a jigsaw puzzle. We start with the non-recursive pattern for "foo1", which is like the first piece of information we have. Then, we apply a function to this pattern, which is like the second piece of information. This function takes one argument, which is an expression root that identifies "process\_generic\_type". The process generic type function does not return anything, so it's like the third piece of information, but it's not the final puzzle. To complete the puzzle, we have to put this last piece together with the other two pieces. We do this by applying the process generic type function to a list of arguments consisting of a single expression root that does not have any arguments but applies another expression root to itself.
+#+end_src

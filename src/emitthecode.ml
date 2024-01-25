@@ -196,14 +196,16 @@ and decl_imp_core_type_list(parent,name,a,b,n) =
 and  emit_constructor_arguments(a1:(string*string*constructor_arguments*string_list)):string =  let (parent,name,x,s) = a1 in  match x with  | Pcstr_tuple a ->
     "(*emit_constructor_arguments:*)"  ^
     "| " ^ name ^
+    (
       if a != [] then
         "("
         ^ (emit_constructor_arguments_from_core_type_list (a,s,0))
         ^ ")"
       else
         ""
+    )
     ^ "-> "
-    ^ "((*P5*)process_generic_type "
+    ^ "((*P5N*)process_generic_type "
     ^ "\"" ^ parent ^ "\""^
     " \""  ^ name   ^ "\""^
     " " ^ imp_core_type_list (a,s,0) ^")"

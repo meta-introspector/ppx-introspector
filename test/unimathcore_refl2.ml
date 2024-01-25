@@ -1,5 +1,4 @@
 
-    
 type simple_ast_root  = {
     sa_role : string;
     sa_type : string;
@@ -8,6 +7,7 @@ type simple_ast_root  = {
 and ast_desc_list= ast_desc list [@@deriving yojson]
 and ast_desc  = 
   | Ad_None
+  | Ad_fixme of string
   | Ad_NoString (*optional string none*)
   | Ad_String of string
   | Ad_Ident of string
@@ -19,6 +19,8 @@ and ast_desc  =
   | Ad_process_arg_constructor_declaration of ast_desc_list
   | Ad_process_label_declaration_list of ast_desc_list
   | Ad_process_structure_item of ast_desc
+  | Ad_process_ast_desc of ast_desc
+  (* | Ad_process_attribute of ast_desc *)
   | Ad_process_structure_item_desc of ast_desc
   | Ad_process_params of ast_desc_list
   | Ad_process_cstrs of ast_desc_list
@@ -31,7 +33,7 @@ and ast_desc  =
   | Ad_loc_stack
   | Ad_bool of bool
   | Ad_int of int
-  | Ad_quote of string * ast_desc
+  | Ad_quote of string * string
   | Ad_process_generic_list of string *ast_desc_list
   | Ad_attributes
   | Ad_process_value_binding_list
@@ -41,6 +43,11 @@ and ast_desc  =
     of ast_desc * ast_desc
   | Ad_process_arg_label_expression_list of ast_desc_list
   | Ad_pos
+
+
+
+
+                         
 [@@deriving yojson]
 type string_list = string list [@@deriving yojson]
 
@@ -95,16 +102,22 @@ let rec process_generic_list_tail name a f  =
       let v1 = f a in
       if t != [] then Ad_process_list_tail ( v1 , process_generic_list_tail name t f)
       else v1
-
+and process_generic_type3 (a : string) (b : string) (c : ast_desc_list):string =
+  "(process_generic_type3 " ^ a ^ "^"^ b ^ "["^ (process_ast_desc_list2 c) ^"])"
 and quot a b =  Ad_quote( a,b)
     
-and process_attribute_list a = quot_list "attribute" process_attribute a
+(* and process_attribute_list a = quot_list "attribute" process_attribute a *)
 and quot_list n fn ls =
   let quot_a c = quot n  (fn c) in
   process_generic_list     ("quot_list" ^ n)    ls    quot_a
-    
-and process_string a = quot "process_string"  a
-and process_attribute a = quot "process_attribute"  a
+and process_ast_desc_list l = Ad_fixme "FIXME:process_ast_desc_list"
+  (* quot_list "process_ast_desc_list" process_ast_desc l  *)
+
+and process_simple_ast_root x = Ad_root x
+and process_string (a:string):ast_desc = quot "process_string"  a
+and process_int (a:int):ast_desc = Ad_int a
+and process_bool (a:bool):ast_desc = Ad_bool a
+(* and process_attribute a = Ad_process_attribute  a *)
 
 
 and process_generic_list name a f  =
@@ -137,18 +150,32 @@ and process_generic_type2 a b c =
   let f2 = (def_basic bt baset) in 
   let f3 = (def_pair ct baset at bt ) in
            ""
-
-and dolist al : string = 
+and process_ast_desc x =  Ad_fixme "TODO:Ad_process_ast_desc  x"
+and process_ast_desc_list2 al : string = 
   match al with
   | [] -> ""
   | h :: t ->
-    extract_root h ^"^"^ dolist t
-
-and extract_root x: string  =
-  match x with
-  | Ad_root { sa_role=arole; sa_type=atype; sa_list=alist} ->
-    arole ^"^" ^  atype ^"^" ^ (dolist alist)
-  | other ->"OTHER"
+    if t != [] then
+      extract_root h ^"^"^ process_ast_desc_list3 t
+    else
+      "[]"
+and process_ast_desc_list3 al : string = 
+  match al with
+  | [] -> ""
+  | h :: t ->
+    if t != [] then
+      extract_root h ^"^"^ process_ast_desc_list4 t
+    else
+      "ERR1"
+      
+and process_ast_desc_list4 al : string = 
+  match al with
+  | [] -> ""
+  | h :: t ->
+    if t != [] then
+      extract_root h ^"^"^ "...TRUNCATED..."
+    else
+      "errr2"
 
 and process_root_list a  =
   match a with
@@ -161,12 +188,16 @@ and process_root_list a  =
      else
        v1
 
-and process_generic_type (a : string) (b : string) (c : ast_desc_list) =
+and process_generic_type_print (a : string) (b : string) (c : ast_desc_list) =
   let yj = Yojson.Safe.to_string (ast_desc_list_to_yojson c) in
-  (print_endline yj);
-  
+  let dd = "process_generic_type" ^a ^b in  
   let yj1 = (process_root_list c) in
-  (print_endline yj1);
+  (print_endline yj);
+  (print_endline dd);
+  (print_endline ("NEW:"^ yj1))
+
+and process_generic_type (a : string) (b : string) (c : ast_desc_list):ast_desc =
+  (process_generic_type_print a b c );
   Ad_root {
     sa_role =a;
     sa_type =b;
@@ -178,7 +209,56 @@ and process_structure_item_desc x = Ad_process_structure_item_desc x
 
 and process_structure_items x =
   process_generic_list "process_structure_items" x process_structure_item
- 
+
+and extract_root x: string  =
+  match x with
+  | Ad_root { sa_role=arole; sa_type=atype; sa_list=alist} ->
+    "(rec_root "^arole ^"^" ^  atype ^"^" ^ (process_root_list alist) ^ ")"
+(* | other -> "other" *)
+                               (*emit_constructor_arguments:*)| Ad_pos-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_pos" [])
+(*emit_constructor_arguments:*)| Ad_process_arg_label_expression_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_arg_label_expression_list" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+  (*emit_constructor_arguments:*)| Ad_process_arg_label_expression((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc1)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_arg_label_expression" [
+      ((*P4*)process_ast_desc (*emit_core_type_numbered*)ast_desc0);
+      ((*P4*)process_ast_desc (*emit_core_type_numbered*)ast_desc1)])
+(*emit_constructor_arguments:*)| Ad_process_string_loc_list_pattern_option-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_string_loc_list_pattern_option" [])
+(*emit_constructor_arguments:*)| Ad_process_loc((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_loc" [((*P4*)process_ast_desc (*emit_core_type_numbered*)ast_desc0)])
+(*emit_constructor_arguments:*)| Ad_process_value_binding_list-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_value_binding_list" [])
+(*emit_constructor_arguments:*)| Ad_attributes-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_attributes" [])
+  (*emit_constructor_arguments:*)| Ad_process_generic_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list1)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_generic_list" [
+      ((*P4*)process_string (*emit_core_type_numbered*)string0);
+      Ad_fixme "((*P4*) (*emit_core_type_numbered*)ast_desc_list1)"
+])
+  (*emit_constructor_arguments:*)| Ad_quote((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc1)-> ((*P5N*)
+      process_generic_type3 "ast_desc" "Ad_quote" [
+        ((*P4*)process_string (*emit_core_type_numbered*)string0);
+        ((*P4*)process_string (*emit_core_type_numbered*)ast_desc1)
+      ])
+(*emit_constructor_arguments:*)| Ad_int((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)int0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_int" [((*P4*)process_int (*emit_core_type_numbered*)int0)])
+(*emit_constructor_arguments:*)| Ad_bool((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)bool0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_bool" [((*P4*)process_bool (*emit_core_type_numbered*)bool0)])
+(*emit_constructor_arguments:*)| Ad_loc_stack-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_loc_stack" [])
+(*emit_constructor_arguments:*)| Ad_loc2-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_loc2" [])
+(*emit_constructor_arguments:*)| Ad_loc-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_loc" [])
+(*emit_constructor_arguments:*)| Ad_process_structure_items((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_structure_items" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_process_type_declaration_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_type_declaration_list" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_arg_label_expression_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_arg_label_expression_list" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_process_list_tail((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc0,(*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc1)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_list_tail" [((*P4*)process_ast_desc (*emit_core_type_numbered*)ast_desc0);((*P4*)process_ast_desc (*emit_core_type_numbered*)ast_desc1)])
+(*emit_constructor_arguments:*)| Ad_process_cstrs((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_cstrs" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_process_params((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_params" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_process_structure_item_desc((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_structure_item_desc" [((*P4*)process_ast_desc (*emit_core_type_numbered*)ast_desc0)])
+(*emit_constructor_arguments:*)| Ad_process_structure_item((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_structure_item" [((*P4*)process_ast_desc (*emit_core_type_numbered*)ast_desc0)])
+(*emit_constructor_arguments:*)| Ad_process_label_declaration_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_label_declaration_list" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_process_arg_constructor_declaration((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_arg_constructor_declaration" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_process_var_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_var_list" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_process_cases((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_process_cases" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+(*emit_constructor_arguments:*)| Ad_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)ast_desc_list0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_list" [((*P4*)process_ast_desc_list (*emit_core_type_numbered*)ast_desc_list0)])
+
+(*emit_constructor_arguments:*)| Ad_empty_list((*emit_constructor_arguments_from_core_type_list*)(*emit_core_type_numbered*)string0)-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_empty_list" [((*P4*)process_string (*emit_core_type_numbered*)string0)])
+(*emit_constructor_arguments:*)| Ad_Ident(string0)-> ("(Ad_Ident \"" ^string0 ^ ")\"")
+(*emit_constructor_arguments:*)| Ad_String(string0)-> ("(Ad_String \""  ^ string0 ^ "\")")
+(*emit_constructor_arguments:*)| Ad_NoString-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_NoString" [])
+(*emit_constructor_arguments:*)| Ad_None-> ((*P5N*)process_generic_type3 "ast_desc" "Ad_None" [])
+
+(*begin of input data*)
 
 let foo1=(process_generic_type "structure_item_desc" "Pstr_value"
             [
