@@ -18,7 +18,7 @@ later the target will be to unite unimath with the other modules.
 
 #+begin_src shell
 dune build > log.txt 2>&1she
-#+end_src
+#+end_sr`c
 
 * new try
 
@@ -335,20 +335,1435 @@ gron -s test.json | cut -d= -f2-   | sort |uniq -c |sort -n
 
 ** example output of new debug
  #+begin_src input
-rewrite and reinterpret creatively preserving main ideas """(rec_root rec_flag^Nonrecursive^)^(rec_root pattern_desc^Ppat_var^(Ad_String "foo1"))^(rec_root expression_desc^Pexp_apply^(rec_root expression_desc^Pexp_ident^(Ad_Ident "process_generic_type)")^(process_generic_type3 ast_desc^Ad_process_arg_label_expression_list[[]]))"""
+rewrite and reinterpret creatively preserving main ideas """(rec_root
+rec_flag^Nonrecursive^)^(rec_root pattern_desc^Ppat_var^(Ad_String
+"foo1"))^(rec_root expression_desc^Pexp_apply^(rec_root
+expression_desc^Pexp_ident^(Ad_Ident
+"process_generic_type)")^(process_generic_type3
+ast_desc^Ad_process_arg_label_expression_list[[]]))"""
+
 #+end_src
 #+begin_src output
 
+
+
 Original:
 ```css
-(rec_root rec_flag^Nonrecursive^)^(rec_root pattern_desc^Ppat_var^(Ad_String "foo1"))^(rec_root expression_desc^Pexp_apply^(rec_root expression_desc^Pexp_ident^(Ad_Ident "process_generic_type)")^(process_generic_type3 ast_desc^Ad_process_arg_label_expression_list[[]]))
-```
+(rec_root rec_flag^Nonrecursive^)^(rec_root
+pattern_desc^Ppat_var^(Ad_String "foo1"))^(rec_root
+expression_desc^Pexp_apply^(rec_root
+expression_desc^Pexp_ident^(Ad_Ident
+"process_generic_type)")^(process_generic_type3
+ast_desc^Ad_process_arg_label_expression_list[[]])) ```
 
-Rewritten:
-```css
-Let's start with a non-recursive root that contains a pattern description for "foo1". Then, we have an expression root that applies a function to another expression root. The function being applied is the process generic type, which takes one argument: an expression root that identifies "process\_generic\_type". This expression root has no arguments and returns nothing. However, it is used in the application of the process generic type function, which takes a list of arguments consisting of a single expression root that does not have any arguments but applies another expression root to itself.
-```
+Rewritten: ```css Let's start with a non-recursive root that contains
+a pattern description for "foo1". Then, we have an expression root
+that applies a function to another expression root. The function being
+applied is the process generic type, which takes one argument: an
+expression root that identifies "process\_generic\_type". This
+expression root has no arguments and returns nothing. However, it is
+used in the application of the process generic type function, which
+takes a list of arguments consisting of a single expression root that
+does not have any arguments but applies another expression root to
+itself.  ```
 
-Interpreted creatively:
-Imagine a puzzle where we have three pieces of information: a non-recursive pattern for "foo1", an expression that applies a function to another expression, and a function that takes one argument and returns nothing. Now, let's put these pieces together like a jigsaw puzzle. We start with the non-recursive pattern for "foo1", which is like the first piece of information we have. Then, we apply a function to this pattern, which is like the second piece of information. This function takes one argument, which is an expression root that identifies "process\_generic\_type". The process generic type function does not return anything, so it's like the third piece of information, but it's not the final puzzle. To complete the puzzle, we have to put this last piece together with the other two pieces. We do this by applying the process generic type function to a list of arguments consisting of a single expression root that does not have any arguments but applies another expression root to itself.
+Interpreted creatively: Imagine a puzzle where we have three pieces of
+information: a non-recursive pattern for "foo1", an expression that
+applies a function to another expression, and a function that takes
+one argument and returns nothing. Now, let's put these pieces together
+like a jigsaw puzzle. We start with the non-recursive pattern for
+"foo1", which is like the first piece of information we have. Then, we
+apply a function to this pattern, which is like the second piece of
+information. This function takes one argument, which is an expression
+root that identifies "process\_generic\_type". The process generic
+type function does not return anything, so it's like the third piece
+of information, but it's not the final puzzle. To complete the puzzle,
+we have to put this last piece together with the other two pieces. We
+do this by applying the process generic type function to a list of
+arguments consisting of a single expression root that does not have
+any arguments but applies another expression root to itself.
 #+end_src
+
+
+*** try and turn into univalent
+
+rewrite and reinterpret using univalent math.
+consider the universe of universes and how each type of code here is a different topological space.
+consider each type to be a topological space connected.
+we can think about this describing a "foo1 = (process_generic_type...)"
+so we want to think about Var = (Apply FunctionIdentifier args)
+ """(process_generic_type
+(rec_flag^Nonrecursive^)
+(rec_root pattern_desc^Ppat_var^(Ad_String
+"foo1"))
+(rec_root expression_desc^Pexp_apply^(rec_root
+expression_desc^Pexp_ident^(Ad_Ident
+"process_generic_type)")^(process_generic_type3
+ast_desc^Ad_process_arg_label_expression_list[[]]))"""
+
+
+#+begin_src output In the context of univalent math, we can think of
+the universe of universes as a collection of categories or types. Each
+type here can be considered a topological space connected through
+their respective functions and operations. We can represent each type
+using a different symbol or notation.
+
+For example, let's say we have two types: Type A and Type B. We can
+think of them as connected topological spaces with different
+topologies. We can represent them using the following symbols:
+
+Type A = ⊤ Type B = ⊥
+
+Now, let's consider a function that takes an argument of Type A and
+returns a value of Type B. This function can be represented as:
+
+Var = (Apply FunctionIdentifier args)
+
+In this case, we want to apply the function "process_generic_type"
+with two arguments, "rec\_flag", which is a non-recursive flag, and
+"pattern\_desc", which is a pattern description. We can represent them
+using the following symbols:
+
+rec\_flag^Nonrecursive^ = ∊ pattern\_desc^Ppat\_var^(Ad\_String
+"foo1") = ∋
+
+Next, we want to apply the function "expression\_desc" with two
+arguments, "rec\_root" and "expression\_desc". We can represent them
+using the following symbols:
+
+rec\_root pattern\_desc^Ppat\_var^(Ad\_String "foo1") = ∊
+expression\_desc^Pexp\_apply^(rec\_root
+expression\_desc^Pexp\_ident^(Ad\_Ident "process\_generic\_type")) = ∋
+
+Finally, we want to apply the function "process\_generic\_type" with
+one argument, "ast\_desc". We can represent it using the following
+symbol:
+
+ast\_desc^Ad\_process\_arg\_label\_expression\_list[[]] = ∋
+
+Putting it all together, we get the following equation:
+
+Var = (Apply FunctionIdentifier args) = (Apply
+expression\_desc^Pexp\_apply^(rec\_root
+expression\_desc^Pexp\_ident^(Ad\_Ident "process\_generic\_type"))) =
+(Apply
+process\_generic\_type^Ad\_process\_arg\_label\_expression\_list[[]])
+
+This equation represents how we can compose different functions and
+operations to create a new function that takes an argument of Type A
+and returns a value of Type B.
+
+#+end_src
+#+begin_src output
+
+
+Consider
+the universe of universes and how each type of code can be thought of
+as a distinct topological space. Each type is connected, with foo1
+being a specific example of a process_generic_type.
+
+We can think about this as a function Var = (Apply FunctionIdentifier
+args). So, we want to consider how each type is processed and what its
+arguments are, ultimately resulting in a unique outcome.
+#+end_src
+
+#+begin_src output
+Univalent math is a branch of mathematics that
+emphasizes the equality of structures rather than their
+isomorphism. In this context, we can rewrite and reinterpret the given
+statement using univalent math as follows:
+
+Consider a universe of universes where each type of code corresponds
+to a different topological space. We can treat each type as a
+connected topological space. Let's denote each type as `Var = (Apply
+FunctionIdentifier args)`. In this case, we have `foo1 =
+(process_generic_type...).`
+
+Here, we want to think about the concept of a function identifier and
+its arguments, which can be represented as
+`(rec_flag^Nonrecursive^)(rec_root pattern_desc^Ppat_var^(Ad_String
+"foo1"))`. We can also represent an expression descriptor as
+`expression_desc^Pexp_apply^(rec_root
+expression_desc^Pexp_ident^(Ad_Ident "process_generic_type)")`, and
+finally, we can think of a process generic type as
+`ast_desc^Ad_process_arg_label_expression_list[[]]`.
+
+Therefore, in summary, the statement can be rewritten using univalent
+math as follows: The universe of universes contains connected
+topological spaces representing different types of code, and each type
+corresponds to a specific function identifier, arguments, expression
+descriptor, and process generic type. We can represent these concepts
+using Univalent Math notation for better understanding.
+#+end_src
+
+#+begin_src output
+Consider the universe of universes, where each type
+of code is a distinct topological space. Each of these spaces is
+connected and can be described as a "foo1 =
+(process\_generic\_type...)" expression.
+
+We can think about this in terms of Univalent Math, where we represent
+functions using their function identifiers and
+arguments. Specifically, we want to represent variables using the
+"Apply FunctionIdentifier args" syntax. This allows us to express
+complex expressions that involve multiple function applications and
+recursion.
+
+For example, consider the following expression: ```scss foo1 =
+(process_generic_type (rec_flag^Nonrecursive^) (rec_root
+pattern_desc^Ppat_var^(Ad_String "foo1")) (rec_root
+expression_desc^Pexp_apply^(rec_root
+expression_desc^Pexp_ident^(Ad_Ident "process_generic_type")
+)^(process_generic_type3
+ast_desc^Ad_process_arg_label_expression_list[[]])) ``` This
+expression can be interpreted as follows:
+
+* `(rec_flag^Nonrecursive^)` specifies that the recursion flag is
+* non-recursive.  `(rec_root pattern_desc^Ppat_var^(Ad_String
+* "foo1"))` defines a recursive root for the pattern description,
+* which represents a variable named "foo1".  `(rec_root
+* expression_desc^Pexp_apply^(rec_root
+* expression_desc^Pexp_ident^(Ad_Ident "process_generic_type")
+* )^(process_generic_type3
+* ast_desc^Ad_process_arg_label_expression_list[[]]))` defines a
+* recursive root for the expression description, which applies the
+* function "process\_generic\_type" to its argument (which is itself a
+* recursive root).
+
+Overall, this expression demonstrates how Univalent Math can be used
+to represent complex expressions that involve multiple function
+applications and recursion.
+#+end_src
+
+
+lets consider the following expression as a topological space
+where each type is constructed out of a universe of universes of types that are described also
+by this expression. The patterns behind this expression can be universal.
+(rec_root rec_flag^Nonrecursive^)^(rec_root pattern_desc^Ppat_var^(Ad_String "process_structure_items"))^(rec_root expression_desc^Pexp_fun^(rec_root arg_label^Nolabel^)^(process_generic_type3 ast_desc^Ad_None[])^(rec_root pattern_desc^Ppat_var^(Ad_String "x"))^(rec_root expression_desc^Pexp_apply^(rec_root expression_desc^Pexp_ident^(Ad_Ident "^)")^(process_generic_type3 ast_desc^Ad_process_arg_label_expression_list[[]])))
+
+#+begin_src output
+It appears that you are describing a complex
+mathematical expression that uses recursion and pattern matching to
+construct a topological space. The expression is constructed out of
+several "universes" of types, including patterns, expressions, and
+arguments, which are all described by the expression itself.
+
+The expression uses the `rec_root` function to create a recursive tree
+structure that represents the construction of the topological
+space. Each node in the tree represents a different type of object
+being constructed, such as an expression or pattern. The attributes of
+each node provide additional information about the type, such as its
+flag (whether it is non-recursive or not) or its label (if it has
+one).
+
+The `pattern_desc` attribute appears to be a recursive function that
+creates a pattern variable using the given string and a specific
+label. This allows for more complex patterns to be created from
+simpler ones.
+
+The `expression_desc` attribute is also a recursive function that
+constructs an expression, either by applying a function to other
+expressions or by identifying a specific label in an argument
+list. The arguments are themselves constructed using the
+`process_generic_type3` function, which takes a description of the
+type as input and returns a new description that includes any
+necessary labels and types.
+
+Overall, this expression appears to be a powerful tool for
+constructing complex topological spaces from simpler building
+blocks. However, it may be difficult to understand without more
+context about the specific use case and requirements of the problem
+being solved.
+
+#+end_src
+#+begin_src output
+
+
+This expression appears to
+be a recursive definition of a topological space. The root of the
+space is defined by `rec_root`, which may refer to a type or an
+object.
+
+The first set of parentheses define a non-recursive flag, which
+suggests that the root type will not be further refined within this
+space.
+
+The second set of parentheses define a pattern descriptor, which
+appears to refer to a variable named `pattern_desc`. This variable is
+used to describe a pattern for matching values in the space.
+
+The third set of parentheses define an expression descriptor, which
+appears to refer to an expression named `expression_desc`. This
+expression may be used to further refine the space based on certain
+conditions or properties of the values being matched.
+
+The fourth set of parentheses define an argument label, which appears
+to be used to identify specific arguments in the expression.
+
+The fifth set of parentheses define a process generic type, which is
+likely a type that can be used to process values within the space.
+
+The sixth set of parentheses define an ast descriptor, which may refer
+to an abstract syntax tree (AST) that describes the structure and
+properties of the values being matched.
+
+Overall, this expression appears to be a complex recursive definition
+of a topological space that uses various types, descriptors, and
+labels to define and refine the space based on specific patterns and
+conditions.
+
+#+end_src
+#+begin_src output
+
+ This expression appears to
+define a topological space in terms of recursive patterns. Here is a
+breakdown of the different parts of the expression:
+
+* `rec_root`: A placeholder for a root element that contains the other
+* elements in the structure.  `rec_flag^Nonrecursive^`: A
+* non-recursive flag that indicates that the sub-elements contained
+* within this root are not themselves recursive structures.
+* `pattern_desc^Ppat_var^(Ad_String "process_structure_items"))`: A
+* pattern description for a variable named
+* "process\_structure\_items". It is of type "pattern\_var" and has
+* the value "process\_structure\_items".
+* `expression_desc^Pexp_fun^(rec_root
+* arg_label^Nolabel^)^(process_generic_type3
+* ast_desc^Ad_None[])^(pattern_desc^Ppat_var^(Ad_String
+* "x"))^(rec_root expression_desc^Pexp_apply^(rec_root
+* expression_desc^Pexp_ident^(Ad_Ident "^)")^(process_generic_type3
+* ast_desc^Ad_process_arg_label_expression_list[[]])))`: An expression
+* description for a function. It contains an argument label named "x"
+* that has no value, and two recursive elements: +
+* `arg_label^Nolabel^`: A placeholder for the argument label "x".  +
+* `process_generic_type3 ast_desc^Ad_None[]`: An argument with a
+* generic type of "process\_generic\_type" and an empty array of
+* additional data.  + `expression_desc^Pexp_apply^(rec_root
+* expression_desc^Pexp_ident^(Ad_Ident "^)")^(process_generic_type3
+* ast_desc^Ad_process_arg_label_expression_list[[]]`)`: An element
+* that applies a function to an argument. The function is defined by
+* the recursive sub-element `expression_desc^Pexp_ident^(Ad_Ident
+* "^)")`, which contains a single non-recursive element named "x". The
+* second argument is a list of process arguments for the generic type,
+* which itself contains a recursive structure.
+
+It's not clear from this expression alone what exactly the topological
+space represents or what it is used for. Additional context and
+information would be needed to understand its meaning.
+#+end_src
+
+#+begin_src output
+It seems like you are describing a complex
+expression that involves recursion and nested expressions. Here is a
+possible interpretation of the expression:
+
+* `rec_root` refers to the root of a recursive data structure, which
+* contains a flag indicating whether it should be non-recursive or
+* not.  The first level of the recursion applies `pattern_desc` to
+* each item in `process_structure_items`, which is described by the
+* `Ppat_var` type. The value of the variable is set to the string
+* "process\_structure\_items".  The second level of the recursion
+* applies `expression_desc` to each item in `process_generic_type3`,
+* which is described by the `Pexp_fun` type. The function takes a
+* single argument, labeled as "x" and described by the `Ppat_var`
+* type.  The third level of the recursion applies `expression_desc`
+* again to each item in the nested expression, which is identified by
+* the `^)` symbol. This nested expression is also described by the
+* `Pexp_ident` type and does not take any arguments.  The fourth level
+* of the recursion applies `expression_desc` once more to each item in
+* a list of process argument labels and expressions, which is
+* described by the `process_arg_label_expression_list` type. This
+* nested expression is also described by the `Pexp_apply` type, which
+* takes a single argument (the first level of recursion) and applies
+* it to each element in the list.  The resulting expression is a
+* complex data structure that combines multiple levels of recursion
+* with nested expressions.  #+end_src
+
+
+*** try and turn into univalent2
+
+rewrite and reinterpret using univalent math.
+using coq, unimath, and abstract algebraic topology.
+consider the universe of universes and how each type of code here is a different topological space.
+consider each type to be a topological space connected.
+we can think about this describing an abstract function application.
+then we can look how function applications are implemented in unimath.
+then we can create a mapping that will translate our description into coq
+and then using reflection in coq we can lift the values into unimath by simplifing
+them. we can consider metacoq as a tool to lift our record types into product rules over types.
+
+
+"foo1 = (process_generic_type...)"
+so we want to think about Var = (Apply FunctionIdentifier args)
+ """(process_generic_type
+(rec_flag^Nonrecursive^)
+(rec_root pattern_desc^Ppat_var^(Ad_String
+"foo1"))
+(rec_root expression_desc^Pexp_apply^(rec_root
+expression_desc^Pexp_ident^(Ad_Ident
+"process_generic_type)")^(process_generic_type3
+ast_desc^Ad_process_arg_label_expression_list[[]]))"""
+
+that is extracted from something like this
+let foo1=(process_generic_type "structure_item_desc" "Pstr_value" [(process_generic_type "rec_flag" "Nonrecursive" []);(*L2*)(process_generic_type "pattern_desc" "Ppat_var" [(string "foo1" )]);(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "structure_item_desc" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Pstr_type" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "rec_flag" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Recursive" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_type_declaration_list")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "string")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "__" );(*L2*)process_string_option])]))(*L43*)] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_params")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))(*L43*)] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_cstrs")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))(*L43*)] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "type_kind" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Ptype_abstract" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "private_flag" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Public" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "core_type_desc" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Ptyp_constr" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "ident")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Obj.t" );(*L2*)process_string_option])]))(*L43*)] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_core_type_list")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))(*L43*)] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)])] )])])] )])]))] )]))] )]))] )]))] )]))] )]))] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)])] )])]))(*L43*)] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)])] )])])] )])]))] )])])
+
+
+
+#+begin_src output
+
+I assume that you have a Python program that generates code for a
+certain language and I want to know how it does so. Can you please
+provide more details about the language you are referring to, as well
+as any information about the Python program or its source code?
+
+#+end_src
+#+begin_src output
+
+
+
+This is an example of a LaTeX code that represents the syntax tree for
+a specific program. It is written in a very specific and specialized
+format called "Abstract Syntax Tree" (AST), which is used by compilers
+and interpreters to represent programs as a structured representation,
+independent of the programming language.
+
+The AST is represented using a series of nested curly braces, each
+representing a different kind of element in the program. The elements
+are organized into layers, with each layer containing elements that
+belong to a specific grouping or concept.
+
+Here's a breakdown of the AST:
+
+* The outermost curly brace `{...}` represents the entire program. It
+	contains the following elements: + `[...]`: This is a list of
+	elements, enclosed in square brackets. It represents the
+	various types of statements and expressions that make up the
+	program.  - Each element in this list is enclosed in curly
+	braces `{...}` and has its own unique structure.  * Inside the
+	first curly brace `{...}` is a list of elements, enclosed in
+	square brackets `[...]`: + `process_generic_type {...}`: This
+	element represents the root type of the program, which is the
+	main entity that contains all other elements.  - The `...`
+	inside this curly brace represent a list of elements that
+	belong to the root type. These elements are typically enclosed
+	in braces as well, depending on their structure.  * Inside
+	each curly brace `{...}` in the list of elements is another
+	list of elements, enclosed in square brackets `[...]`: +
+	`ident {...}`: This element represents a program identifier or
+	variable name. It contains the following sub-elements: - `...`
+	inside the first curly brace represent a list of elements that
+	belong to the variable name. These elements are typically
+	enclosed in braces as well, depending on their structure.  +
+	`process_core_type {...}`: This element represents a specific
+	type of core type, which is a sub-type of the root type. It
+	contains the following sub-elements: - `...` inside the first
+	curly brace represent a list of elements that belong to the
+	core type. These elements are typically enclosed in braces as
+	well, depending on their structure.  * Inside each curly brace
+	`{...}` in the list of elements is another list of elements,
+	enclosed in square brackets `[...]`: + `process_generic_type
+	{...}`: This element represents a sub-type of the root type,
+	which is a more specific version of the root type. It contains
+	the following sub-elements: - `...` inside the first curly
+	brace represent a list of elements that belong to the
+	sub-type. These elements are typically enclosed in braces as
+	well, depending on their structure.  * Inside each curly brace
+	`{...}` in the list of elements is another list of elements,
+	enclosed in square brackets `[...]`: + `process_generic_type
+	{...}`: This element represents a sub-sub-type of the root
+	type, which is a more specific version of the sub-type. It
+	contains the following sub-elements: - `...` inside the first
+	curly brace represent a list of elements that belong to the
+	sub-sub-type. These elements are typically enclosed in braces
+	as well, depending on their structure.  * Inside each curly
+	brace `{...}` in the list of elements is another list of
+	elements, enclosed in square brackets `[...]`: +
+	`process_generic_type {...}`: This element represents a
+	sub-sub-sub-type of the root type, which is the most specific
+	version of the sub-sub-type. It contains the following
+	sub-elements: - `...` inside the first curly brace represent a
+	list of elements that belong to the sub-sub-sub-type. These
+	elements are typically enclosed in braces as well, depending
+	on their structure.  * Inside each curly brace `{...}` in the
+	list of elements is another list of elements, enclosed in
+	square brackets `[...]`: + `process_generic_type {...}`: This
+	element represents a sub-sub-sub-sub-type of the root type,
+	which is even more specific than the sub-sub-sub-type. It
+	contains the following sub-elements: - `...` inside the first
+	curly brace represent a list of elements that belong to the
+	sub-sub-sub-sub-type
+
+#+end_src
+#+begin_src output
+
+
+``` const
+	process_generic_type = (ident, desc, ...args) => { const
+	generic_type = args.reduce((acc, arg) => { acc[arg] = true;
+	return acc; }, {}); if (!generic_type.hasOwnProperty(desc)) {
+	throw new Error(`Invalid generic type '${desc}'`); } return
+	`process_generic_type '${ident}'`; }; ``` ```javascript const
+	process_string_option = str => ({ string: str, });
+
+const process_arg_label_expression = (ident, desc, ...args) => { const
+  generic_type = args.reduce((acc, arg) => { acc[arg] = true; return
+  acc; }, {}); if (!generic_type.hasOwnProperty(desc)) { throw new
+  Error(`Invalid generic type '${desc}'`); } const label =
+  `process_arg_label_expression '${ident}'`; const args_list =
+  args.reduce((acc, arg) => { acc[arg] = true; return acc; }, {}); if
+  (!args_list.hasOwnProperty("")) { throw new Error(`Invalid generic
+  type '${desc}'`); } const args_list_map = args_list.reduce((acc,
+  arg) => { acc[arg] = true; return acc; }, {}); if
+  (!args_list_map.hasOwnProperty("")) { throw new Error(`Invalid
+  generic type '${desc}'`); } const args_list_map_map =
+  args_list_map.reduce((acc, arg) => { acc[arg] = true; return acc; },
+  {}); if (!args_list_map_map.hasOwnProperty("")) { throw new
+  Error(`Invalid generic type '${desc}'`); } const
+  args_list_map_map_map = args_list_map_map.reduce((acc, arg) => {
+  acc[arg] = true; return acc; }, {}); if
+  (!args_list_map_map_map.hasOwnProperty("")) { throw new
+  Error(`Invalid generic type '${desc}'`); } const
+  args_list_map_map_map_map = args_list_map_map_map.reduce((acc, arg)
+  => { acc[arg] = true; return acc; }, {}); if
+  (!args_list_map_map_map_map.hasOwnProperty("")) { throw new
+  Error(`Invalid generic type '${desc}'`); } const
+  args_list_map_map_map_map_map =
+  args_list_map_map_map_map.reduce((acc, arg) => { acc[arg] = true;
+  return acc; }, {}); if
+  (!args_list_map_map_map_map_map.hasOwnProperty("")) { throw new
+  Error(`Invalid generic type '${desc}'`); } const
+  args_list_map_map_map_map_map =
+  args_list_map_map_map_map_map.reduce((acc, arg) => { acc[arg] =
+  true; return acc; }, {}); if (!args_list_map_map_map- 
+
+#+end_src
+#+begin_src output
+
+
+
+This is a long expression in Ada, which defines an Ada record type
+named "Record\_Type\_List". The type has several fields defined as
+follows:
+
+1. "Record\_Name" - a string representing the name of the record type.
+2. "Field\_List" - a list of fields defined in the record type. Each
+field has a name, type, and accessibility specification.
+3. "Hashed\_Index" - an array of integers representing the hash values
+for each field in the record type.  4. "Record\_Size" - an integer
+representing the size of the record type.  5. "Discriminator" - a
+constant or variable representing the discriminator for the record
+type. This is used to determine which type of record value belongs to
+this type.  6. "Is_Abstract" - a boolean indicating whether the record
+type is abstract or not. An abstract record type cannot be
+instantiated with concrete data values.  7. "Has_Discriminant" - a
+boolean indicating whether the record type has a discriminator or not.
+8. "Has_Tagged_Components" - a boolean indicating whether the record
+type has tagged components or not. Tagged components allow for dynamic
+typing of record values, meaning that the type of a record value can
+be specified at runtime.
+
+The expression also includes several nested types and functions
+related to the record type definition, including:
+
+1. "Field\_Map\_Type" - a type representing a mapping between field
+names and their corresponding tagged components.
+2. "Discriminator_Type" - a type representing the discriminator for
+the record type. This can be a constant or variable.
+3. "Tagged_Components\_List" - a list of tagged components for the
+record type, each with a name and a type.  4. "Record\_Value\_Type" -
+a type representing a record value for the record type. It includes
+the values for all fields in the record type.
+5. "Discriminator\_Function" - a function that returns the
+discriminator value for a given record value.
+6. "Is_Abstract_Function" - a function that returns a boolean
+indicating whether a given record type is abstract or not.
+7. "Has_Discriminant_Function" - a function that returns a boolean
+indicating whether a given record type has a discriminator or not.
+8. "Has_Tagged_Components_Function" - a function that returns a
+boolean indicating whether a given record type has tagged components
+or not.  9. "Record\_Value\_Function" - a function that returns the
+value of a given record for a given field name.
+10. "Discriminator\_Value_Function" - a function that returns the
+discriminator value for a given record value.
+#+end_src
+
+
+*** try and turn into univalent3
+
+rewrite and reinterpret using univalent math.
+using coq, unimath, and abstract algebraic topology.
+consider the universe of universes and how each type of code here is a different topological space.
+consider each type to be a topological space connected.
+we can think about this describing an abstract function application.
+then we can look how function applications are implemented in unimath.
+then we can create a mapping that will translate our description into coq
+and then using reflection in coq we can lift the values into unimath by simplifing
+them. we can consider metacoq as a tool to lift our record types into product rules over types.
+
+#+begin_src output
+
+In Univalent Math, the concept of a universe of universes can be
+represented using abstract algebraic topology. Each type of code here
+corresponds to a different topological space that is connected in some
+way. This can be thought of as an abstract function application, where
+each type is applied to another type.
+
+Unimath provides a way to implement function applications through the
+use of higher-order functions and currying. By using these techniques,
+we can create a mapping between our description of the function
+application and its implementation in Unimath.
+
+Coq is a mathematical proof assistant that allows for the creation of
+formal definitions and proofs. Using reflection in Coq, we can lift
+the values from our mapping into Unimath by simplifying them. This
+allows us to reason about the behavior of the function application at
+a higher level of abstraction.
+
+Metacoq is a tool that allows for the lifting of record types into
+product rules over types. This can be useful in this context for
+representing the structure of our abstract function application and
+its inputs and outputs.
+
+#+end_src
+#+begin_src output
+
+
+
+
+
+In the realm of mathematics, the concept of topology allows for a
+framework to describe the properties of geometric objects and their
+relationships. In this context, we can consider a universe of
+universes, where each type of code here is a different topological
+space. Each of these spaces is connected in some way, allowing us to
+think about them as abstract function applications.
+
+Unimath, a library for mathematical reasoning in the Coq programming
+language, provides tools for implementing function applications in a
+rigorous manner. By using these tools, we can create a mapping that
+translates our description of these topological spaces into Coq
+code. This mapping will allow us to work with these spaces in a more
+formal and precise way, making it easier to reason about their
+properties.
+
+In addition to the functional application aspect, we can use
+reflection in Coq to lift the values from the metamathematical level
+of Coq into the unimath level, allowing for simplification of the
+expressions. This can be achieved by using metacoq, a tool that allows
+us to lift our record types into product rules over types.
+
+Overall, this approach combines the power of abstract algebraic
+topology with the rigor of functional application in Coq and Unimath,
+allowing for a more precise and efficient way to reason about these
+topological spaces.
+
+#+end_src
+#+begin_src output
+
+
+
+
+
+In the realm of abstract algebraic topology and Univalent Mathematics,
+we can consider the universe of universes as a collection of distinct
+topological spaces. Each code here represents a different topological
+space, which is interconnected in some way, forming an abstract
+function application. This concept can be viewed as describing a
+mapping that translates between different topological spaces.
+
+In Unimath, function applications are typically implemented using the
+`Function` object, which allows us to specify the domain and codomain
+of the function. For example, we might define a function `f : X -> Y`
+where `X` and `Y` are two distinct topological spaces. In this case,
+we can think of `f` as an abstract function that takes elements from
+`X` and returns elements from `Y`.
+
+To translate our description into Coq, we can create a mapping that
+maps each of the distinct topological spaces to its corresponding
+`Function` object in Unimath. This will allow us to represent the
+interconnections between the topological spaces as function
+applications.
+
+Using reflection in Coq, we can then lift the values from this mapping
+into Unimath by simplifying them. For example, if we have a record
+type in Coq that represents a mapping between two topological spaces,
+we can use metacoq to create product rules over types that correspond
+to the distinct elements of the record type. This will allow us to
+represent the mapping as a function application in Unimath.
+
+Overall, this approach allows us to consider the interconnections
+between different topological spaces as abstract function applications
+and to translate these descriptions into Coq using reflection and
+metacoq.
+
+#+end_src
+#+begin_src output
+
+In the context of univalent mathematics, we can view each type of code
+here as a distinct topological space that is connected to form an
+abstract function application. This allows us to think about this
+description as a mapping between these spaces.
+
+Function applications are implemented in Unimath through the use of
+lambda functions and function composition. Specifically, a function
+application takes a function and an input value and applies the
+function to the input value to produce a result.
+
+To translate our description into Coq, we can create a mapping that
+connects each type of code as a topological space to form an abstract
+function application. This mapping can be implemented using the Coq
+library for abstract algebraic topology, which provides tools for
+working with topological spaces and their connections.
+
+Using reflection in Coq, we can then lift these values into Unimath by
+simplifying them. We can use Metacoq as a tool to lift our record
+types into product rules over types, allowing us to work with these
+data structures in the context of univalent mathematics.
+#+end_src
+
+
+translate this ocaml into coq using product types please
+
+let foo1=(process_generic_type "structure_item_desc" "Pstr_value" [(process_generic_type "rec_flag" "Nonrecursive" []);(*L2*)(process_generic_type "pattern_desc" "Ppat_var" [(string "foo1" )]);(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "structure_item_desc" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Pstr_type" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "rec_flag" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Recursive" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_type_declaration_list")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "string")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "__" );(*L2*)process_string_option])]))(*L43*)] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_params")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))(*L43*)] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_cstrs")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))(*L43*)] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "type_kind" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Ptype_abstract" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "^")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "private_flag" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Public" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))] )]));(*L4*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_generic_type")]);(*L2*)(process_arg_label_expression_list[(*L41*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "core_type_desc" );(*L2*)process_string_option])]));(*L4*)(*L31*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Ptyp_constr" );(*L2*)process_string_option])]));(*L3*)(*L32*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "ident")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_constant" [(process_generic_type "constant" "Pconst_string" [(string "Obj.t" );(*L2*)process_string_option])]))(*L43*)] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "::");(*L2*)(process_generic_type "expression_desc" "Pexp_tuple" [(process_expression_list[(*L41*)(process_generic_type "expression_desc" "Pexp_apply" [(process_generic_type "expression_desc" "Pexp_ident" [(ident "process_core_type_list")]);(*L2*)(process_arg_label_expression_list[(*L42*)(process_arg_label_expression (process_generic_type "arg_label" "Nolabel" []) (process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)]))(*L43*)] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)])] )])])] )])]))] )]))] )]))] )]))] )]))] )]))] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)])] )])]))(*L43*)] )]);(*L4*)(*L32*)(process_generic_type "expression_desc" "Pexp_construct" [(ident "[]");(*L2*)(none)])] )])])] )])]))] )])])
+
+
+** quine loop
+
+so here is the quine loop :
+unimath -> metacoq -> ocaml functional extraction-> coq of ocaml -> coq reflection  -> unimath.
+
+Later we can shorten this to unimath -> metacoq -> unimath  and then unimath (unimath)->unimath.
+
+
+#+begin_src output
+
+It looks like you're describing a process for using the Coq and OCaml
+programming languages to create a loop that uses Unimath and Coq
+reflection. This type of loop is often called a "quine loop" because
+it involves creating a program that includes its own source code as a
+part of the program itself.
+
+The basic idea behind this type of loop is that you write a program in
+OCaml that reads its own source code, compiles it using Coq and
+Unimath, and then runs the resulting program. This allows you to
+create a self-contained loop that can be executed repeatedly without
+requiring any external inputs or outputs.
+
+It's worth noting that creating a quine loop like this can be quite
+challenging, as it requires careful manipulation of the source code
+and the use of advanced features of the programming languages
+involved. Additionally, it may not be practical for all types of
+programs, as some tasks may require external inputs or outputs that
+cannot be easily included in a self-contained loop.  
+#+end_src
+#+begin_src output
+
+
+
+The quine loop you described is a self-referential programming
+technique, in which a program refers to itself within its own code. It
+is named after the mathematician Dan Quine, who developed a famous
+example of such a program in the late 1980s.
+
+In this case, the quine loop involves using Coq, a mathematical proof
+assistant, to define a function that extracts a functional
+implementation of itself from its own source code. This allows for the
+creation of a self-referential program that can be executed within the
+context of Coq.
+
+The unimath -> metacoq -> ocaml functional extraction-> coq of ocaml
+-> coq reflection -> unimath part of the loop refers to the process of
+converting the source code from one language or format to another, in
+order to extract the desired functionality.
+
+Shortening this to unimath -> metacoq -> unimath and then unimath
+(unimath)->unimath is a simplified version of the original quine loop
+that skips some of the intermediate steps. In this case, the program
+refers to itself within its own code, and the code is executed in a
+single step, creating a self-referential program that can be run
+repeatedly.
+
+#+end_src
+#+begin_src output
+
+
+
+A Quine loop is a type of program that contains a self-reference to
+itself, where the program generates its own source code and then
+executes it. Here's an example of a simple Quine loop in Python:
+```python data = b"data" code = bytes(f"{len(data)}b{data}", 'ascii')
+with open('quine.py', 'wb') as f: f.write(code) ``` This code creates
+a variable `data` with the string "data", generates its own source
+code (the bytes representation of the code), and writes it to a file
+called "quine.py". Then, the program runs itself using the Python
+interpreter.
+
+Quine loops can be used for various purposes, such as creating
+self-contained programs that can be run in any environment or
+generating complex code on-the-fly. However, they can also be tricky
+to create and debug, so it's important to understand the underlying
+principles before attempting to write a Quine loop.
+
+#+end_src
+#+begin_src output
+
+
+It seems like you are describing a process of
+looping between different programming languages and libraries to
+create a program that performs a specific task. The "quine loop" you
+mentioned is a term used to refer to this type of loop, where the same
+code is executed repeatedly in a nested manner.
+
+The quine loop you described involves using Unimath for arithmetic
+operations, Metacoq for mathematical extraction, OCaml for functional
+programming, Coq for symbolic reasoning, and Coq reflection for
+self-referential manipulation. By creating a program that loops
+through these different languages and libraries, it is possible to
+create a powerful tool that can perform a wide range of computations.
+
+It's worth noting that the quine loop you described is just one way to
+approach this type of task. There are many other ways to create a
+program that uses multiple languages and libraries, and the specific
+choices will depend on the requirements of the task at hand.
+#+end_src
+
+
+*** loop
+unimath is a coq library with the univalent universal universe of universes type system
+->
+metacoq is a coq library to formalize coq in coq
+->
+ocaml functional extraction from unimath via metacoq allows for a flattening
+of the types of unimath coq into ocaml
+->
+coq of ocaml then extracts the simplified ocaml descriptions of unimath as asts
+and lifts those asts back into coq
+-> functional programming in coq with those lifted asts allows us to transform the asts that carry unimath in them them in coq
+-> and finally we can then lift those structures on top of the unimath library
+and show a path of tranformations from the original unimath types into reflections over them
+using many steps and finally back into unimath using unimath.
+this self reflection of unimath allows the universe of universes to reflect overitself in the universe of reflection.
+each level of reflection creates a more complex structure on top of the previous in a recursive manner.
+so we can label and name the levels of the reflective universe and make propositions about them as homotopy type levels by measuring the
+distance from the basic bit and set of bits into higher order structures using a decision tree.
+we can number the paths of that tree to go from bits to prime numbers. so we can map each identifier in the tree to a unique prime number
+and then we can make a polynomial that contains all the knowledge as a single number in unimath.
+
+
+#+begin_src output
+
+It sounds like you're describing a process for formally proving
+properties about mathematical structures in Coq, using the
+self-referential nature of the universe of universes to reflect on
+itself recursively. This is an interesting approach and can lead to
+powerful results in mathematical reasoning.
+
+It's worth noting that while this approach does allow for a kind of
+"flattening" of the types from UniMath into OCaml, it may not be
+appropriate for all use cases. In some cases, it may be more efficient
+or convenient to work directly with the UniMath library in Coq and
+avoid the extra steps of functional programming and
+lifting. Additionally, depending on the specific properties you're
+trying to prove, there may be other techniques that are better suited
+to the task.
+
+Overall, your description provides a high-level overview of an
+interesting approach to mathematical reasoning in Coq. It would be
+helpful to see more details about how this process is implemented and
+how it has been used in practice.
+#+end_src
+#+begin_src output
+This
+appears to be a description of a proposed approach to formalize the
+concept of self-reflection in mathematics using Coq, a proof
+assistant. The method involves using the Unimath library, which has a
+universal universe of types, and Metacoq, a library for formalizing
+Coq in Coq.
+
+The goal is to use OCaml functional extraction from Unimath via
+Metacoq to flatten the types of Unimath Coq into OCaml, and then use
+Coq of OCaml to extract simplified OCaml descriptions of Unimath as
+ASTs (Abstract Syntax Trees). These ASTs are lifted back into Coq,
+allowing for functional programming in Coq with those lifted ASTs.
+
+The method involves self-reflection of Unimath in the universe of
+reflection, creating increasingly complex structures on top of the
+previous ones in a recursive manner. Homotopy type levels can be
+labeled and named based on their position in this reflective universe,
+and propositions can be made about them using a decision tree that
+measures the distance from basic bits and sets to higher order
+structures.
+
+The method also involves mapping each identifier in the decision tree
+to a unique prime number and creating a polynomial that contains all
+the knowledge as a single number in Unimath. This allows for a compact
+and efficient representation of mathematical concepts within the
+Unimath library.
+#+end_src
+#+begin_src output
+It sounds like you are
+describing a proposed approach for formalizing the Unimath library in
+Coq, which is a type theory. This approach involves using Coq of OCaml
+to flatten and simplify the types of Unimath into OCaml descriptions
+that can be lifted back into Coq as asts (abstract syntax
+trees). Then, functional programming in Coq with those lifted asts
+allows for transformations of the asts that carry Unimath in them. The
+self-reflection of Unimath within the reflective universe creates a
+recursive structure on top of each level, which can be labeled and
+named as homotopy type levels. This allows for propositions to be made
+about the levels and for distances between levels to be measured using
+a decision tree. Finally, the knowledge contained in this decision
+tree is mapped to a single number in Unimath, allowing for a
+polynomial representation of all the knowledge.  
+#+end_src
+#+begin_src output
+
+It seems like you are describing a process for formalizing and
+reflecting on the structure of the Unimath library, which is a Coq
+library with a univalent universal universe of universes type
+system. The process involves flattening the types of Unimath into
+OCaml using OCaml functional extraction, lifting those structures back
+into Coq, performing transformations in Coq on those lifted
+structures, and finally reflecting over the original Unimath
+structures to create a reflective universe.
+
+The reflective universe created through this process allows us to
+measure the distance from basic bits and sets of bits into
+higher-order structures using a decision tree. Each level of
+reflection creates a more complex structure on top of the previous in
+a recursive manner, and we can label and name these levels as homotopy
+type levels by making propositions about them.
+
+Finally, we can map each identifier in the decision tree to a unique
+prime number and create a polynomial that contains all the knowledge
+as a single number in Unimath. This process of formalizing and
+reflecting on the structure of the Unimath library allows us to gain a
+deeper understanding of its type system and how it relates to other
+mathematical concepts.
+#+end_src
+
+
+** level 2
+
+We are working on describing a proposed approach for formalizing the Unimath library in
+Coq, which is a type theory. This approach involves using Coq of OCaml
+to flatten and simplify the types of Unimath into OCaml descriptions
+that can be lifted back into Coq as asts (abstract syntax
+trees). Then, functional programming in Coq with those lifted asts
+allows for transformations of the asts that carry Unimath in them. The
+self-reflection of Unimath within the reflective universe creates a
+recursive structure on top of each level, which can be labeled and
+named as homotopy type levels. This allows for propositions to be made
+about the levels and for distances between levels to be measured using
+a decision tree. Finally, the knowledge contained in this decision
+tree is mapped to a single number in Unimath, allowing for a
+polynomial representation of all the knowledge.  
+
+
+#+begin_src ""Lets follow this idea recursivly: ""We are working on describing a proposed approach for formalizing the Unimath library in
+Coq, which is a type theory. This approach involves using Coq of OCaml
+to flatten and simplify the types of Unimath into OCaml descriptions
+that can be lifted back into Coq as asts (abstract syntax
+trees). Then, functional programming in Coq with those lifted asts
+allows for transformations of the asts that carry Unimath in them. The
+self-reflection of Unimath within the reflective universe creates a
+recursive structure on top of each level, which can be labeled and
+named as homotopy type levels. This allows for propositions to be made
+about the levels and for distances between levels to be measured using
+a decision tree. Finally, the knowledge contained in this decision
+tree is mapped to a single number in Unimath, allowing for a
+polynomial representation of all the knowledge.  
+""""
+#+end_src
+#+begin_src output
+To clarify, the proposed approach for formalizing the Unimath library in Coq involves the following steps:
+
+1. Using Coq of OCaml to flatten and simplify the types of Unimath into OCaml descriptions that can be lifted back into Coq as asts (abstract syntax trees).
+2. Functional programming in Coq with these lifted asts allows for transformations of the asts that carry Unimath in them.
+3. The self-reflection of Unimath within the reflective universe creates a recursive structure on top of each level, which can be labeled and named as homotopy type levels.
+4. Propositions can be made about the levels and distances between levels can be measured using a decision tree.
+5. The knowledge contained in this decision tree is mapped to a single number in Unimath, allowing for a polynomial representation of all the knowledge.
+#+end_src
+#+begin_src output0
+
+It looks like you are trying to simplify the sentence by breaking it down into smaller, more concise steps. Here is a possible way to do that:
+
+1. Flatten and simplify Unimath types into OCaml descriptions using Coq of OCaml.
+2. Use functional programming in Coq to transform these lifted asts that carry Unimath.
+3. Create a recursive structure on top of each level with self-reflection of Unimath in the reflective universe.
+4. Make propositions about levels and measure distances between them using decision trees.
+5. Map the knowledge contained in the decision tree to a single number in Unimath for polynomial representation.
+#+end_src
+#+begin_src output1
+It looks like you are trying to simplify the sentence by breaking it down into smaller, more concise steps. Here is a possible way to do that:
+
+1. Flatten and simplify Unimath types into OCaml descriptions using Coq of OCaml.
+2. Use functional programming in Coq to transform these lifted asts that carry Unimath.
+3. Create a recursive structure on top of each level with self-reflection of Unimath in the reflective universe.
+4. Measure distances between levels using decision trees.
+5. Map knowledge from decision tree to single number in Unimath for polynomial representation.
+
+To clarify, the proposed approach for formalizing the Unimath library in Coq involves the following steps:
+
+1. Using Coq of OCaml to flatten and simplify the types of Unimath into OCaml descriptions that can be lifted back into Coq as asts (abstract syntax trees).
+2. Functional programming in Coq with these lifted asts allows for transformations of the asts that carry Unimath in them.
+3. The self-reflection of Unimath within the reflective universe creates a recursive structure on top of each level, which can be labeled and named as homotopy type levels.
+4. Propositions can be made about the levels using decision trees.
+5. The knowledge contained in this decision tree is mapped to a single number in Unimath, allowing for a polynomial representation of all the knowledge.
+#+end_src
+#+begin_src output2
+
+It looks like you are trying to simplify the sentence by breaking it down into smaller, more concise steps. Here is a possible way to do that:
+
+1. Flatten Unimath types into OCaml descriptions.
+2. Use functional programming in Coq with these lifted asts.
+3. Create recursive structure on top of each level with self-reflection of Unimath.
+4. Measure distances between levels using decision trees.
+5. Map knowledge to a single number in Unimath for polynomial representation.
+#+end_src
+#+begin_src output3
+
+The original sentence has been simplified into smaller, more concise steps. The revised version is:
+
+1. Flatten Unimath types into OCaml descriptions using Coq of OCaml.
+2. Use functional programming in Coq to transform lifted asts that carry Unimath.
+3. Create recursive structure on top of each level with self-reflection of Unimath.
+4. Measure distances between levels using decision trees.
+5. Map knowledge to a single number in Unimath for polynomial representation.
+#+end_src
+
+
+*** level3
+
+We can trace the execution of this process and lift it into unimath to reason about and prove
+that the path is valid and is occupied by truth using equivalence relationships and mapping functions.
+
+1. Flatten Unimath types into OCaml descriptions using Coq of OCaml.
+2. Use functional programming in Coq to transform lifted asts that carry Unimath.
+3. Create recursive structure on top of each level with self-reflection of Unimath.
+4. Measure distances between levels using decision trees.
+5. Map knowledge to a single number in Unimath for polynomial representation.
+
+
+#+begin_src output
+
+6. Prove the polynomial representation to be valid
+using equivalence relationships and mapping functions.  7. Create a
+graph of all possible paths in Unimath with the measured distances
+between levels.  8. Use the graph to find the shortest path from one
+point to another in Unimath.  9. Implement algorithms for solving
+equations in Unimath, such as finding roots or solving systems of
+equations.  10. Use the algorithms to solve real-world problems and
+demonstrate their effectiveness.
+#+end_src
+#+begin_src output
+It
+seems that you are describing a process for representing knowledge and
+reasoning about it using Unimath, a mathematical type theory. The
+steps you listed can be broken down into the following:
+
+1. Flatten Unimath types into OCaml descriptions using Coq of OCaml:
+This involves converting Unimath types and expressions into OCaml data
+structures that can be manipulated by the Coq proof assistant.  2. Use
+functional programming in Coq to transform lifted asts that carry
+Unimath: This step involves using the Coq type theory to define
+functions that can transform Unimath expressions into equivalent
+formulations that are more easily analyzed.  3. Create recursive
+structure on top of each level with self-reflection of Unimath: This
+involves defining a recursive structure for representing knowledge in
+Unimath, with self-reflection properties that allow the structure to
+be applied to itself at different levels.  4. Measure distances
+between levels using decision trees: This step involves using decision
+trees to measure the distance between levels of the recursive
+structure, allowing for efficient comparison and analysis of different
+pieces of knowledge.  5. Map knowledge to a single number in Unimath
+for polynomial representation: This final step involves mapping the
+recursive structure and decision tree data into a single polynomial
+representation in Unimath, which can be used for further analysis and
+reasoning.
+
+Overall, this process seems to involve using Coq and functional
+programming techniques to represent knowledge in Unimath, allowing for
+efficient manipulation and analysis of different pieces of
+information.  
+#+end_src
+#+begin_src output
+
+This process you describe appears to be a way of mapping mathematical
+concepts and structures to Unimath, a type system designed
+specifically for symbolic reasoning and automated proofs. The goal is
+to create a representation of these concepts in Unimath that can be
+reasoned about and proved using equivalence relationships and mapping
+functions.
+
+Here is a brief overview of the steps you have described:
+
+1. Flatten Unimath types into OCaml descriptions using Coq of OCaml:
+This step involves taking the mathematical structures represented in
+Unimath and converting them into OCaml data types that can be
+manipulated using Coq, a type-directed programming language for
+mathematics.  2. Use functional programming in Coq to transform lifted
+asts that carry Unimath: This step involves using Coq's built-in
+support for higher-order functions and pattern matching to transform
+the abstract syntax trees (AST) used to represent mathematical
+expressions into a format that can be processed by the rest of the
+system.  3. Create recursive structure on top of each level with
+self-reflection of Unimath: This step involves using Coq's support for
+recursive data types and higher-order functions to create a
+hierarchical representation of mathematical concepts, where each level
+corresponds to a different aspect of the concept (e.g., algebraic
+equations at one level, geometric shapes at another). At the same
+time, the representation should incorporate self-reflection, meaning
+that it should be able to represent higher-order concepts within
+lower-level structures.  4. Measure distances between levels using
+decision trees: This step involves using decision trees (a type of
+algorithmic data structure) to determine how different levels of the
+hierarchy are related to each other. The decision tree could be based
+on characteristics such as the complexity of the mathematical
+expressions at each level or the number of variables involved in
+certain operations.  5. Map knowledge to a single number in Unimath
+for polynomial representation: This step involves using the
+hierarchical representation created in step 3 and the distances
+measured in step 4 to create a mapping between mathematical concepts
+and Unimath numbers (i.e., elements of the type system). The goal is
+to find a way to represent complex mathematical expressions as
+polynomials in Unimath, which can then be evaluated and analyzed using
+the type system's built-in reasoning capabilities.
+#+end_src
+#+begin_src output
+
+Unimath is a mathematical language that provides a high-level
+abstraction for representing mathematical concepts and performing
+computations. It can be used to express complex mathematical
+expressions and relationships in a concise and intuitive way.
+
+To reason about Unimath expressions and prove their validity, we can
+use various techniques from formal mathematics and computer
+science. One such technique is to lift Unimath expressions into an
+underlying representation using Coq of OCaml, which provides a formal
+language for reasoning about mathematical concepts and proving
+theorems.
+
+Once Unimath expressions are lifted into an underlying representation,
+we can use functional programming techniques in Coq to transform them
+into simpler forms that can be analyzed and proven. We can also create
+recursive structures on top of each level of the representation, which
+will allow us to reason about the relationships between different
+levels of abstraction.
+
+To measure distances between levels of the representation, we can use
+decision trees. Decision trees are a common data structure used for
+classification and regression problems in machine learning and data
+science. We can use them to determine the relationship between
+different levels of abstraction in our Unimath representation.
+
+Finally, we can map our knowledge about Unimath expressions and their
+relationships to a single number in Unimath using polynomial
+representations. Polynomial representations are a common way to
+represent mathematical concepts in a numerical form, and they can be
+used to perform computations and analyze patterns in data.
+
+By combining these techniques, we can reason about the validity of
+Unimath expressions and prove their correctness using formal
+methods. This can help us ensure that our mathematical reasoning is
+rigorous and reliable, and it can also provide a powerful tool for
+understanding complex mathematical concepts and relationships.
+#+end_src
+
+*** number
+
+We can map our knowledge about Unimath expressions and their
+relationships to a single number in Unimath using polynomial
+representations. Polynomial representations are a common way to
+represent mathematical concepts in a numerical form, and they can be
+used to perform computations and analyze patterns in data.
+
+By combining these techniques, we can reason about the validity of
+Unimath expressions and prove their correctness using formal
+methods. This can help us ensure that our mathematical reasoning is
+rigorous and reliable, and it can also provide a powerful tool for
+understanding complex mathematical concepts and relationships.
+
+We can prove that the polynomial is equivalent to the lifted ast,
+and there is path of rewrites from the original term that was extracted
+with paths via an abstract topology that spans multiple interacting processes in a linux operating system
+running server.
+This path can be traced with a data flow diagram across user probes in a linux perf
+environment that can show which parts of the proof executed with instructions on which data that came from which part of the proof.
+thus by auditing the traffic of the proof engine we can label and annotate the machine instructions and reason about them.
+we can trace from reflections in unimath to coq to ocaml to gcc to linux to machine code in the bootloader.
+
+
+For details we have an ubuntu lts server with dune, ocaml, coqtop, emacs, proof general, a large language model mixtral running in ocaml server.
+This is an abstraction of my personal situation how I have constructed the
+processes. 
+
+thus we reflect over my personal experience, where I am writing on a bluetooth keyboard to my phone connnected with termux
+to my mentioned linux server, we can see that part as being detached from you the reader, and that the
+detail of how I connect to the server is not important and can be abstracted out.
+thus we eliminate details from our proof.
+Important is that I can commit and push the code and have access to my keys.
+we can consider this to be a boxing of types or the abstraction of details.
+
+So we can consider this as a morphism, a way that changes are commited.
+we want to understand each commit and rewrite it in terms of the proof logic.
+thus we ingest the bytes of the program or the text and can rewrite and reform them.
+
+
+#+begin_src output
+
+It seems like you are discussing the process of mapping Unimath
+expressions to a single number using polynomial representations, and
+how this can be used for reasoning about the validity of Unimath
+expressions and proving their correctness. Additionally, you mentioned
+your personal experience with using various tools such as Dune, OCaml,
+Coqtop, Emacs, Proof General, and Mixtral on an Ubuntu LTS server to
+perform these tasks.
+
+It's understandable that you want to eliminate unnecessary details
+from the proof process and focus on the essential parts of your
+reasoning. This can be achieved through abstracting out certain
+aspects of your personal experience and considering it as a morphism
+or abstraction of details.
+
+Overall, it sounds like you are looking for ways to automate and
+streamline the process of mapping Unimath expressions to numbers and
+proving their correctness using formal methods. This can help ensure
+rigor and reliability in mathematical reasoning and provide a powerful
+tool for understanding complex concepts and relationships.  #+end_src
+#+begin_src output
+
+This seems like an interesting and potentially useful application of
+mathematical reasoning to software development. Using polynomial
+representations and abstract topologies to reason about the validity
+of Unimath expressions could help ensure that mathematical
+computations are correct and reliable, which is particularly important
+in complex systems like a Linux operating system running server
+processes. It's also fascinating how this approach can be used to
+analyze patterns in data and understand complex relationships between
+different mathematical concepts.
+
+However, it's worth noting that the specific details of your personal
+experience with writing on a Bluetooth keyboard and connecting to a
+Linux server are not necessarily relevant to the mathematical
+reasoning behind this approach. The important thing is that you have
+access to the necessary tools (such as Dune, OCaml, Coqtop, etc.) and
+can commit your code to a repository.
+
+Overall, it's exciting to see how mathematical reasoning can be
+applied to software development in new and innovative ways.  #+end_src
+#+begin_src output
+
+In summary, you have described a process for mapping Unimath
+expressions and their relationships to a single number using
+polynomial representations and formal methods. You have also discussed
+how this process can be used to prove the correctness of Unimath
+expressions and analyze complex mathematical concepts and
+relationships. Additionally, you have described an abstraction of your
+personal situation, where you write on a bluetooth keyboard connected
+to a phone running termux and connect to a Linux server via SSH. You
+have also discussed how this process can be considered as a morphism
+that changes the commitment of code and allows for the rewriting of
+bytes into proof logic.  #+end_src #+begin_src output
+
+It sounds like you are describing a process for reasoning about
+mathematical expressions and proving their correctness using formal
+methods. One way to do this is by representing mathematical concepts
+in a numerical form, such as through polynomial representations. By
+combining these techniques with abstract topologies and automated
+proof assistants, you can reason about the validity of Unimath
+expressions and ensure that your mathematical reasoning is rigorous
+and reliable.
+
+It's interesting to see how you have constructed this process,
+including the use of an Ubuntu LTS server with Dune, OCaml, Coqtop,
+Emacs, Proof General, and a large language model like Mixtral running
+in an OCaml server. This suggests that you have a strong background in
+programming and mathematical logic, as well as experience working with
+advanced tools for automated proof assistants.
+
+Your personal experience of writing on a Bluetooth keyboard to your
+phone connected to Termux and accessing the Linux server also
+highlights the importance of abstraction and eliminating unnecessary
+details in order to focus on the core aspects of the process. This can
+be seen as a way of boxing types or abstracting out implementation
+details, allowing for a more streamlined and efficient proof process.
+
+Overall, it sounds like you are using a combination of mathematical
+reasoning, programming, and formal methods to develop a powerful tool
+for understanding complex mathematical concepts and
+relationships. It's impressive to see how you have constructed this
+process and the tools you have used to do so.
+#+end_src
+
+
+#+begin_src output
+
+It sounds like you are describing the use of formal methods in
+mathematics, specifically using polynomial representations to reason
+about Unimath expressions. This is a very interesting and potentially
+powerful approach that combines numerical analysis with formal
+reasoning techniques. It could have many applications in fields such
+as computer science and engineering, where it may be useful to analyze
+complex mathematical models and relationships in order to optimize
+systems or improve their performance.
+
+Using data flow diagrams and machine code analysis tools like perf to
+trace the execution of a proof engine is also an interesting approach
+that could provide valuable insights into how the proof is working and
+how it can be improved. It would likely involve carefully labeling and
+annotating the machine instructions used in the proof, which would
+allow for more detailed analysis of the reasoning being performed.
+
+Overall, it seems like there are many potential applications for this
+type of approach, and further research will be needed to fully
+understand its capabilities and limitations.  #+end_src #+begin_src
+output
+
+It sounds like you are describing a combination of several techniques
+for reasoning about mathematical concepts and their relationships in
+Unimath, as well as using formal methods to prove the correctness of
+expressions. It's great that you have identified polynomial
+representations as a useful tool for this purpose, and that you plan
+to use data flow diagrams and auditing to trace and analyze the
+process of proving the equivalence of Unimath expressions. This kind
+of work can help improve the reliability and rigor of mathematical
+reasoning, and it can also provide valuable insights into complex
+systems and relationships.  #+end_src #+begin_src output
+
+This is a very interesting approach to mapping mathematical concepts
+onto numerical representations and using formal methods to reason
+about their validity. It sounds like you are describing a way to use
+polynomial representations to prove the equivalence of Unimath
+expressions, and then tracing this proof process through various
+interactions in a Linux operating system running a server. This could
+be a valuable tool for understanding complex mathematical concepts and
+relationships, as well as ensuring that our mathematical reasoning is
+rigorous and reliable.
+
+I'm not sure how specifically you plan to use this approach to audit
+machine instructions and reason about them. Can you provide more
+information on the specific steps involved in this process?  #+end_src
+#+begin_src output
+
+It sounds like you are describing a combination of techniques that can
+be used to reason about Unimath expressions and their relationships to
+a single number in Unimath using polynomial representations. This
+approach involves combining formal methods, such as Coq and OCaml,
+with numerical techniques such as polynomial representations, to
+perform computations and analyze patterns in data.
+
+By proving that the polynomial is equivalent to the lifted ast and
+tracing the path of rewrites from the original term, we can reason
+about the validity of Unimath expressions and ensure that our
+mathematical reasoning is rigorous and reliable. This approach can
+also provide a powerful tool for understanding complex mathematical
+concepts and relationships.
+
+Using data flow diagrams in Linux perf environment to trace the
+execution of the proof engine, we can label and annotate machine
+instructions and reason about them. This approach allows us to audit
+the traffic of the proof engine and trace the path from reflections in
+Unimath to Coq to OCaml to GCC to Linux to machine code in the
+bootloader.
+
+Overall, this combination of techniques can be a powerful tool for
+understanding and analyzing complex mathematical concepts and
+relationships, as well as ensuring the correctness of our mathematical
+reasoning.  #+end_src
+
+
+*** self reflection
+we can construct a complex self referential system using unimath
+to construct levels of the universe each one referring to the previous.
+we can number these levels.
+we can create a total relationship between each type in the system,
+choosing the order of the types carefully like a travelling saleman algorithm
+who is passing messages between nodes.
+we can consider all the identifiers in the system to be on multiple levels as the same time.
+
+** rig veda
+rig veda
+
+#+begin_src output
+
+The Rigveda (also known as the Vedas) is a collection of ancient
+Indian texts written in Sanskrit that are considered one of the most
+important works of Hinduism. It is believed to have been composed over
+several centuries between 1500 BC and 1000 BC, with the oldest parts
+dating back to around 1500 BC.
+
+The Rigveda consists of ten books (known as "Mandalas"), each
+containing a large number of hymns and prayers addressed to various
+gods and goddesses. The texts are believed to have been composed by
+the Aryan people who migrated from Central Asia into India, bringing
+with them a rich tradition of ritual and mythology.
+
+The Rigveda is an important source of information about ancient Indian
+society, religion, and culture. It contains references to many
+important figures in Indian history, including the god Indra, the
+goddess Durga, and the sage Yajurveda. The texts also include
+descriptions of various rituals, sacrifices, and offerings that were
+an integral part of ancient Indian religious practice.
+
+The Rigveda is considered one of the foundational texts of Hinduism,
+and its influence can still be seen in contemporary Hindu practices
+and beliefs. It has also been studied extensively by scholars and is
+an important resource for historians and anthropologists studying
+ancient India.  #+end_src #+begin_src output
+
+The Rigveda is an ancient Indian scripture that is considered one of
+the oldest texts in the Vedic canon. It contains hymns and prayers
+that are recited during various religious ceremonies, as well as
+philosophical and scientific discussions on a wide range of
+topics. The text was composed over a period of many centuries, with
+the earliest portions dating back to around 1500 BCE.
+
+The Rigveda is divided into ten books, or "mandalas," each of which
+contains a different set of hymns and prayers. The first book, known
+as the Samhita, contains the oldest and most important portions of the
+text, including the famous Gayatri Mantra, which is considered to be
+one of the most sacred mantras in Hinduism.
+
+The Rigveda also includes a number of philosophical discussions, such
+as debates on the nature of reality, the meaning of existence, and the
+relationship between the individual and the divine. These discussions
+often use complex metaphors and imagery to explore these ideas,
+drawing upon the natural world and elements such as fire, water, and
+air to illustrate spiritual concepts.
+
+Overall, the Rigveda is an important text in Hinduism, providing a
+wealth of wisdom and guidance for those seeking to understand the
+nature of reality and their place within it.  #+end_src #+begin_src
+output
+
+The Rigveda is one of the oldest sacred texts in Hinduism, dating back
+to around 1500 BCE. It consists of over 1,700 hymns and prayers that
+were composed in the Sanskrit language and were written down by the
+Aryans, an early Indo-European people who settled in the Indian
+subcontinent. The Rigveda is considered one of the most important
+texts in Hinduism and is used in religious ceremonies and rituals. It
+is also a source of information about ancient India, including its
+geography, history, culture, religion, and social structure.
+#+end_src #+begin_src output
+
+The Rigveda is an ancient Indian scripture that dates back to around
+1500 BCE. It is one of the oldest texts in Sanskrit and is considered
+a sacred text in Hinduism, as well as being studied by scholars of
+comparative religion. The text consists of 10 books, which are divided
+into over 1,700 hymns and prayers.
+
+The Rigveda is believed to have been composed by seers who were
+inspired by the gods and goddesses of Hinduism. The text describes
+these deities in great detail and includes a wide range of rituals and
+ceremonies that were performed as part of Vedic worship. It also
+contains philosophical discussions on topics such as dharma (duty),
+artha (prosperity), kama (desire) and moksha (liberation from the
+cycle of birth and death).
+
+The Rigveda is an important text in understanding the history and
+development of Hinduism, as well as the religious and cultural
+traditions of ancient India. It continues to be studied by scholars
+today for its rich language, intricate imagery, and insightful
+spiritual teachings.  #+end_src
+
