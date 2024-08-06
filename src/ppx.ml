@@ -78,7 +78,7 @@ let process_constant ( a:constant):string=
 
 let process_extension ( _:extension):string= "FIXME9"
 let process_extension_constructor ( _:extension_constructor):string= "FIXME10"
-let process_label ( _:label):string="process_label" ^ alabel0
+let process_label ( a_label :label):string="process_label" ^ a_label
 let process_letop ( _:letop):string="FIXME12"
 let rec process_list ( a ):string=
   "process_list" ^  
@@ -149,17 +149,24 @@ and process_value_binding_list x = "value_binding_list" ^
     match x with
     | [] -> "process_expression_list"
     | a :: t -> (process_value_binding a) ^ "|" ^ (process_value_binding_list t)  
+and process_location _ = "process_location"
+and process_location_stack _ = "process_location_stack"
+and process_attributes _ = "process_attributes"
 and  print_value_binding_expr (x : expression) : string=
   match x with
   | {
-    pexp_desc (* : expression_desc *)
-    (* pexp_loc (\* : location  *\); *)
-    (* pexp_loc_stack (\* : location_stack *\); *)
-    (* pexp_attributes (\* : attributes *\); (\* [... \[@id1\] \[@id2\]] *\) *)
+      pexp_desc : expression_desc;
+      pexp_loc  : location;
+      pexp_loc_stack  : location_stack;
+      pexp_attributes  : attributes ; (* [... \[@id1\] \[@id2\]]  *)
   } ->
     (* (ppddump ("DEBUG66:desc", pexp_desc ))); *)
     (* (ppddump ("DEBUG66:desc", pexp_attributes ))); *)
-  "print_value_binding_expr:" ^ "|" ^ (process_expression_desc pexp_desc)
+     "print_value_binding_expr:" ^ "|" ^ (process_expression_desc pexp_desc)
+     ^ process_location(pexp_loc)
+     ^ process_location_stack(pexp_loc_stack)
+     ^ process_attributes(pexp_attributes)
+and process_label_list _ = "process_label_list"
 and process_expression_desc ( x:expression_desc):string=
   match x with
   | Pexp_apply (expressionA0,listA1) -> (process_apply ((process_expression expressionA0),(process_list1 listA1)))
@@ -205,7 +212,7 @@ and process_pattern_desc x =
     match x with
     |Ppat_any -> "patterna1"
     |Ppat_var (name) -> "pattern_Ppat_var:" ^ name.txt
-    |Ppat_alias (_ ,loc_string) -> "patterna3"
+    |Ppat_alias (_ ,_(* loc_string *)) -> "patterna3"
     |Ppat_constant _  -> "patterna4"
     |Ppat_interval (_ ,_)  -> "patterna5"
     |Ppat_tuple _   -> "pattern_list6"
@@ -215,32 +222,32 @@ and process_pattern_desc x =
     |Ppat_array (_ (* pattern_ *)) -> "patterna10 "
     |Ppat_or (_,_ (* pattern, pattern2 *))  -> "patterna12"
     |Ppat_constraint (pattern , core_type) -> "Ppat_constraint:" ^ process_pattern pattern ^ "|" ^ process_core_type core_type
-    |Ppat_type longident_loc  -> "patterna14"
-    |Ppat_lazy pattern  -> "patterna15"
-    |Ppat_unpack (loc_option_string) -> "patterna16"
-    |Ppat_exception pattern  -> "patterna17"
-    |Ppat_extension extension  -> "patterna19"
-    |Ppat_open (longident_loc, pattern) -> "patterna30"
-and process_long_ident_expression_list x = "process_long_ident_expression_list"
+    |Ppat_type (* longident_loc *)_  -> "patterna14"
+    |Ppat_lazy (* pattern *)_  -> "patterna15"
+    |Ppat_unpack (* (loc_option_string) *)_ -> "patterna16"
+    |Ppat_exception _(* pattern *)  -> "patterna17"
+    |Ppat_extension _(* extension *)  -> "patterna19"
+    |Ppat_open (* (longident_loc, pattern) *) _ -> "patterna30"
+and process_long_ident_expression_list _ = "process_long_ident_expression_list"
 and process_pattern ( apattern0:pattern):string= "PATTERN" ^ (process_pattern_desc apattern0.ppat_desc)
 and process_expression ( x:expression):string= "EXPR:" ^process_expression_desc(x.pexp_desc)
-and process_record_kind4 :label_declaration -> string_list -> string = fun x s -> ""
-and  process_record_kind2(x :label_declaration)(s:string_list) = ""
-and    process_record_kind3 x s = ""
+and process_record_kind4 :label_declaration -> string_list -> string = fun _ _ -> ""
+and  process_record_kind2(_ :label_declaration)(_:string_list) = ""
+and    process_record_kind3 _ _ = ""
 and process_core_type ( x ):string = (my_process_core_type x)
 and process_core_type_option ( a: core_type option ):string = "processcore_type_option_TODO" ^
   match a with
   | Some x -> (process_core_type x)
   | None -> "nope"
 and
-  process_record_kind((x,s):label_declaration *string_list):string =
+  process_record_kind((x, s):label_declaration *string_list):string =
   match x with
     {
-     pld_name(* : string loc *);
-     pld_mutable(* : mutable_flag *);
-     pld_type(* : core_type *);
-     pld_loc(* : Location.t *);
-     pld_attributes(* : attributes *); 
+     pld_name : string loc ;
+     pld_mutable : mutable_flag;
+     pld_type : core_type ;
+     pld_loc : Location.t ;
+     pld_attributes : attributes ; 
    } ->
     let pct = (my_process_core_type pld_type) in
     (ppddump ("DEBUG:precord_kind:",  
@@ -252,7 +259,10 @@ and
     (*
        this is a field in a record
     *)
-    "process_record_kind:\"" ^ pld_name.txt ^ "|" ^ "\" body:" ^ pct
+    "process_record_kind:\"" ^ pld_name.txt ^ "|" ^ "\" body:" ^ pct ^
+      process_location(pld_loc) ^
+        process_attributes(pld_attributes) ^ 
+      "S" ^ process_label_list(s)
 and
   my_process_core_type_desc (x : core_type_desc * string_list):string =
   match x with
@@ -265,7 +275,7 @@ and
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
       let newlist = (my_process_core_type_list (b, s)) in
-      Printf.printf "DEBUG:Ptyp_constr1 '%s' %s" id1 newlist;
+      Printf.printf "DEBUG:Ptyp_constr1 '%s' %s %s" id1 newlist  (process_location loc);
       (* "id" ^ a ^ " id2 " ^ myid  *)
       (ppddump (
          "DEBUG:Ptyp_constr:",
@@ -282,26 +292,28 @@ and
     (*not in test*)
     | Ptyp_any  -> (ppddump ("DEBUG:Ptyp_any:")); "any"
     | Ptyp_var name ->(ppddump ("DEBUG:Ptyp_var:"  , name)); "var-name"
-  | Ptyp_arrow (arg_label , core_type , core_type2) ->
-    (* my_process_core_type((core_type, string_list)); *)
-    (* my_process_core_type(core_type2, string_list); *)
-    (ppddump ("DEBUG:Ptyp_arrow10:" )); "arrow"
-  | Ptyp_object (a,b)(* of object_field list * closed_flag *)
+    | Ptyp_arrow (arg_label , core_type , core_type2) ->
+       (ppddump ("DEBUG:Ptyp_arrow10:" ));
+       process_arg_label(arg_label) ^
+         process_core_type(core_type) ^
+           process_core_type(core_type2) ^
+             "arrow"
+  | Ptyp_object _(* of object_field list * closed_flag *)
     ->
     (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj"
-  | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
+  | Ptyp_class _ (* (a,b) of Longident.t loc * core_type list *)
     ->
     (* let myid = (process_id1 a.txt) in *)
     (* my_process_core_type_list(b, y :: myid); *)
     (ppddump ("DEBUG:Ptyp_arrow7:" )); "class"
-  | Ptyp_alias (a,b) (* of core_type * string loc  *)
+  | Ptyp_alias _ (* (a,b) of core_type * string loc  *)
     ->
     (* my_process_core_type(a, y); *)
     (ppddump ("DEBUG:Ptyp_arrow6:" )); "alias"
-  | Ptyp_variant (a,b,c) (* of row_field list * closed_flag * label list option *)
+  | Ptyp_variant _ (* (a,b,c) of row_field list * closed_flag * label list option *)
     ->
     (ppddump ("DEBUG:Ptyp_arrow5:" ));"variant"
-  | Ptyp_poly (a,b) (* of string loc list * core_type *)
+  | Ptyp_poly _ (* (a,b) of string loc list * core_type *)
     ->
     (* my_process_core_type(b, y); *)
     (ppddump ("DEBUG:Ptyp_arrow4:" )); "poly"
@@ -322,13 +334,13 @@ and
   my_process_core_type(x: core_type ):string=
   match x with  
     {
-      ptyp_desc(* : core_type_desc *);
-      ptyp_loc(* : Location.t *);
-      ptyp_loc_stack(* : location_stack *);
-      ptyp_attributes(* : attributes; *)
+      ptyp_desc : core_type_desc;
+      ptyp_loc : Location.t;
+      ptyp_loc_stack : location_stack;
+      ptyp_attributes : attributes;
     }->
     let td = (my_process_core_type_desc (ptyp_desc, [])) in
-    "ptyp_desc:" ^ td
+    "ptyp_desc:" ^ td ^ process_location(ptyp_loc) ^ process_location_stack(ptyp_loc_stack) ^ process_attributes(ptyp_attributes)
 and my_process_core_type_list(x: core_type_list * string_list):string =
   match x with
   | (a,b) ->
@@ -390,7 +402,8 @@ let splitloc(x:longident_loc * string_list) : string=
   let (a, b) = x in
   match a with
     { txt; loc }  ->
-    process_id2 (txt,  b)
+    process_id2 (txt,  b) ^
+      process_loc (loc)
 let concatlist(a : string * string_list):string_list =
   let (str, string_list) = a in
   let newlist = str :: string_list  in
@@ -423,56 +436,62 @@ let rec emit_id1 a : string =
     -> (emit_id1 (longident))  ^ "."
        ^ (emit_id1 (longident2) ) 
 
-let emit_core_type_desc (x : core_type_desc * string_list):string =
-  match x with
-    (ctd, s)->
-    match ctd with
-    | Ptyp_constr (a,b) (* of Longident.t loc * core_type list *)
-      ->
-      let {txt;loc} = a in
-      let id1 = emit_id1(txt) in
-      (* let concat = (concatlist (id1, astring_list)) in *)
-      (* let newy = [id1] @ astring_list in *)
-      (* let newlist = (my_process_core_type_list (b, s)) in *)
-      id1 (* ^ "\"->" ^ newlist *)
-    | Ptyp_tuple a (* of core_type list *)
-      ->
-      "Ptyp_tuple" ^ my_process_core_type_list(a,  s )
+let emit_core_type_desc = my_process_core_type_desc
+(* DRY *)
+(* let emit_core_type_desc (x : core_type_desc * string_list):string = *)
+(*   match x with *)
+(*     (ctd, s)-> *)
+(*     match ctd with *)
+(*     | Ptyp_constr (a,b) (\* of Longident.t loc * core_type list *\) *)
+(*       -> *)
+(*       let {txt;loc} = a in *)
+(*       let id1 = emit_id1(txt) in *)
+(*       (\* let concat = (concatlist (id1, astring_list)) in *\) *)
+(*       (\* let newy = [id1] @ astring_list in *\) *)
+(*       (\* let newlist = (my_process_core_type_list (b, s)) in *\) *)
+(*       id1 (\* ^ "\"->" ^ newlist *\) *)
+(*         ^ process_loc(loc) *)
 
-    (*not in test*)
-    | Ptyp_any  -> (ppddump ("DEBUG:Ptyp_any:")); "any"
-    | Ptyp_var name ->(ppddump ("DEBUG:Ptyp_var:"  , name)); "var-name"
-  | Ptyp_arrow (arg_label , core_type , core_type2) ->
-    (* my_process_core_type((core_type, string_list)); *)
-    (* my_process_core_type(core_type2, string_list); *)
-    (ppddump ("DEBUG:Ptyp_arrow10:" )); "arrow"
+(*     | Ptyp_tuple a (\* of core_type list *\) *)
+(*       -> *)
+(*       "Ptyp_tuple" ^ my_process_core_type_list(a,  s ) *)
 
-  | Ptyp_object (a,b)(* of object_field list * closed_flag *)
-    ->
-    (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj"
-  | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
-    ->
-    (* let myid = (process_id1 a.txt ) in *)
-    (* my_process_core_type_list(b, y :: myid); *)
-    (ppddump ("DEBUG:Ptyp_arrow7:" )); "class"
-  | Ptyp_alias (a,b) (* of core_type * string loc  *)
-    ->
-    (* my_process_core_type(a, y); *)
-    (ppddump ("DEBUG:Ptyp_arrow6:" )); "alias"
-  | Ptyp_variant (a,b,c) (* of row_field list * closed_flag * label list option *)
-    ->
-    (ppddump ("DEBUG:Ptyp_arrow5:" ));"variant"
-  | Ptyp_poly (a,b) (* of string loc list * core_type *)
-    ->
-    (* my_process_core_type(b, y); *)
-    (ppddump ("DEBUG:Ptyp_arrow4:" )); "poly"
-  | Ptyp_package a(* of package_type  *)
-    ->
-    (ppddump ("DEBUG:Ptyp_arrow3:",a )) ; "typ_package"
-  (* | Ptyp_open (a,b) (\* of Longident.t loc * core_type *\)-> *)
-  (*   (ppddump ("DEBUG:Ptyp_arrow2",a,b )) *)    
-  | Ptyp_extension a (* of extension   *)    ->
-    (ppddump ("DEBUG:Ptyp_extension:",a )); "extension"
+(*     (\*not in test*\) *)
+(*     | Ptyp_any  -> (ppddump ("DEBUG:Ptyp_any:")); "any" *)
+(*     | Ptyp_var name ->(ppddump ("DEBUG:Ptyp_var:"  , name)); "var-name" *)
+(*   | Ptyp_arrow (arg_label , core_type , core_type2) -> *)
+(*      (ppddump ("DEBUG:Ptyp_arrow10:" )); *)
+(*      process_arg_label(arg_label) ^ *)
+(*      process_core_type(core_type) ^ *)
+(*        process_core_type(core_type2) ^ *)
+(*          "arrow" *)
+
+(*   | Ptyp_object (_)(\* of object_field list * closed_flag *\) *)
+(*     -> *)
+(*     (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj" *)
+(*   | Ptyp_class (a,b) (\* of Longident.t loc * core_type list *\) *)
+(*     -> *)
+(*     (\* let myid = (process_id1 a.txt ) in *\) *)
+(*     (\* my_process_core_type_list(b, y :: myid); *\) *)
+(*     (ppddump ("DEBUG:Ptyp_arrow7:" )); "class" *)
+(*   | Ptyp_alias (a,b) (\* of core_type * string loc  *\) *)
+(*     -> *)
+(*     (\* my_process_core_type(a, y); *\) *)
+(*     (ppddump ("DEBUG:Ptyp_arrow6:" )); "alias" *)
+(*   | Ptyp_variant (a,b,c) (\* of row_field list * closed_flag * label list option *\) *)
+(*     -> *)
+(*     (ppddump ("DEBUG:Ptyp_arrow5:" ));"variant" *)
+(*   | Ptyp_poly (a,b) (\* of string loc list * core_type *\) *)
+(*     -> *)
+(*     (\* my_process_core_type(b, y); *\) *)
+(*     (ppddump ("DEBUG:Ptyp_arrow4:" )); "poly" *)
+(*   | Ptyp_package a(\* of package_type  *\) *)
+(*     -> *)
+(*     (ppddump ("DEBUG:Ptyp_arrow3:",a )) ; "typ_package" *)
+(*   (\* | Ptyp_open (a,b) (\\* of Longident.t loc * core_type *\\)-> *\) *)
+(*   (\*   (ppddump ("DEBUG:Ptyp_arrow2",a,b )) *\)     *)
+(*   | Ptyp_extension a (\* of extension   *\)    -> *)
+(*     (ppddump ("DEBUG:Ptyp_extension:",a )); "extension" *)
 
 
 let  emit_core_type(a: core_type * string_list*int):string=
@@ -485,21 +504,28 @@ let  emit_core_type(a: core_type * string_list*int):string=
       ptyp_loc_stack(* : location_stack *);
       ptyp_attributes(* : attributes; *)
     }->
-    let td = (emit_core_type_desc (ptyp_desc,s)) in
+       let td = (emit_core_type_desc (ptyp_desc,s)) in
+       process_loc(ptyp_loc) ^
+         process_location_stack(ptyp_loc_stack) ^
+           process_attributes(ptyp_attributes) ^
     td ^ (string_of_int n)
-
+let process_n _ = "n"
 let  emit_core_type2(a: core_type * string_list*int):string=
   match a with
   | (x,s,n) ->
     match x with  
       {
-        ptyp_desc(* : core_type_desc *);
-        ptyp_loc(* : Location.t *);
-        ptyp_loc_stack(* : location_stack *);
-        ptyp_attributes(* : attributes; *)
+        ptyp_desc : core_type_desc ;
+        ptyp_loc : Location.t ;
+        ptyp_loc_stack : location_stack;
+        ptyp_attributes : attributes;
       }->
       let td = (emit_core_type_desc (ptyp_desc,s)) in
       td 
+      ^  process_loc(ptyp_loc) ^
+        process_location_stack(ptyp_loc_stack) ^
+          process_attributes(ptyp_attributes) ^
+            process_n(n) 
                 
 
 let rec emit_core_type_list(x: core_type_list * string_list*int):string =
@@ -540,13 +566,16 @@ let rec imp_core_type_list(x: core_type_list * string_list*int):string =
 let emit_constructor_arguments(a1:(string*string*constructor_arguments*string_list)):string =  let (parent,name,x,s) = a1 in  match x with  | Pcstr_tuple a ->
     "| " ^ name ^ " ("^ (emit_core_type_list (a,s,0))  ^ ") -> " ^ "("
     ^ "process_types_" ^ parent ^ "__"^ name^  "(" ^ imp_core_type_list (a,s,0) ^"))"
-  | other  -> "other"
+  | _  -> "other"
 
+let process_parent _ = "process_parent"
 let  decl_imp_core_type(a: string*string *core_type * string_list*int):string=
   let (parent, parent2, atype, s, n) = a in
   let name = emit_core_type(atype, s, n) in
   let h1 = emit_core_type2(atype, s, n) in
-  (print_endline ("DEBUG2A:" ^ "let process_" ^ h1 ^ " x : " ^ h1 ^ "= x"));  
+  (print_endline ("DEBUG2A:" ^ "let process_" ^ h1 ^ " x : " ^ h1 ^ "= x"));
+  process_parent(parent) ^
+  process_parent(parent2) ^
   "a" ^ name  
 (* ":" ^ name1  *)
 (* ")" *)
@@ -598,7 +627,7 @@ let decl_emit_constructor_arguments(parent,name,x,s):string =
     ^ "("    ^  decl_imp_core_type_list2 (parent,name,a,s,0) ^  ")):string"
     ^ " = \"process_types_" ^ parent ^ "__" ^ name ^ "\"^" ^
     (decl_imp_core_type_list_hats (parent,name,a,s,0) )
-  | other  -> "other"
+  | _  -> "other"
 
 let process_label_declaration  x =
   "Label_decl:" ^  x.pld_name.txt ^ process_core_type x.pld_type
@@ -623,7 +652,7 @@ let print_constructor_arguments(a) =
       "Pcstr_record" ^
       (process_label_declaration_list a)
 
-        
+let process_res _  = "pcd_res"
 let rec process_type_variant_constructor_declaration_list(a:string*constructor_declaration list*string_list):string =
   match a with
   | (p,x,s)->
@@ -634,16 +663,21 @@ let rec process_type_variant_constructor_declaration_list(a:string*constructor_d
       |{
         pcd_name(* : string loc *);
         (* pcd_vars(\* : string loc list *\); *)
-        pcd_args(* : constructor_arguments *);
-        pcd_res(* : core_type option *);
-        pcd_loc(* : Location.t *);
-        pcd_attributes(* : attributes *); 
+        pcd_args : constructor_arguments;
+        pcd_res : core_type option;
+        pcd_loc : Location.t ;
+        pcd_attributes : attributes; 
       }->
         (print_endline (
             "DEBUG2C: let process_"
             ^ p ^ "__" ^ pcd_name.txt
             ^ " x :string ="
-            ^ "match x with "));
+            ^ "match x with "
+                ^ process_res(pcd_res)
+                ^ process_loc(pcd_loc)
+                ^ process_attributes( pcd_attributes)
+
+        ));
         (* let name = match pcd_name with *)
         (*   | (str,_) -> str *)
         (* (ppddump ( *)
@@ -690,19 +724,25 @@ let process_kind(a) :string=
       process_record_kind_list(p,a,s)
     | Ptype_open -> (ppddump ("DEBUG:Ptype_abstract:")); "Ptype_abstract"
 
+let process_type_params _= "(ptype_params)"
+let  process_type_cstrs _ = "(ptype_cstrs)"
+let process_type_kind _  = "(ptype_kind)"
+let process_type_private _ = "ptype_private"
+let  process_type_manifest _ = "ptype_manifest"
+
 let print_type_decl(a) =
   match a with
   |(x,s) ->
     match x with
       {
-        ptype_name (* : string loc *);
-        ptype_params (* : (core_type * (variance * injectivity)) list *);
-        ptype_cstrs (*: (core_type * core_type * location) list*) ;   
-        ptype_kind (*: type_kind*)  ; 
-        ptype_private (*: private_flag*); 
-        ptype_manifest (* : core_type option *);
-        ptype_attributes (*: attributes*);
-        ptype_loc (*: location*)
+        ptype_name  : string loc;
+        ptype_params  : (core_type * (variance * injectivity)) list ;
+        ptype_cstrs : (core_type * core_type * location) list ;   
+        ptype_kind : type_kind  ; 
+        ptype_private : private_flag; 
+        ptype_manifest  : core_type option ;
+        ptype_attributes : attributes;
+        ptype_loc : location
       } ->
       (* (ppddump ("DEBUG:type_decl:", ptype_name)); *)
       (* (ppddump ("DEBUG:parameters:", ptype_params)); *)
@@ -715,6 +755,13 @@ let print_type_decl(a) =
       (*                                 "DEBUG:loc", ptype_loc *)
       (*                                )); *)
       "print_type_decl:\"" ^  ptype_name.txt ^ "\" = " ^ (process_kind (ptype_name.txt,ptype_kind,s))
+                                                           ^ process_type_params(ptype_params)
+                                                           ^ process_type_cstrs(ptype_cstrs)
+                                                           ^ process_type_kind(ptype_kind)
+                                                           ^ process_type_private ptype_private
+                                                           ^ process_type_manifest ptype_manifest
+                                                           ^ process_attributes ptype_attributes
+                                                           ^ process_location ptype_loc
       
 type     type_declaration_list = type_declaration list
     
@@ -752,6 +799,13 @@ let fffff=1
   string context,
   separarator
 *)
+let process_params _ ="ptype_params"
+let process_cstrs _ = "ptype_cstrs"
+let process_kind _ = "ptype_kind"
+let process_private _ = "ptype_private"
+let process_manifest _ = "ptype_manifest"
+let process_attribute _ = "ptype_attribute"
+
 let rec emit_type_decl_list((x,s,t1):(type_declaration_list*string_list*string)):string=
   match x with
   | [] -> ""
@@ -762,26 +816,34 @@ let rec emit_type_decl_list((x,s,t1):(type_declaration_list*string_list*string))
 and emit_type_decl ((x,s)) =
   match x with
     {
-      ptype_name (* : string loc *);
-      ptype_params (* : (core_type * (variance * injectivity)) list *);
-      ptype_cstrs (*: (core_type * core_type * location) list*) ;   
-      ptype_kind (*: type_kind*)  ; 
-      ptype_private (*: private_flag*); 
-      ptype_manifest (* : core_type option *);
-      ptype_attributes (*: attributes*);
-      ptype_loc (*: location*)
+      ptype_name  : string loc ;
+      ptype_params : (core_type * (variance * injectivity)) list;
+      ptype_cstrs : (core_type * core_type * location) list ;   
+      ptype_kind : type_kind  ; 
+      ptype_private : private_flag; 
+      ptype_manifest  : core_type option;
+      ptype_attributes : attributes;
+      ptype_loc : location
     } ->
     "\nDEBUG2Erec: let process_type_decl_" ^  ptype_name.txt ^ " (x:" ^ ptype_name.txt
     ^ "):string = match x with {"
     ^ (emit_type_decl_kind (ptype_name.txt,ptype_kind,s,";"))
     ^ "} ->"
     ^ (emit_type_decl_kind_process (ptype_name.txt,ptype_kind,s,"^"))
+    ^ process_params        ptype_params
+    ^ process_cstrs       ptype_cstrs 
+    ^ process_kind       ptype_kind 
+    ^ process_private      ptype_private
+    ^ process_manifest      ptype_manifest
+    ^ process_attributes      ptype_attributes
+    ^ process_loc       ptype_loc 
 
+and process_mutable _ = "process_mutable"
 and emit_type_decl_kind((p,x,s,ss)) :string=
   match x with
   | Ptype_record a ->     
     emit_record_kind_field_list(p,a,s,ss)
-  | other -> "SKIP"
+  | _ -> "SKIP"
 and  emit_record_kind_field_list(p,x,s,ss) : string =
     match x with
   | [] -> ""
@@ -796,20 +858,22 @@ and  emit_record_kind_field((x,s):label_declaration *string_list):string =
   match x with
     {
      pld_name(* : string loc *);
-     pld_mutable(* : mutable_flag *);
+     pld_mutable : mutable_flag ;
      pld_type(* : core_type *);
-     pld_loc(* : Location.t *);
-     pld_attributes(* : attributes *); 
+     pld_loc : Location.t ;
+     pld_attributes : attributes; 
    } ->
     let pct = (emit_core_type2 (pld_type,s,0)) in
     pld_name.txt  ^ "(* " ^ pct ^ "*)"
-
+    ^ process_mutable pld_mutable
+    ^ process_loc pld_loc 
+    ^ process_attributes pld_attributes
 
 and emit_type_decl_kind_process((p,x,s,ss)) :string=
   match x with
   | Ptype_record a ->     
     emit_record_kind_field_list_process(p,a,s,ss)
-  | other -> "SKIP"
+  | _ -> "SKIP"
 and  emit_record_kind_field_list_process(p,x,s,ss) : string =
     match x with
   | [] -> ""
@@ -823,30 +887,38 @@ and  emit_record_kind_field_list_process(p,x,s,ss) : string =
 and  emit_record_kind_field_process((x,s):label_declaration *string_list):string =
   match x with
     {
-     pld_name(* : string loc *);
-     pld_mutable(* : mutable_flag *);
-     pld_type(* : core_type *);
-     pld_loc(* : Location.t *);
-     pld_attributes(* : attributes *); 
+     pld_name : string loc ;
+     pld_mutable : mutable_flag ;
+     pld_type : core_type ;
+     pld_loc : Location.t ;
+     pld_attributes : attributes ; 
    } ->
     let pct = (emit_core_type2 (pld_type,s,0)) in
     "(process_" ^ pct ^ " " ^  pld_name.txt ^ ")"
+    ^ process_mutable pld_mutable 
+    ^ process_loc pld_loc 
+    ^ process_attributes pld_attributes
 
 (* from https://github.com/bsansouci/bucklescript/blob/ab7c82274cd521260db04988800048162e937a50/lib/bs_ppx_tools.ml#L5635 *)
+(* This expression has type open_declaration = module_expr open_infos *)
+(* but an expression was expected of type *)
+(*   Ppxlib.Parsetree.open_description = longident loc open_infos *)
+(*                                         Type module_expr is not compatible with type longident loc *)
+
+let process_expr _ = "popen_expr"
 let lift_Parsetree_open_description 
-      (open_description : Parsetree.open_description) : 'res =
-  let { Parsetree.popen_lid;
-        Parsetree.popen_override;
-        Parsetree.popen_loc;
-        Parsetree.popen_attributes } = open_description in
-  let lift_loc = fun x -> x in
-  let lift_Longident_t = fun x -> x in
+      (open_description : module_expr open_infos) : 'res =
+  let { (* popen_lid; *)
+        popen_expr;
+        popen_override;
+        popen_loc;
+        popen_attributes } = open_description in
   let lift_Asttypes_override_flag = fun x ->
     match x with
     | Asttypes.Fresh -> "Fresh"
     | Asttypes.Override -> "Override"
   in
-  let lift_Location_t = fun x -> Location.to_string x in
+  let lift_Location_t = fun x -> process_location x in
   let lift_Parsetree_attributes = fun x -> List.length x in
   let record name fields =
     let fields_string =
@@ -856,11 +928,11 @@ let lift_Parsetree_open_description
         fields
       |> String.concat "; "
     in
-    Printf.sprintf "%s { %s }" name fields_string
+    Printf.sprintf "%s { %s } %s" name fields_string (process_expr popen_expr)
   in
   record "Parsetree.open_description"
     [
-      "popen_lid", lift_Longident_t popen_lid;
+      (* "popen_lid", lift_Longident_t popen_lid; *)
       "popen_override", lift_Asttypes_override_flag popen_override;
       "popen_loc", lift_Location_t popen_loc;
       "popen_attributes", string_of_int (lift_Parsetree_attributes popen_attributes);
@@ -883,18 +955,18 @@ let printdesc(a :structure_item_desc*string_list) :string =
   |(x,s)->
     (* (ppddump ("DEBUG:structure_item_desc:", x)); *)
     match x with
-    | Pstr_value (rec_flag, value_binding_list) ->
+    | Pstr_value ((* rec_flag, *)_, value_binding_list) ->
       (* (ppddump ("DEBUG:Pstr_value:", rec_flag, value_binding_list)); *)
       "Pstr_value:"      ^ print_value_binding_list(value_binding_list)
-    | Pstr_type (rec_flag, type_declaration_list) ->      
+    | Pstr_type ((* rec_flag *)_, type_declaration_list) ->      
       (print_endline ("\n"^(emit_type_decl_list (type_declaration_list,s," "))^"\n"));
       "Pstr_type:"^
       process_type_decl_list((type_declaration_list,s))
-    | Pstr_module  module_binding ->
+    | Pstr_module  _(* module_binding *) ->
       (* (ppddump ("DEBUG:Pstr_module:",module_binding)); *) "module_binding"
     (*open model*)
     | Pstr_open sod ->
-       lift_Parsetree_open_description  sod
+       (lift_Parsetree_open_description  sod)
     | Pstr_eval (expression,attributes) ->
       (ppddump ("DEBUG:Pstr_eval:", expression,attributes));
       "Pstr_eval"
@@ -939,6 +1011,6 @@ let transform x (*ast, bytecodes of the interface *) =
   (print_endline ("DEBUG2AAB:" ^ foo)); 
   x
 
-let process_bool x = "bool"
+let process_bool _ = "bool"
                                                           
 let () = Driver.register_transformation ~impl:transform "simple-ppx" 
