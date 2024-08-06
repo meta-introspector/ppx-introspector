@@ -41,12 +41,14 @@ open Numbers
 open Profile	
 open Strongly_connected_components	
 open Targetint	
-open Terminfo	
+open Terminfo
+
 open Warnings	
 open Pparse	
 
 module type AstSig = module type of Ast_helper
  [@@deriving show]
+
 module type PparseSig = module type of Pparse
 module ShowMyModuleSig : AstSig = Ast_helper
 module Show1 : PparseSig = Pparse

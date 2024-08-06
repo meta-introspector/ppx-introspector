@@ -149,7 +149,7 @@ and process_value_binding_list x = "value_binding_list" ^
     match x with
     | [] -> "process_expression_list"
     | a :: t -> (process_value_binding a) ^ "|" ^ (process_value_binding_list t)  
-and process_location _ = "process_location"
+and process_location x = "loc"
 and process_location_stack _ = "process_location_stack"
 and process_attributes _ = "process_attributes"
 and  print_value_binding_expr (x : expression) : string=
@@ -906,6 +906,166 @@ and  emit_record_kind_field_process((x,s):label_declaration *string_list):string
 (*                                         Type module_expr is not compatible with type longident loc *)
 
 let process_expr _ = "popen_expr"
+                       (*
+from                         ~/.opam/4.14.0/lib/ocaml/compiler-libs/parsetree.mli
+and 'a open_infos =
+    {
+     popen_expr: 'a;
+     popen_override: override_flag;
+     popen_loc: Location.t;
+     popen_attributes: attributes;
+    }
+ Values of type ['a open_infos] represents:
+    - [open! X] when {{!open_infos.popen_override}[popen_override]}
+                  is {{!Asttypes.override_flag.Override}[Override]}
+    (silences the "used identifier shadowing" warning)
+    - [open  X] when {{!open_infos.popen_override}[popen_override]}
+    is {{!Asttypes.override_flag.Fresh}[Fresh]}
+    
+   ppx_tools/ast_lifter/ast_lifter.ml:1169
+       method lift_Parsetree_open_description :
+      Parsetree.open_description -> 'res=
+      (fun x ->
+         this#lift_Parsetree_open_infos
+           (fun x -> this#lift_Asttypes_loc this#lift_Longident_t x) x : 
+      Parsetree.open_description -> 'res)
+    method lift_Parsetree_open_infos :
+      'f0 . ('f0 -> 'res) -> 'f0 Parsetree.open_infos -> 'res=
+      fun (type f0) ->
+        (fun f0 ->
+           fun
+             { Parsetree.popen_expr = popen_expr;
+               Parsetree.popen_override = popen_override;
+               Parsetree.popen_loc = popen_loc;
+               Parsetree.popen_attributes = popen_attributes }
+             ->
+             this#record "Parsetree.open_infos"
+               [("popen_expr", (f0 popen_expr));
+               ("popen_override",
+                 (this#lift_Asttypes_override_flag popen_override));
+               ("popen_loc", (this#lift_Location_t popen_loc));
+               ("popen_attributes",
+                 (this#lift_Parsetree_attributes popen_attributes))] : 
+        (f0 -> 'res) -> f0 Parsetree.open_infos -> 'res)
+    method lift_Asttypes_override_flag : Asttypes.override_flag -> 'res=
+      (function
+       | Asttypes.Override ->
+           this#constr "Asttypes.override_flag" ("Override", [])
+       | Asttypes.Fresh -> this#constr "Asttypes.override_flag" ("Fresh", []) : 
+      Asttypes.override_flag -> 'res)
+
+      
+   ppx_tools/ast_mapper_class.ml:609
+       method open_declaration
+        {popen_expr; popen_override; popen_attributes; popen_loc} =
+      Opn.mk (this # module_expr popen_expr)
+        ~override:popen_override
+        ~loc:(this # location popen_loc)
+        ~attrs:(this # attributes popen_attributes)
+
+    method open_description
+        {popen_expr; popen_override; popen_attributes; popen_loc} =
+      Opn.mk (map_loc this popen_expr)
+        ~override:popen_override
+        ~loc:(this # location popen_loc)
+        ~attrs:(this # attributes popen_attributes)
+
+   ppxlib/ast/ast.ml:865:  popen_expr : 'a;
+   
+   and 'a open_infos = 'a Parsetree.open_infos = {
+  popen_expr : 'a;
+  popen_override : override_flag;
+  popen_loc : location;
+  popen_attributes : attributes;
+}
+
+and open_description = longident_loc open_infos
+ open! X - popen_override = Override (silences the 'used identifier
+   shadowing' warning)
+   open  X - popen_override = Fresh
+
+
+and open_declaration = module_expr open_infos
+
+   ~/.opam/4.14.0/lib/ppxlib/ast_pattern_generated.ml
+let open_infos_attributes (T f1) (T f2) =
+  T
+    (fun ctx ->
+       fun _loc ->
+         fun x ->
+           fun k ->
+             let loc = x.popen_loc in
+             let k = f1 ctx loc x.popen_attributes k in
+             let x = { x with popen_attributes = [] } in
+             let k = f2 ctx loc x k in k)
+let open_infos ~expr:(T expr)  ~override:(T override)  =
+  T
+    (fun ctx ->
+       fun loc ->
+         fun x ->
+           fun k ->
+             Common.assert_no_attributes x.popen_attributes;
+             (let k = expr ctx loc x.popen_expr k in
+              let k = override ctx loc x.popen_override k in k))
+let override =
+  T
+    (fun ctx ->
+       fun loc ->
+         fun x ->
+           fun k ->
+             match x with
+             | Override -> (ctx.matched <- (ctx.matched + 1); k)
+             | _ -> fail loc "Override")
+let fresh =
+  T
+    (fun ctx ->
+       fun loc ->
+         fun x ->
+           fun k ->
+             match x with
+             | Fresh -> (ctx.matched <- (ctx.matched + 1); k)
+             | _ -> fail loc "Fresh")
+
+ppxlib/ast/ast_helper_lite.ml:410:      popen_expr = expr;
+                        module Opn = struct
+  let mk ?(loc = !default_loc) ?(attrs = []) ?(override = Fresh) expr =
+    {
+      popen_expr = expr;
+      popen_override = override;
+      popen_loc = loc;
+      popen_attributes = attrs;
+    }
+end
+
+
+                        ~/.opam/4.14.0/lib/ppxlib/location_check.ml
+      | Pexp_open
+          (({ popen_expr = { pmod_desc = Pmod_ident lid; _ }; _ } as opn), e)
+        when Location.compare_pos lid.loc.loc_start e.pexp_loc.loc_start = 0
+             && Location.compare_pos lid.loc.loc_end e.pexp_loc.loc_end <> 0 ->
+          (* let's relocate ... *)
+          let e_loc = { e.pexp_loc with loc_start = lid.loc.loc_end } in
+          super#expression_desc
+            (Pexp_open (opn, { e with pexp_loc = e_loc }))
+            acc
+
+~/.opam/4.14.0/lib/ocaml-migrate-parsetree/migrate_408_407.ml
+  and copy_open_description :
+  From.Parsetree.open_description -> To.Parsetree.open_description =
+  fun
+    { From.Parsetree.popen_expr = popen_expr;
+      From.Parsetree.popen_override = popen_override;
+      From.Parsetree.popen_loc = popen_loc;
+      From.Parsetree.popen_attributes = popen_attributes }
+    ->
+      { To.Parsetree.popen_lid = (copy_loc copy_longident popen_expr);
+        To.Parsetree.popen_override = (copy_override_flag popen_override);
+        To.Parsetree.popen_loc = (copy_location popen_loc);
+        To.Parsetree.popen_attributes = (copy_attributes popen_attributes); }
+
+**)
+
+
 let lift_Parsetree_open_description 
       (open_description : module_expr open_infos) : 'res =
   let { (* popen_lid; *)
@@ -933,7 +1093,7 @@ let lift_Parsetree_open_description
   record "Parsetree.open_description"
     [
       (* "popen_lid", lift_Longident_t popen_lid; *)
-      "popen_override", lift_Asttypes_override_flag popen_override;
+      "popen_override", lift_Asttypes_override_flag popen_override;(*Fresh*)
       "popen_loc", lift_Location_t popen_loc;
       "popen_attributes", string_of_int (lift_Parsetree_attributes popen_attributes);
     ]
