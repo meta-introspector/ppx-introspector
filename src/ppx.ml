@@ -285,7 +285,7 @@ and
     (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj"
   | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
     ->
-    let myid = (process_id1 a.txt) in
+    (* let myid = (process_id1 a.txt) in *)
     (* my_process_core_type_list(b, y :: myid); *)
     (ppddump ("DEBUG:Ptyp_arrow7:" )); "class"
   | Ptyp_alias (a,b) (* of core_type * string loc  *)
@@ -446,7 +446,7 @@ let emit_core_type_desc (x : core_type_desc * string_list):string =
     (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj"
   | Ptyp_class (a,b) (* of Longident.t loc * core_type list *)
     ->
-    let myid = (process_id1 a.txt ) in
+    (* let myid = (process_id1 a.txt ) in *)
     (* my_process_core_type_list(b, y :: myid); *)
     (ppddump ("DEBUG:Ptyp_arrow7:" )); "class"
   | Ptyp_alias (a,b) (* of core_type * string loc  *)
@@ -858,7 +858,6 @@ let printdesc(a :structure_item_desc*string_list) :string =
     | Pstr_extension ( extension , attributes)->(ppddump ("DEBUG:Pstr_extension:", extension , attributes)) ; "extension"
 
 let process_string x = x
-let foo = 1
   
 let printone (x : structure_item) :string =
   match x with
@@ -884,6 +883,7 @@ let transform x (*ast, bytecodes of the interface *) =
   (ppddump ("DEBUG3:",x));
   (print_endline ("DEBUG2AA:" ^ "open Ppxlib")); 
   let foo = (debug proc1 x) in
+  (print_endline ("DEBUG2AAB:" ^ foo)); 
   x
 
 let process_bool x = "bool"

@@ -1,5 +1,6 @@
 (lang dune 3.3)
 (name ppx-introspector)
+(version v0.2.0-59-gce539b8-dirty)
 (generate_opam_files true)
 (license AGPL3)
 (maintainers "j mike dupont <jmikedupont2@gmail.com>")
