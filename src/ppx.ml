@@ -1,5 +1,7 @@
 open Ppxlib
-let ppddump x = () (*stub to hide batteries dump*)
+let ppddump x =
+  Printf.printf "DEBUG:Dump '%s'" (BatPervasives.dump  x)
+  (*stub to hide batteries dump*)
 
 type string_list = string list
 type patter_list = pattern list

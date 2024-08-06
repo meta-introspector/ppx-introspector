@@ -115,7 +115,7 @@ let process_module_expr_desc__Pmod_structure x :string =match x with
 let process_with_constraint__Pwith_module x :string =match x with
   | Pwith_type (longident_loc0,type_declaration1) -> (process_types_with_constraint__Pwith_type((process_longident_loc longident_loc0),(process_type_declaration type_declaration1)))
 | Pwith_module (longident_loc0,longident_loc1) -> (process_types_with_constraint__Pwith_module((process_longident_loc longident_loc0),(process_longident_loc longident_loc1)))
- let process_with_constraint__Pwith_modtype x :string =match x with 
-| Pwith_modtype (longident_loc0,module_type1) -> (process_types_with_constraint__Pwith_modtype((process_longident_loc longident_loc0),(process_module_type module_type1)))
- let process_with_constraint__Pwith_modtypesubst x :string =match x with 
-| Pwith_modtypesubst (longident_loc0,module_type1) -> (process_types_with_constraint__Pwith_modtypesubst((process_longident_loc longident_loc0),(process_module_type module_type1)))
+(*  let process_with_constraint__Pwith_modtype x :string =match x with  *)
+(* | Pwith_modtype (longident_loc0,module_type1) -> (process_types_with_constraint__Pwith_modtype((process_longident_loc longident_loc0),(process_module_type module_type1))) *)
+(*  let process_with_constraint__Pwith_modtypesubst x :string =match x with  *)
+(* | Pwith_modtypesubst (longident_loc0,module_type1) -> (process_types_with_constraint__Pwith_modtypesubst((process_longident_loc longident_loc0),(process_module_type module_type1))) *)
