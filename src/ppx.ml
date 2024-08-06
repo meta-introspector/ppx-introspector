@@ -627,7 +627,7 @@ let rec process_type_variant_constructor_declaration_list(a:string*constructor_d
       match h with
       |{
         pcd_name(* : string loc *);
-        pcd_vars(* : string loc list *);
+        (* pcd_vars(\* : string loc list *\); *)
         pcd_args(* : constructor_arguments *);
         pcd_res(* : core_type option *);
         pcd_loc(* : Location.t *);

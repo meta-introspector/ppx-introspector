@@ -8,7 +8,6 @@ build: [
   ["dune" "subst"] {dev}
   [
     "dune"
-    i
     "build"
     "-p"
     name
