@@ -1,9 +1,9 @@
 open Ppxlib
 let ppddump _ =()
 (*
-  not very usefule dump
-  Tag9 is modules
-  Tag8 is signature
+  batteries produces a not very useful dump
+  Tag9 is for modules
+  Tag8 is for signatures
   Printf.printf "DEBUG:Dump '%s'" (BatPervasives.dump  x)*)
   (*stub to hide batteries dump*)
 
@@ -149,7 +149,7 @@ and process_value_binding_list x = "value_binding_list" ^
     match x with
     | [] -> "process_expression_list"
     | a :: t -> (process_value_binding a) ^ "|" ^ (process_value_binding_list t)  
-and process_location x = "loc"
+and process_location _ = "loc"
 and process_location_stack _ = "process_location_stack"
 and process_attributes _ = "process_attributes"
 and  print_value_binding_expr (x : expression) : string=
@@ -904,152 +904,255 @@ and  emit_record_kind_field_process((x,s):label_declaration *string_list):string
 (* but an expression was expected of type *)
 (*   Ppxlib.Parsetree.open_description = longident loc open_infos *)
 (*                                         Type module_expr is not compatible with type longident loc *)
+let process_longident_t txt = "process_longident_t" ^ process_id1(txt) 
 
-let process_expr _ = "popen_expr"
-                       (*
-from                         ~/.opam/4.14.0/lib/ocaml/compiler-libs/parsetree.mli
-and 'a open_infos =
+let process_structure _ = "process_structure"
+let process_open_module_expr_desc x =
+  match x with
+  | Pmod_ident x0 ->
+     process_longident_loc x0
+  | Pmod_structure x0 ->
+     process_structure x0
+  | Pmod_functor _(* (x0, x1) *) -> "functor"
+  | Pmod_apply  _ -> "apply"(* (x0, x1) ->*)
+  | Pmod_constraint _ -> "constraint" (* (x0, x1)  *)
+  | Pmod_unpack _ ->  "unpack"
+  | Pmod_extension _ -> "extension"
+
+let process_open_module_expr x =
+  match x with 
     {
-     popen_expr: 'a;
-     popen_override: override_flag;
-     popen_loc: Location.t;
-     popen_attributes: attributes;
+      pmod_desc ;
+      pmod_loc ;
+      pmod_attributes;
+    } -> process_open_module_expr_desc pmod_desc
+         ^ process_loc pmod_loc
+         ^ process_attributes pmod_attributes
+
+
+(**
+
+   sample from ocaml/compiler-libs/ast_helper.mli
+   (** Module expressions *)
+module Mod:
+  sig
+    val mk: ?loc:loc -> ?attrs:attrs -> module_expr_desc -> module_expr
+    val attr: module_expr -> attribute -> module_expr
+
+    val ident: ?loc:loc -> ?attrs:attrs -> lid -> module_expr
+    val structure: ?loc:loc -> ?attrs:attrs -> structure -> module_expr
+    val functor_: ?loc:loc -> ?attrs:attrs ->
+      functor_parameter -> module_expr -> module_expr
+    val apply: ?loc:loc -> ?attrs:attrs -> module_expr -> module_expr ->
+      module_expr
+    val constraint_: ?loc:loc -> ?attrs:attrs -> module_expr -> module_type ->
+      module_expr
+    val unpack: ?loc:loc -> ?attrs:attrs -> expression -> module_expr
+    val extension: ?loc:loc -> ?attrs:attrs -> extension -> module_expr
+  end
+
+  ocaml/compiler-libs/ast_helper.mli:264:    val mk: ?loc:loc -> ?attrs:attrs -> module_expr_desc -> module_expr
+
+  from   ocaml-migrate-parsetree/migrate_413_414.ml:609:  Ast_413.Parsetree.module_expr_desc -> Ast_414.Parsetree.module_expr_desc =
+
+and copy_open_declaration :
+  Ast_413.Parsetree.open_declaration -> Ast_414.Parsetree.open_declaration =
+  fun x -> copy_open_infos copy_module_expr x
+  
+  and copy_module_expr :
+  
+  Ast_413.Parsetree.module_expr -> Ast_414.Parsetree.module_expr =
+  fun
+    { Ast_413.Parsetree.pmod_desc = pmod_desc;
+      Ast_413.Parsetree.pmod_loc = pmod_loc;
+      Ast_413.Parsetree.pmod_attributes = pmod_attributes }
+    ->
+    {
+      Ast_414.Parsetree.pmod_desc = (copy_module_expr_desc pmod_desc);
+      Ast_414.Parsetree.pmod_loc = (copy_location pmod_loc);
+      Ast_414.Parsetree.pmod_attributes = (copy_attributes pmod_attributes)
     }
- Values of type ['a open_infos] represents:
-    - [open! X] when {{!open_infos.popen_override}[popen_override]}
-                  is {{!Asttypes.override_flag.Override}[Override]}
-    (silences the "used identifier shadowing" warning)
-    - [open  X] when {{!open_infos.popen_override}[popen_override]}
-    is {{!Asttypes.override_flag.Fresh}[Fresh]}
-    
-   ppx_tools/ast_lifter/ast_lifter.ml:1169
-       method lift_Parsetree_open_description :
-      Parsetree.open_description -> 'res=
-      (fun x ->
-         this#lift_Parsetree_open_infos
-           (fun x -> this#lift_Asttypes_loc this#lift_Longident_t x) x : 
-      Parsetree.open_description -> 'res)
-    method lift_Parsetree_open_infos :
-      'f0 . ('f0 -> 'res) -> 'f0 Parsetree.open_infos -> 'res=
-      fun (type f0) ->
-        (fun f0 ->
-           fun
-             { Parsetree.popen_expr = popen_expr;
-               Parsetree.popen_override = popen_override;
-               Parsetree.popen_loc = popen_loc;
-               Parsetree.popen_attributes = popen_attributes }
-             ->
-             this#record "Parsetree.open_infos"
-               [("popen_expr", (f0 popen_expr));
-               ("popen_override",
-                 (this#lift_Asttypes_override_flag popen_override));
-               ("popen_loc", (this#lift_Location_t popen_loc));
-               ("popen_attributes",
-                 (this#lift_Parsetree_attributes popen_attributes))] : 
-        (f0 -> 'res) -> f0 Parsetree.open_infos -> 'res)
-    method lift_Asttypes_override_flag : Asttypes.override_flag -> 'res=
-      (function
-       | Asttypes.Override ->
-           this#constr "Asttypes.override_flag" ("Override", [])
-       | Asttypes.Fresh -> this#constr "Asttypes.override_flag" ("Fresh", []) : 
-      Asttypes.override_flag -> 'res)
 
-      
-   ppx_tools/ast_mapper_class.ml:609
-       method open_declaration
-        {popen_expr; popen_override; popen_attributes; popen_loc} =
-      Opn.mk (this # module_expr popen_expr)
-        ~override:popen_override
-        ~loc:(this # location popen_loc)
-        ~attrs:(this # attributes popen_attributes)
+  and copy_module_expr_desc :
+  Ast_413.Parsetree.module_expr_desc -> Ast_414.Parsetree.module_expr_desc =
+   sample from   ocaml/compiler-libs/parsetree.mli:958
+   
+   and module_expr_desc =
+  | Pmod_ident of Longident.t loc  (** [X] *)
+  | Pmod_structure of structure  (** [struct ... end] *)
+  | Pmod_functor of functor_parameter * module_expr
+      (** [functor(X : MT1) -> ME] *)
+  | Pmod_apply of module_expr * module_expr  (** [ME1(ME2)] *)
+  | Pmod_constraint of module_expr * module_type  (** [(ME : MT)] *)
+  | Pmod_unpack of expression  (** [(val E)] *)
+  | Pmod_extension of extension  (** [[%id]] *)
 
-    method open_description
-        {popen_expr; popen_override; popen_attributes; popen_loc} =
-      Opn.mk (map_loc this popen_expr)
-        ~override:popen_override
-        ~loc:(this # location popen_loc)
-        ~attrs:(this # attributes popen_attributes)
+  
+   SAMPLE from                         ~/.opam/4.14.0/lib/ocaml/compiler-libs/parsetree.mli
+and 'a open_infos =
+{
+popen_expr: 'a;
+popen_override: override_flag;
+popen_loc: Location.t;
+popen_attributes: attributes;
+}
+Values of type ['a open_infos] represents:
+- [open! X] when {{!open_infos.popen_override}[popen_override]}
+is {{!Asttypes.override_flag.Override}[Override]}
+(silences the "used identifier shadowing" warning)
+- [open  X] when {{!open_infos.popen_override}[popen_override]}
+is {{!Asttypes.override_flag.Fresh}[Fresh]}
+ **)
 
-   ppxlib/ast/ast.ml:865:  popen_expr : 'a;
+(**
+   SAMPLE FROM ppx_tools/ast_lifter/ast_lifter.ml:1169
+   method lift_Parsetree_open_description :
+   Parsetree.open_description -> 'res=
+   (fun x ->
+   this#lift_Parsetree_open_infos
+   (fun x -> this#lift_Asttypes_loc this#lift_Longident_t x) x : 
+   Parsetree.open_description -> 'res)
+   method lift_Parsetree_open_infos :
+   'f0 . ('f0 -> 'res) -> 'f0 Parsetree.open_infos -> 'res=
+   fun (type f0) ->
+   (fun f0 ->
+   fun
+   { Parsetree.popen_expr = popen_expr;
+   Parsetree.popen_override = popen_override;
+   Parsetree.popen_loc = popen_loc;
+   Parsetree.popen_attributes = popen_attributes }
+   ->
+   this#record "Parsetree.open_infos"
+   [("popen_expr", (f0 popen_expr));
+   ("popen_override",
+   (this#lift_Asttypes_override_flag popen_override));
+   ("popen_loc", (this#lift_Location_t popen_loc));
+   ("popen_attributes",
+   (this#lift_Parsetree_attributes popen_attributes))] : 
+   (f0 -> 'res) -> f0 Parsetree.open_infos -> 'res)
+   method lift_Asttypes_override_flag : Asttypes.override_flag -> 'res=
+   (function
+   | Asttypes.Override ->
+   this#constr "Asttypes.override_flag" ("Override", [])
+   | Asttypes.Fresh -> this#constr "Asttypes.override_flag" ("Fresh", []) : 
+   Asttypes.override_flag -> 'res)
+ **)
+
+(**  SAMPLE FROM
+
+     module_expr = (fun _ -> this # module_expr);
+     method module_expr = M.map this
+     
+     ppx_tools/ast_mapper_class.ml:609
+
+     
+     method open_declaration
+     {popen_expr; popen_override; popen_attributes; popen_loc} =
+     Opn.mk (this # module_expr popen_expr)
+     ~override:popen_override
+     ~loc:(this # location popen_loc)
+     ~attrs:(this # attributes popen_attributes)
+     
+     method open_description
+     {popen_expr; popen_override; popen_attributes; popen_loc} =
+     Opn.mk (map_loc this popen_expr)
+     ~override:popen_override
+     ~loc:(this # location popen_loc)
+     ~attrs:(this # attributes popen_attributes)
+     
+                        **)
+                        
+(**
+   SAMPLE FROM
+   ppxlib/ast/ast.ml:865:
+   popen_expr : 'a;
    
    and 'a open_infos = 'a Parsetree.open_infos = {
-  popen_expr : 'a;
-  popen_override : override_flag;
-  popen_loc : location;
-  popen_attributes : attributes;
-}
-
-and open_description = longident_loc open_infos
- open! X - popen_override = Override (silences the 'used identifier
+   popen_expr : 'a;
+   popen_override : override_flag;
+   popen_loc : location;
+   popen_attributes : attributes;
+   }
+   
+   and open_description = longident_loc open_infos
+   open! X - popen_override = Override (silences the 'used identifier
    shadowing' warning)
    open  X - popen_override = Fresh
+   
+   and open_declaration = module_expr open_infos
+ **)
 
+(** SAMPLE FROM ~/.opam/4.14.0/lib/ppxlib/ast_pattern_generated.ml
+    
+    let open_infos_attributes (T f1) (T f2) =
+    T
+    (fun ctx ->
+    fun _loc ->
+    fun x ->
+    fun k ->
+    let loc = x.popen_loc in
+    let k = f1 ctx loc x.popen_attributes k in
+    let x = { x with popen_attributes = [] } in
+    let k = f2 ctx loc x k in k)
+    let open_infos ~expr:(T expr)  ~override:(T override)  =
+    T
+    (fun ctx ->
+    fun loc ->
+    fun x ->
+    fun k ->
+    Common.assert_no_attributes x.popen_attributes;
+    (let k = expr ctx loc x.popen_expr k in
+    let k = override ctx loc x.popen_override k in k))
+    let override =
+    T
+    (fun ctx ->
+    fun loc ->
+    fun x ->
+    fun k ->
+    match x with
+    | Override -> (ctx.matched <- (ctx.matched + 1); k)
+    | _ -> fail loc "Override")
+    let fresh =
+    T
+    (fun ctx ->
+    fun loc ->
+    fun x ->
+    fun k ->
+    match x with
+    | Fresh -> (ctx.matched <- (ctx.matched + 1); k)
+    | _ -> fail loc "Fresh")
+ **)
 
-and open_declaration = module_expr open_infos
-
-   ~/.opam/4.14.0/lib/ppxlib/ast_pattern_generated.ml
-let open_infos_attributes (T f1) (T f2) =
-  T
-    (fun ctx ->
-       fun _loc ->
-         fun x ->
-           fun k ->
-             let loc = x.popen_loc in
-             let k = f1 ctx loc x.popen_attributes k in
-             let x = { x with popen_attributes = [] } in
-             let k = f2 ctx loc x k in k)
-let open_infos ~expr:(T expr)  ~override:(T override)  =
-  T
-    (fun ctx ->
-       fun loc ->
-         fun x ->
-           fun k ->
-             Common.assert_no_attributes x.popen_attributes;
-             (let k = expr ctx loc x.popen_expr k in
-              let k = override ctx loc x.popen_override k in k))
-let override =
-  T
-    (fun ctx ->
-       fun loc ->
-         fun x ->
-           fun k ->
-             match x with
-             | Override -> (ctx.matched <- (ctx.matched + 1); k)
-             | _ -> fail loc "Override")
-let fresh =
-  T
-    (fun ctx ->
-       fun loc ->
-         fun x ->
-           fun k ->
-             match x with
-             | Fresh -> (ctx.matched <- (ctx.matched + 1); k)
-             | _ -> fail loc "Fresh")
-
-ppxlib/ast/ast_helper_lite.ml:410:      popen_expr = expr;
-                        module Opn = struct
-  let mk ?(loc = !default_loc) ?(attrs = []) ?(override = Fresh) expr =
+(** SAMPLE FROM  from ppxlib/ast/ast_helper_lite.ml:410:
+    popen_expr = expr;
+    module Opn = struct
+    let mk ?(loc = !default_loc) ?(attrs = []) ?(override = Fresh) expr =
     {
-      popen_expr = expr;
-      popen_override = override;
-      popen_loc = loc;
-      popen_attributes = attrs;
+    popen_expr = expr;
+    popen_override = override;
+    popen_loc = loc;
+    popen_attributes = attrs;
     }
-end
+    end
+ **)
 
+(** SAMPLE FROM
+    ~/.opam/4.14.0/lib/ppxlib/location_check.ml
+    
+    | Pexp_open
+    (({ popen_expr = { pmod_desc = Pmod_ident lid; _ }; _ } as opn), e)
+    when Location.compare_pos lid.loc.loc_start e.pexp_loc.loc_start = 0
+    && Location.compare_pos lid.loc.loc_end e.pexp_loc.loc_end <> 0 ->
+    (* let's relocate ... *)
+    let e_loc = { e.pexp_loc with loc_start = lid.loc.loc_end } in
+    super#expression_desc
+    (Pexp_open (opn, { e with pexp_loc = e_loc }))
+    acc
+ **)
 
-                        ~/.opam/4.14.0/lib/ppxlib/location_check.ml
-      | Pexp_open
-          (({ popen_expr = { pmod_desc = Pmod_ident lid; _ }; _ } as opn), e)
-        when Location.compare_pos lid.loc.loc_start e.pexp_loc.loc_start = 0
-             && Location.compare_pos lid.loc.loc_end e.pexp_loc.loc_end <> 0 ->
-          (* let's relocate ... *)
-          let e_loc = { e.pexp_loc with loc_start = lid.loc.loc_end } in
-          super#expression_desc
-            (Pexp_open (opn, { e with pexp_loc = e_loc }))
-            acc
-
-~/.opam/4.14.0/lib/ocaml-migrate-parsetree/migrate_408_407.ml
+(** SAMPLE FROM 
+    ~/.opam/4.14.0/lib/ocaml-migrate-parsetree/migrate_408_407.ml
+    
   and copy_open_description :
   From.Parsetree.open_description -> To.Parsetree.open_description =
   fun
@@ -1062,7 +1165,6 @@ end
         To.Parsetree.popen_override = (copy_override_flag popen_override);
         To.Parsetree.popen_loc = (copy_location popen_loc);
         To.Parsetree.popen_attributes = (copy_attributes popen_attributes); }
-
 **)
 
 
@@ -1088,7 +1190,7 @@ let lift_Parsetree_open_description
         fields
       |> String.concat "; "
     in
-    Printf.sprintf "%s { %s } %s" name fields_string (process_expr popen_expr)
+    Printf.sprintf "%s { %s } %s" name fields_string (process_open_module_expr popen_expr)
   in
   record "Parsetree.open_description"
     [
