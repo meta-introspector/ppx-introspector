@@ -1,6 +1,10 @@
 open Ppxlib
-let ppddump x =
-  Printf.printf "DEBUG:Dump '%s'" (BatPervasives.dump  x)
+let ppddump x =()
+(*
+  not very usefule dump
+  Tag9 is modules
+  Tag8 is signature
+  Printf.printf "DEBUG:Dump '%s'" (BatPervasives.dump  x)*)
   (*stub to hide batteries dump*)
 
 type string_list = string list
