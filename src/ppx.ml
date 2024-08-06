@@ -1,5 +1,5 @@
 open Ppxlib
-let ppddump x =()
+let ppddump _ =()
 (*
   not very usefule dump
   Tag9 is modules
@@ -12,28 +12,28 @@ type patter_list = pattern list
 type core_type_list = core_type list
 
 let process_apply (a,c) :string = "apply:" ^ a ^ "|" ^ c
-let process_coerce a = "FIXME122"
+let process_coerce _ = "FIXME122"
 let process_constraint (a,b) = "process_constraint" ^ a ^ "|" ^b
 let process_construct (a,b) = "process_construct" ^a^ "|" ^b
 let process_field (a,b) = "process_field" ^ a ^ "|" ^b
-let process_for a = "FIXME126"
+let process_for _ = "FIXME126"
 let process_fun (a,b,c,d) = "process_fun:" ^ a ^ "|" ^b ^ "|" ^c ^ "|" ^d
 let process_ifthenelse (a,b,c) = "process_ifthenelse" ^ a ^ b ^c 
 let process_let (a,b,c) = "let" ^ a ^ "|" ^ b ^ "|" ^ c
 let process_letexception (a,b) = "process_letexception" ^ a ^ "|" ^ b
-let process_letmodule a = "FIXME131"
+let process_letmodule _ = "FIXME131"
 let process_match (a,b) = "process_match" ^ a ^ "|" ^ b
-let process_newtype a = "FIXME1334"
-let process_open a = "FIXME1337"
-let process_poly a = "FIXME1338"
-let process_record a = "FIXME1339"
-let process_send a = "FIXME1340"
+let process_newtype _ = "FIXME1334"
+let process_open _ = "FIXME1337"
+let process_poly _ = "FIXME1338"
+let process_record _ = "FIXME1339"
+let process_send _ = "FIXME1340"
 let process_sequence  (a,b) = "process_sequences" ^ a ^ "|" ^ b
-let process_setfield a = "FIXME1352"
-let process_setinstvar a = "FIXME1362"
-let process_try a = "FIXME1343"
-let process_variant a = "FIXME1355"
-let process_while  a = "FIXME1378"
+let process_setfield _ = "FIXME1352"
+let process_setinstvar _ = "FIXME1362"
+let process_try _ = "FIXME1343"
+let process_variant _ = "FIXME1355"
+let process_while _ = "FIXME1378"
                                                                            
 let process_types (x):string = "TOP1" ^ x
 let process_array (x):string = "ARRAY" ^ x
@@ -57,7 +57,7 @@ let process_option ( a):string = "process_option_TODO" ^ a
                                                                 
 
 
-let process_direction_flag ( alist0):string =  "FIXME4"
+let process_direction_flag ( _ ):string =  "FIXME4"
 let process_arg_label ( a:arg_label):string=
   "process_arg_label" ^
   match a with
@@ -66,27 +66,27 @@ let process_arg_label ( a:arg_label):string=
   | Optional a -> "label_optional:"^a
 
 
-let process_class_structure ( aclass_structure0:class_structure):string=  "FIXME7"
+let process_class_structure ( _ :class_structure):string=  "FIXME7"
 let process_constant ( a:constant):string=
   "process_constant" ^
   match a with
-  | Pconst_integer (a,b) -> "int" ^a
+  | Pconst_integer (a,_) -> "int" ^a
   | Pconst_char char  -> "char" ^ String.make 1 char
-  | Pconst_string (string,location,stringoption) -> "Pconst_string(\"" ^ string ^ "\")"
-  | Pconst_float (string , char_option) -> "float" ^ string
+  | Pconst_string (string,_ (*location*),_ (*stringoption*)) -> "Pconst_string(\"" ^ string ^ "\")"
+  | Pconst_float (string , _(*char_option*) ) -> "float" ^ string
 
 
-let process_extension ( aextension0:extension):string= "FIXME9"
-let process_extension_constructor ( aextension_constructor0:extension_constructor):string= "FIXME10"
-let process_label ( alabel0:label):string="process_label" ^ alabel0
-let process_letop ( aletop0:letop):string="FIXME12"
+let process_extension ( _:extension):string= "FIXME9"
+let process_extension_constructor ( _:extension_constructor):string= "FIXME10"
+let process_label ( _:label):string="process_label" ^ alabel0
+let process_letop ( _:letop):string="FIXME12"
 let rec process_list ( a ):string=
   "process_list" ^  
   match a with
   | [] -> "process_list"
   | a :: t -> a ^ "," ^ (process_list t)
 
-let process_loc ( aloc0):string="FIXME14"
+let process_loc ( _ ):string="FIXME14"
 
 let rec process_id1 a : string = 
   match a with
@@ -98,8 +98,8 @@ let rec process_id1 a : string =
        ^ (process_id1 (longident2) ) 
 
 let process_longident_loc ( a :longident_loc):string="ident:" ^ (process_id1 a.txt)
-let process_module_expr ( amodule_expr0:module_expr):string="FIXME16"
-let process_open_declaration ( aopen_declaration0:open_declaration):string="FIXME17"
+let process_module_expr ( _:module_expr):string="FIXME16"
+let process_open_declaration ( _:open_declaration):string="FIXME17"
 let process_rec_flag ( x:rec_flag):string="process_rec_flag" ^
                                           match x with 
                                           | Nonrecursive -> "plain"
@@ -122,7 +122,7 @@ and process_expression_option ( a: expression option ):string = "process_express
   match a with
   | Some x -> (process_expression x)
   | None -> "nope"
-and process_string_loc_expression_list x = "process_string_loc_expression_list"
+and process_string_loc_expression_list _ = "process_string_loc_expression_list"
 and process_expression_list ( a ):string=
   "process_list" ^  
   match a with
@@ -152,10 +152,10 @@ and process_value_binding_list x = "value_binding_list" ^
 and  print_value_binding_expr (x : expression) : string=
   match x with
   | {
-    pexp_desc (* : expression_desc *);
-    pexp_loc (* : location  *);
-    pexp_loc_stack (* : location_stack *);
-    pexp_attributes (* : attributes *); (* [... \[@id1\] \[@id2\]] *)
+    pexp_desc (* : expression_desc *)
+    (* pexp_loc (\* : location  *\); *)
+    (* pexp_loc_stack (\* : location_stack *\); *)
+    (* pexp_attributes (\* : attributes *\); (\* [... \[@id1\] \[@id2\]] *\) *)
   } ->
     (* (ppddump ("DEBUG66:desc", pexp_desc ))); *)
     (* (ppddump ("DEBUG66:desc", pexp_attributes ))); *)
@@ -205,15 +205,15 @@ and process_pattern_desc x =
     match x with
     |Ppat_any -> "patterna1"
     |Ppat_var (name) -> "pattern_Ppat_var:" ^ name.txt
-    |Ppat_alias (pattern ,loc_string) -> "patterna3"
-    |Ppat_constant constant  -> "patterna4"
-    |Ppat_interval (constant ,constant2)  -> "patterna5"
-    |Ppat_tuple pattern_list   -> "patterna6"
-    |Ppat_construct (a, b)  -> "patterna7"
-    |Ppat_variant (pattern, labeloptional ) -> "patterna8"
-    |Ppat_record (list_longident_locpattern, closed_flag) -> "patterna9"
-    |Ppat_array (pattern_) -> "patterna10 "
-    |Ppat_or (pattern, pattern2)  -> "patterna12"
+    |Ppat_alias (_ ,loc_string) -> "patterna3"
+    |Ppat_constant _  -> "patterna4"
+    |Ppat_interval (_ ,_)  -> "patterna5"
+    |Ppat_tuple _   -> "pattern_list6"
+    |Ppat_construct (_, _)  -> "patterna7"
+    |Ppat_variant (_, _ ) -> "pattern labela8"
+    |Ppat_record (_ (*list_longident_locpattern*),_(* closed_flag*) ) -> "patterna9"
+    |Ppat_array (_ (* pattern_ *)) -> "patterna10 "
+    |Ppat_or (_,_ (* pattern, pattern2 *))  -> "patterna12"
     |Ppat_constraint (pattern , core_type) -> "Ppat_constraint:" ^ process_pattern pattern ^ "|" ^ process_core_type core_type
     |Ppat_type longident_loc  -> "patterna14"
     |Ppat_lazy pattern  -> "patterna15"
@@ -832,6 +832,52 @@ and  emit_record_kind_field_process((x,s):label_declaration *string_list):string
     let pct = (emit_core_type2 (pld_type,s,0)) in
     "(process_" ^ pct ^ " " ^  pld_name.txt ^ ")"
 
+(* from https://github.com/bsansouci/bucklescript/blob/ab7c82274cd521260db04988800048162e937a50/lib/bs_ppx_tools.ml#L5635 *)
+let lift_Parsetree_open_description 
+      (open_description : Parsetree.open_description) : 'res =
+  let { Parsetree.popen_lid;
+        Parsetree.popen_override;
+        Parsetree.popen_loc;
+        Parsetree.popen_attributes } = open_description in
+  let lift_loc = fun x -> x in
+  let lift_Longident_t = fun x -> x in
+  let lift_Asttypes_override_flag = fun x ->
+    match x with
+    | Asttypes.Fresh -> "Fresh"
+    | Asttypes.Override -> "Override"
+  in
+  let lift_Location_t = fun x -> Location.to_string x in
+  let lift_Parsetree_attributes = fun x -> List.length x in
+  let record name fields =
+    let fields_string =
+      List.map
+        (fun (field_name, field_value) ->
+           Printf.sprintf "%s: %s" field_name field_value)
+        fields
+      |> String.concat "; "
+    in
+    Printf.sprintf "%s { %s }" name fields_string
+  in
+  record "Parsetree.open_description"
+    [
+      "popen_lid", lift_Longident_t popen_lid;
+      "popen_override", lift_Asttypes_override_flag popen_override;
+      "popen_loc", lift_Location_t popen_loc;
+      "popen_attributes", string_of_int (lift_Parsetree_attributes popen_attributes);
+    ]
+
+(* (\* *)
+(*   https://github.com/ocaml-flambda/ocaml-jst/blob/62df46a669695120664759f681575bfeedea689e/typing/typemod.ml#L2999 *)
+(*  *\) *)
+(* let toplevel = Option.is_some toplevel in *)
+(*     let (od, sg, newenv) = *)
+(*       type_open_decl ~toplevel funct_body names env sod *)
+(* (\* open_description ->(ppddump ("DEBUG:Pstr_open", open_description)); "module_open" *\) *)
+(* (\* {popen_lid = od.open_txt; popen_flag = od.open_flag; *\) *)
+(* (\*                    popen_attributes = od.open_attributes; *\) *)
+(* (\*                    popen_loc = od.open_loc; *\) *)
+(* (\*                   } *\) *)
+
 let printdesc(a :structure_item_desc*string_list) :string =
   match a with
   |(x,s)->
@@ -847,7 +893,8 @@ let printdesc(a :structure_item_desc*string_list) :string =
     | Pstr_module  module_binding ->
       (* (ppddump ("DEBUG:Pstr_module:",module_binding)); *) "module_binding"
     (*open model*)
-    | Pstr_open open_description ->(ppddump ("DEBUG:Pstr_open", open_description)); "module_open"
+    | Pstr_open sod ->
+       lift_Parsetree_open_description  sod
     | Pstr_eval (expression,attributes) ->
       (ppddump ("DEBUG:Pstr_eval:", expression,attributes));
       "Pstr_eval"
