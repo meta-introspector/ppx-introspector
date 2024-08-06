@@ -6,3 +6,10 @@
 (authors "j mike dupont <jmikedupont2@gmail.com>")
 (source (github meta-introspector/ppxlib-simple-example))
 (documentation "TODO")
+
+(package
+ (name ppx-introspector)
+ (synopsis "Extract knowledge")
+ (depends
+  (ocaml (>= 4.08)))
+ (description "Extraction of knowledge"))
