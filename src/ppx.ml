@@ -1,11 +1,57 @@
 open Ppxlib
+open Ocaml_common
+(* needed to be called before init_env*)
+(*let filename = filename_of_input name in
+  Compmisc.init_path ~dir:(Filename.dirname filename) ();*)
+let my_print_endline s = ()
+let update_search_path () =
+  try
+    let extra_paths = ["/home/mdupont/.opam/4.14.0/lib/ppxlib";
+                       "/home/mdupont/.opam/4.14.0/lib/ocaml";
+                       (* "/home/mdupont/.opam/4.14.0/lib/uuidm/uuidm.cmxa"; *)
+                       (* "/home/mdupont/.opam/4.14.0/lib/re/re.cmxa"; *)
+                       (* "/home/mdupont/.opam/4.14.0/lib/alcotest/alcotest.cmxa"; *)
+                       (* "/home/mdupont/.opam/4.14.0/lib/ocaml/compiler-libs/ocamlcommon.cmxa"; *)
+                       (* "/home/mdupont/.opam/4.14.0/lib/ocaml-compiler-libs/common/ocaml_common.cmxa"; *)
+                       (* "/home/mdupont/.opam/4.14.0/lib/ppxlib/astlib/astlib.cmxa"; *)
+                       (* "/home/mdupont/.opam/4.14.0/lib/ppxlib/ast/ppxlib_ast.cmxa"; *)
+                       (* "/home/mdupont/.opam/4.14.0/lib/ocaml-compiler-libs/shadow/ocaml_shadow.cmxa"; *)
+                     (* "/home/mdupont/.opam/4.14.0/lib/ppxlib/print_diff/ppxlib_print_diff.cmxa"; *)
+                     (* "/home/mdupont/.opam/4.14.0/lib/ppx_derivers/ppx_derivers.cmxa"; *)
+                     (* "/home/mdupont/.opam/4.14.0/lib/ppxlib/traverse_builtins/ppxlib_traverse_builtins.cmxa"; *)
+                     "/home/mdupont/.opam/4.14.0/lib/sexplib0/sexplib0.cmxa";
+                     "/home/mdupont/.opam/4.14.0/lib/ppxlib/stdppx/stdppx.cmxa";
+                     "/home/mdupont/.opam/4.14.0/lib/ppxlib/ppxlib.cmxa";                     
+                     "/home/mdupont/.opam/4.14.0/lib/ocaml/compiler-libs/";
+                     "/home/mdupont/.opam/4.14.0/lib/base";
+                     "/home/mdupont/.opam/4.14.0/lib/base/base_internalhash_types";
+                     "/home/mdupont/.opam/4.14.0/lib/base/caml";
+                     "/home/mdupont/.opam/4.14.0/lib/base/shadow_stdlib";
+                     "/home/mdupont/.opam/4.14.0/lib/ocaml-compiler-libs/common";
+                     "/home/mdupont/.opam/4.14.0/lib/ocaml-compiler-libs/shadow";
+                     "/home/mdupont/.opam/4.14.0/lib/ocaml/compiler-libs";
+                     "/home/mdupont/.opam/4.14.0/lib/ppx_derivers";
+                     "/home/mdupont/.opam/4.14.0/lib/ppxlib/ast";
+                     "/home/mdupont/.opam/4.14.0/lib/ppxlib/astlib";
+                     "/home/mdupont/.opam/4.14.0/lib/ppxlib/print_diff";
+                     "/home/mdupont/.opam/4.14.0/lib/ppxlib/stdppx";
+                     "/home/mdupont/.opam/4.14.0/lib/ppxlib/traverse_builtins";
+                     "/home/mdupont/.opam/4.14.0/lib/sexplib0";
+                     "/home/mdupont/.opam/4.14.0/lib/stdlib-shims"
+                    ]
+    in
+    Clflags.include_dirs := List.rev_append extra_paths !Clflags.include_dirs
+  with 
+  | e ->
+     let backtrace = Printexc.get_backtrace () in
+     Printf.eprintf "Caught exception1: %s\n" (Printexc.to_string e);
+     Printf.eprintf "Backtrace:\n%s\n" backtrace
+
+
+let _ = update_search_path()
+let _ = Compmisc.init_path ()
+let env = Compmisc.initial_env()  
 let ppddump _ =()
-(*
-  batteries produces a not very useful dump
-  Tag9 is for modules
-  Tag8 is for signatures
-  Printf.printf "DEBUG:Dump '%s'" (BatPervasives.dump  x)*)
-  (*stub to hide batteries dump*)
 
 type string_list = string list
 type patter_list = pattern list
@@ -86,7 +132,7 @@ let rec process_list ( a ):string=
   | [] -> "process_list"
   | a :: t -> a ^ "," ^ (process_list t)
 
-let process_loc ( _ ):string="FIXME14"
+let process_loc ( _ ):string=" loc (todo) "
 
 let rec process_id1 a : string = 
   match a with
@@ -97,7 +143,66 @@ let rec process_id1 a : string =
     -> (process_id1 (longident))  ^ "."
        ^ (process_id1 (longident2) ) 
 
+(*
+  process_module
+  open module by name
+  process the signature
+  add the elements of the signature to the data.
+ *)
+
+
+(* let it_mod_1 s _ _ acc = *)
+(*   let module_name = s in *)
+(*   my_print_endline ("Module: " ^ module_name);  (\* Print each module name *\) *)
+(*   module_name::acc *)
+let print_module_names (name : string)
+      (_path : Ocaml_common.Path.t)
+      (_declaration : Ocaml_common.Types.module_declaration)
+      (accumulator : unit) =
+  Printf.printf "Module: %s\n" name;
+  accumulator
+
+let print_all_names =
+  Printf.printf "Print_all_modules\n";
+  Ocaml_common.Env.fold_modules print_module_names None env ()
+
+let process_module mod_ident:string =
+  (*Ocaml_common.Path.t:*)
+  (* let foo = enum0 in *)
+  let id1 = process_id1 mod_ident in
+  try
+    let loc:location = {
+        loc_start = {
+          pos_fname = "foo";
+          pos_lnum=1;
+          pos_bol=1;
+          pos_cnum=1
+        };
+        loc_end={
+            pos_fname = "foo";
+            pos_lnum=1;
+            pos_bol=1;
+            pos_cnum=1
+          };
+        loc_ghost=true;
+      } in
+    let path_to_string _ = "path" in
+    let path = Ocaml_common.Env.lookup_module ~loc mod_ident env |> fst in
+    "path" ^ (path_to_string path)
+  with Not_found -> "Error Not Found"
+     | Failure s -> "Failure" ^ s
+     | e ->
+        let backtrace = Printexc.get_backtrace () in
+
+        Printf.eprintf "Caught exception2: %s for %s and here are the modules\n" (Printexc.to_string e) id1;
+        print_all_names;
+        Printf.eprintf "Backtrace:\n%s\n" backtrace;
+        (* raise e  (\* Re-raise the exception if needed *\) *)
+        "ERROR"
+
+
 let process_longident_loc ( a :longident_loc):string="ident:" ^ (process_id1 a.txt)
+let process_longident_module_loc ( a :longident_loc):string=(process_module a.txt)
 let process_module_expr ( _:module_expr):string="FIXME16"
 let process_open_declaration ( _:open_declaration):string="FIXME17"
 let process_rec_flag ( x:rec_flag):string="process_rec_flag" ^
@@ -151,7 +256,7 @@ and process_value_binding_list x = "value_binding_list" ^
     | a :: t -> (process_value_binding a) ^ "|" ^ (process_value_binding_list t)  
 and process_location _ = "loc"
 and process_location_stack _ = "process_location_stack"
-and process_attributes _ = "process_attributes"
+and process_attributes _ = " process_attributes "
 and  print_value_binding_expr (x : expression) : string=
   match x with
   | {
@@ -275,10 +380,9 @@ and
       (* let concat = (concatlist (id1, astring_list)) in *)
       (* let newy = [id1] @ astring_list in *)
       let newlist = (my_process_core_type_list (b, s)) in
-      Printf.printf "DEBUG:Ptyp_constr1 '%s' %s %s" id1 newlist  (process_location loc);
-      (* "id" ^ a ^ " id2 " ^ myid  *)
+      let debug_string = Printf.sprintf "DEBUG1:Ptyp_constr1 '%s' %s %s\n" id1 newlist  (process_location loc) in
       (ppddump (
-         "DEBUG:Ptyp_constr:",
+         "DEBUG2:Ptyp_constr:",
          "id",a,
          "types",b,
          "context",s,
@@ -287,32 +391,32 @@ and
       "Ptyp_constr:\"" ^ id1 ^ "|" ^ "\"->" ^ newlist
     | Ptyp_tuple a (* of core_type list *)
       ->
-      (ppddump ("DEBUG:Ptyp_tuple:", a ));
+      (ppddump ("DEBUG2:Ptyp_tuple:", a ));
       "Ptyp_tuple" ^ my_process_core_type_list(a,  s )
     (*not in test*)
-    | Ptyp_any  -> (ppddump ("DEBUG:Ptyp_any:")); "any"
-    | Ptyp_var name ->(ppddump ("DEBUG:Ptyp_var:"  , name)); "var-name"
+    | Ptyp_any  -> (ppddump ("DEBUG3:Ptyp_any:")); "any"
+    | Ptyp_var name ->(ppddump ("DEBUG4:Ptyp_var:"  , name)); "var-name"
     | Ptyp_arrow (arg_label , core_type , core_type2) ->
-       (ppddump ("DEBUG:Ptyp_arrow10:" ));
+       (ppddump ("DEBUG5:Ptyp_arrow10:" ));
        process_arg_label(arg_label) ^
          process_core_type(core_type) ^
            process_core_type(core_type2) ^
              "arrow"
   | Ptyp_object _(* of object_field list * closed_flag *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow8:" )); "obj"
+    (ppddump ("DEBUG6:Ptyp_arrow8:" )); "obj"
   | Ptyp_class _ (* (a,b) of Longident.t loc * core_type list *)
     ->
     (* let myid = (process_id1 a.txt) in *)
     (* my_process_core_type_list(b, y :: myid); *)
-    (ppddump ("DEBUG:Ptyp_arrow7:" )); "class"
+    (ppddump ("DEBUG7:Ptyp_arrow7:" )); "class"
   | Ptyp_alias _ (* (a,b) of core_type * string loc  *)
     ->
     (* my_process_core_type(a, y); *)
-    (ppddump ("DEBUG:Ptyp_arrow6:" )); "alias"
+    (ppddump ("DEBUG8:Ptyp_arrow6:" )); "alias"
   | Ptyp_variant _ (* (a,b,c) of row_field list * closed_flag * label list option *)
     ->
-    (ppddump ("DEBUG:Ptyp_arrow5:" ));"variant"
+    (ppddump ("DEBUG9:Ptyp_arrow5:" ));"variant"
   | Ptyp_poly _ (* (a,b) of string loc list * core_type *)
     ->
     (* my_process_core_type(b, y); *)
@@ -573,7 +677,7 @@ let  decl_imp_core_type(a: string*string *core_type * string_list*int):string=
   let (parent, parent2, atype, s, n) = a in
   let name = emit_core_type(atype, s, n) in
   let h1 = emit_core_type2(atype, s, n) in
-  (print_endline ("DEBUG2A:" ^ "let process_" ^ h1 ^ " x : " ^ h1 ^ "= x"));
+  (my_print_endline ("DEBUG2A:" ^ "let process_" ^ h1 ^ " x : " ^ h1 ^ "= x"));
   process_parent(parent) ^
   process_parent(parent2) ^
   "a" ^ name  
@@ -668,7 +772,7 @@ let rec process_type_variant_constructor_declaration_list(a:string*constructor_d
         pcd_loc : Location.t ;
         pcd_attributes : attributes; 
       }->
-        (print_endline (
+        (my_print_endline (
             "DEBUG2C: let process_"
             ^ p ^ "__" ^ pcd_name.txt
             ^ " x :string ="
@@ -696,15 +800,15 @@ let rec process_type_variant_constructor_declaration_list(a:string*constructor_d
         (*    )); *)
         let newtext = (emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
         let newtext2 = (decl_emit_constructor_arguments(p,pcd_name.txt, pcd_args, s)) in
-        (print_endline ("DEBUG2B:" ^ newtext2));
-        (print_endline ("DEBUG2C:" ^ newtext)); 
+        (my_print_endline ("DEBUG2B:" ^ newtext2));
+        (my_print_endline ("DEBUG2C:" ^ newtext)); 
         let ret =              "constructor:\""^ pcd_name.txt ^ "\""
                                ^ "{" ^
                                print_constructor_arguments(pcd_args,s)
                                ^ "}" ^ "\t|" ^
                                process_type_variant_constructor_declaration_list(p,t,s)
         in
-        Printf.printf "DEBUG:constructor_declaration_new: %s\n" ret;
+        let debug_string = Printf.sprintf "DEBUG:constructor_declaration_new: %s\n" ret in 
         ret
         
 let bar =1
@@ -899,18 +1003,16 @@ and  emit_record_kind_field_process((x,s):label_declaration *string_list):string
     ^ process_loc pld_loc 
     ^ process_attributes pld_attributes
 
-(* from https://github.com/bsansouci/bucklescript/blob/ab7c82274cd521260db04988800048162e937a50/lib/bs_ppx_tools.ml#L5635 *)
-(* This expression has type open_declaration = module_expr open_infos *)
-(* but an expression was expected of type *)
-(*   Ppxlib.Parsetree.open_description = longident loc open_infos *)
-(*                                         Type module_expr is not compatible with type longident loc *)
+
 let process_longident_t txt = "process_longident_t" ^ process_id1(txt) 
 
 let process_structure _ = "process_structure"
+
+
 let process_open_module_expr_desc x =
   match x with
   | Pmod_ident x0 ->
-     process_longident_loc x0
+     process_longident_module_loc x0
   | Pmod_structure x0 ->
      process_structure x0
   | Pmod_functor _(* (x0, x1) *) -> "functor"
@@ -929,259 +1031,23 @@ let process_open_module_expr x =
          ^ process_loc pmod_loc
          ^ process_attributes pmod_attributes
 
-
-(**
-
-   sample from ocaml/compiler-libs/ast_helper.mli
-   (** Module expressions *)
-module Mod:
-  sig
-    val mk: ?loc:loc -> ?attrs:attrs -> module_expr_desc -> module_expr
-    val attr: module_expr -> attribute -> module_expr
-
-    val ident: ?loc:loc -> ?attrs:attrs -> lid -> module_expr
-    val structure: ?loc:loc -> ?attrs:attrs -> structure -> module_expr
-    val functor_: ?loc:loc -> ?attrs:attrs ->
-      functor_parameter -> module_expr -> module_expr
-    val apply: ?loc:loc -> ?attrs:attrs -> module_expr -> module_expr ->
-      module_expr
-    val constraint_: ?loc:loc -> ?attrs:attrs -> module_expr -> module_type ->
-      module_expr
-    val unpack: ?loc:loc -> ?attrs:attrs -> expression -> module_expr
-    val extension: ?loc:loc -> ?attrs:attrs -> extension -> module_expr
-  end
-
-  ocaml/compiler-libs/ast_helper.mli:264:    val mk: ?loc:loc -> ?attrs:attrs -> module_expr_desc -> module_expr
-
-  from   ocaml-migrate-parsetree/migrate_413_414.ml:609:  Ast_413.Parsetree.module_expr_desc -> Ast_414.Parsetree.module_expr_desc =
-
-and copy_open_declaration :
-  Ast_413.Parsetree.open_declaration -> Ast_414.Parsetree.open_declaration =
-  fun x -> copy_open_infos copy_module_expr x
-  
-  and copy_module_expr :
-  
-  Ast_413.Parsetree.module_expr -> Ast_414.Parsetree.module_expr =
-  fun
-    { Ast_413.Parsetree.pmod_desc = pmod_desc;
-      Ast_413.Parsetree.pmod_loc = pmod_loc;
-      Ast_413.Parsetree.pmod_attributes = pmod_attributes }
-    ->
-    {
-      Ast_414.Parsetree.pmod_desc = (copy_module_expr_desc pmod_desc);
-      Ast_414.Parsetree.pmod_loc = (copy_location pmod_loc);
-      Ast_414.Parsetree.pmod_attributes = (copy_attributes pmod_attributes)
-    }
-
-  and copy_module_expr_desc :
-  Ast_413.Parsetree.module_expr_desc -> Ast_414.Parsetree.module_expr_desc =
-   sample from   ocaml/compiler-libs/parsetree.mli:958
-   
-   and module_expr_desc =
-  | Pmod_ident of Longident.t loc  (** [X] *)
-  | Pmod_structure of structure  (** [struct ... end] *)
-  | Pmod_functor of functor_parameter * module_expr
-      (** [functor(X : MT1) -> ME] *)
-  | Pmod_apply of module_expr * module_expr  (** [ME1(ME2)] *)
-  | Pmod_constraint of module_expr * module_type  (** [(ME : MT)] *)
-  | Pmod_unpack of expression  (** [(val E)] *)
-  | Pmod_extension of extension  (** [[%id]] *)
-
-  
-   SAMPLE from                         ~/.opam/4.14.0/lib/ocaml/compiler-libs/parsetree.mli
-and 'a open_infos =
-{
-popen_expr: 'a;
-popen_override: override_flag;
-popen_loc: Location.t;
-popen_attributes: attributes;
-}
-Values of type ['a open_infos] represents:
-- [open! X] when {{!open_infos.popen_override}[popen_override]}
-is {{!Asttypes.override_flag.Override}[Override]}
-(silences the "used identifier shadowing" warning)
-- [open  X] when {{!open_infos.popen_override}[popen_override]}
-is {{!Asttypes.override_flag.Fresh}[Fresh]}
- **)
-
-(**
-   SAMPLE FROM ppx_tools/ast_lifter/ast_lifter.ml:1169
-   method lift_Parsetree_open_description :
-   Parsetree.open_description -> 'res=
-   (fun x ->
-   this#lift_Parsetree_open_infos
-   (fun x -> this#lift_Asttypes_loc this#lift_Longident_t x) x : 
-   Parsetree.open_description -> 'res)
-   method lift_Parsetree_open_infos :
-   'f0 . ('f0 -> 'res) -> 'f0 Parsetree.open_infos -> 'res=
-   fun (type f0) ->
-   (fun f0 ->
-   fun
-   { Parsetree.popen_expr = popen_expr;
-   Parsetree.popen_override = popen_override;
-   Parsetree.popen_loc = popen_loc;
-   Parsetree.popen_attributes = popen_attributes }
-   ->
-   this#record "Parsetree.open_infos"
-   [("popen_expr", (f0 popen_expr));
-   ("popen_override",
-   (this#lift_Asttypes_override_flag popen_override));
-   ("popen_loc", (this#lift_Location_t popen_loc));
-   ("popen_attributes",
-   (this#lift_Parsetree_attributes popen_attributes))] : 
-   (f0 -> 'res) -> f0 Parsetree.open_infos -> 'res)
-   method lift_Asttypes_override_flag : Asttypes.override_flag -> 'res=
-   (function
-   | Asttypes.Override ->
-   this#constr "Asttypes.override_flag" ("Override", [])
-   | Asttypes.Fresh -> this#constr "Asttypes.override_flag" ("Fresh", []) : 
-   Asttypes.override_flag -> 'res)
- **)
-
-(**  SAMPLE FROM
-
-     module_expr = (fun _ -> this # module_expr);
-     method module_expr = M.map this
-     
-     ppx_tools/ast_mapper_class.ml:609
-
-     
-     method open_declaration
-     {popen_expr; popen_override; popen_attributes; popen_loc} =
-     Opn.mk (this # module_expr popen_expr)
-     ~override:popen_override
-     ~loc:(this # location popen_loc)
-     ~attrs:(this # attributes popen_attributes)
-     
-     method open_description
-     {popen_expr; popen_override; popen_attributes; popen_loc} =
-     Opn.mk (map_loc this popen_expr)
-     ~override:popen_override
-     ~loc:(this # location popen_loc)
-     ~attrs:(this # attributes popen_attributes)
-     
-                        **)
-                        
-(**
-   SAMPLE FROM
-   ppxlib/ast/ast.ml:865:
-   popen_expr : 'a;
-   
-   and 'a open_infos = 'a Parsetree.open_infos = {
-   popen_expr : 'a;
-   popen_override : override_flag;
-   popen_loc : location;
-   popen_attributes : attributes;
-   }
-   
-   and open_description = longident_loc open_infos
-   open! X - popen_override = Override (silences the 'used identifier
-   shadowing' warning)
-   open  X - popen_override = Fresh
-   
-   and open_declaration = module_expr open_infos
- **)
-
-(** SAMPLE FROM ~/.opam/4.14.0/lib/ppxlib/ast_pattern_generated.ml
-    
-    let open_infos_attributes (T f1) (T f2) =
-    T
-    (fun ctx ->
-    fun _loc ->
-    fun x ->
-    fun k ->
-    let loc = x.popen_loc in
-    let k = f1 ctx loc x.popen_attributes k in
-    let x = { x with popen_attributes = [] } in
-    let k = f2 ctx loc x k in k)
-    let open_infos ~expr:(T expr)  ~override:(T override)  =
-    T
-    (fun ctx ->
-    fun loc ->
-    fun x ->
-    fun k ->
-    Common.assert_no_attributes x.popen_attributes;
-    (let k = expr ctx loc x.popen_expr k in
-    let k = override ctx loc x.popen_override k in k))
-    let override =
-    T
-    (fun ctx ->
-    fun loc ->
-    fun x ->
-    fun k ->
-    match x with
-    | Override -> (ctx.matched <- (ctx.matched + 1); k)
-    | _ -> fail loc "Override")
-    let fresh =
-    T
-    (fun ctx ->
-    fun loc ->
-    fun x ->
-    fun k ->
-    match x with
-    | Fresh -> (ctx.matched <- (ctx.matched + 1); k)
-    | _ -> fail loc "Fresh")
- **)
-
-(** SAMPLE FROM  from ppxlib/ast/ast_helper_lite.ml:410:
-    popen_expr = expr;
-    module Opn = struct
-    let mk ?(loc = !default_loc) ?(attrs = []) ?(override = Fresh) expr =
-    {
-    popen_expr = expr;
-    popen_override = override;
-    popen_loc = loc;
-    popen_attributes = attrs;
-    }
-    end
- **)
-
-(** SAMPLE FROM
-    ~/.opam/4.14.0/lib/ppxlib/location_check.ml
-    
-    | Pexp_open
-    (({ popen_expr = { pmod_desc = Pmod_ident lid; _ }; _ } as opn), e)
-    when Location.compare_pos lid.loc.loc_start e.pexp_loc.loc_start = 0
-    && Location.compare_pos lid.loc.loc_end e.pexp_loc.loc_end <> 0 ->
-    (* let's relocate ... *)
-    let e_loc = { e.pexp_loc with loc_start = lid.loc.loc_end } in
-    super#expression_desc
-    (Pexp_open (opn, { e with pexp_loc = e_loc }))
-    acc
- **)
-
-(** SAMPLE FROM 
-    ~/.opam/4.14.0/lib/ocaml-migrate-parsetree/migrate_408_407.ml
-    
-  and copy_open_description :
-  From.Parsetree.open_description -> To.Parsetree.open_description =
-  fun
-    { From.Parsetree.popen_expr = popen_expr;
-      From.Parsetree.popen_override = popen_override;
-      From.Parsetree.popen_loc = popen_loc;
-      From.Parsetree.popen_attributes = popen_attributes }
-    ->
-      { To.Parsetree.popen_lid = (copy_loc copy_longident popen_expr);
-        To.Parsetree.popen_override = (copy_override_flag popen_override);
-        To.Parsetree.popen_loc = (copy_location popen_loc);
-        To.Parsetree.popen_attributes = (copy_attributes popen_attributes); }
-**)
-
-
 let lift_Parsetree_open_description 
       (open_description : module_expr open_infos) : 'res =
-  let { (* popen_lid; *)
+  let { 
         popen_expr;
-        popen_override;
-        popen_loc;
-        popen_attributes } = open_description in
-  let lift_Asttypes_override_flag = fun x ->
-    match x with
-    | Asttypes.Fresh -> "Fresh"
-    | Asttypes.Override -> "Override"
-  in
-  let lift_Location_t = fun x -> process_location x in
-  let lift_Parsetree_attributes = fun x -> List.length x in
+        _
+          (*
+             popen_override;
+             popen_loc;
+             popen_attributes
+           *)  } = open_description in
+  (* let lift_Asttypes_override_flag = fun x -> *)
+  (*   match x with *)
+  (*   | Asttypes.Fresh -> "Fresh" *)
+  (*   | Asttypes.Override -> "Override" *)
+  (* in *)
+  (* let lift_Location_t = fun x -> process_location x in *)
+  (* let lift_Parsetree_attributes = fun x -> List.length x in *)
   let record name fields =
     let fields_string =
       List.map
@@ -1195,22 +1061,11 @@ let lift_Parsetree_open_description
   record "Parsetree.open_description"
     [
       (* "popen_lid", lift_Longident_t popen_lid; *)
-      "popen_override", lift_Asttypes_override_flag popen_override;(*Fresh*)
-      "popen_loc", lift_Location_t popen_loc;
-      "popen_attributes", string_of_int (lift_Parsetree_attributes popen_attributes);
+      (* "popen_override", lift_Asttypes_override_flag popen_override;(\*Fresh*\) *)
+      (* "popen_loc", lift_Location_t popen_loc; *)
+      (* "popen_attributes", string_of_int (lift_Parsetree_attributes popen_attributes); *)
     ]
 
-(* (\* *)
-(*   https://github.com/ocaml-flambda/ocaml-jst/blob/62df46a669695120664759f681575bfeedea689e/typing/typemod.ml#L2999 *)
-(*  *\) *)
-(* let toplevel = Option.is_some toplevel in *)
-(*     let (od, sg, newenv) = *)
-(*       type_open_decl ~toplevel funct_body names env sod *)
-(* (\* open_description ->(ppddump ("DEBUG:Pstr_open", open_description)); "module_open" *\) *)
-(* (\* {popen_lid = od.open_txt; popen_flag = od.open_flag; *\) *)
-(* (\*                    popen_attributes = od.open_attributes; *\) *)
-(* (\*                    popen_loc = od.open_loc; *\) *)
-(* (\*                   } *\) *)
 
 let printdesc(a :structure_item_desc*string_list) :string =
   match a with
@@ -1221,7 +1076,7 @@ let printdesc(a :structure_item_desc*string_list) :string =
       (* (ppddump ("DEBUG:Pstr_value:", rec_flag, value_binding_list)); *)
       "Pstr_value:"      ^ print_value_binding_list(value_binding_list)
     | Pstr_type ((* rec_flag *)_, type_declaration_list) ->      
-      (print_endline ("\n"^(emit_type_decl_list (type_declaration_list,s," "))^"\n"));
+      (my_print_endline ("\n"^(emit_type_decl_list (type_declaration_list,s," "))^"\n"));
       "Pstr_type:"^
       process_type_decl_list((type_declaration_list,s))
     | Pstr_module  _(* module_binding *) ->
@@ -1252,7 +1107,7 @@ let printone (x : structure_item) :string =
     pstr_desc; (*structure_item_desc*)
     _
   } ->
-    "TOPstructure_item_desc:" ^ (printdesc (pstr_desc,[]))
+    "TOP structure_item_desc: " ^ (printdesc (pstr_desc,[]))
 
 let printone2 x :string =
   (ppddump ("DEBUG:SECOND::",x));
@@ -1263,14 +1118,13 @@ let proc1 x :string  =
  
 let debug proc lst : string =
   let result = List.map proc lst in
-  List.iter (fun i -> print_endline i) result;
+  List.iter (fun i -> my_print_endline i) result;
     "TODO"
                 
 let transform x (*ast, bytecodes of the interface *) =
-  (ppddump ("DEBUG3:",x));
-  (print_endline ("DEBUG2AA:" ^ "open Ppxlib")); 
+  (my_print_endline ("transform:")); 
   let foo = (debug proc1 x) in
-  (print_endline ("DEBUG2AAB:" ^ foo)); 
+  (my_print_endline ("Transform results:" ^ foo)); 
   x
 
 let process_bool _ = "bool"

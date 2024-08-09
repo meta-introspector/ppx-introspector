@@ -4,11 +4,4 @@
    (:standard
     -warn-error
     -9-26-27-11-37
-    -dtypedtree
-    -dparsetree
-    -dump-into-file
-    -dlambda
-    -annot
-    -dlocations
-    -dsource
-    -drawlambda))))
+    -annot))))
