@@ -1,9 +1,7 @@
 open Ppxlib
+open Ppxlibextras
 let ppddump x = () (*stub to hide batteries dump*)
 
-type string_list = string list
-type patter_list = pattern list
-type core_type_list = core_type list
 
 let process_apply (a,c) :string = "apply:" ^ a ^ "|" ^ c
 let process_coerce a = "FIXME122"
@@ -20,7 +18,7 @@ let process_match (a,b) = "process_match" ^ a ^ "|" ^ b
 let process_newtype a = "FIXME1334"
 let process_open a = "FIXME1337"
 let process_poly a = "FIXME1338"
-let process_record a = "FIXME1339"
+let process_record (a, b) = "process_record" ^ a ^ "|" ^  b 
 let process_send a = "FIXME1340"
 let process_sequence  (a,b) = "process_sequences" ^ a ^ "|" ^ b
 let process_setfield a = "FIXME1352"
@@ -47,7 +45,7 @@ let process_pack (x):string = "PACK" ^ x     let process_tuple (x):string = "TUP
                                 
 let process_constant1 (x):string = "CONSTANT" ^ x
 let process_assert (x):string = "ASSERT" ^ x
-let process_option ( a):string = "process_option_TODO" ^ a
+let process_option ( a):string = "(process_option " ^ a ^ ")"
                                                                 
 
 
@@ -112,10 +110,11 @@ let rec
   match a with
   | [] -> "process_list1"
   | (l,e) :: t -> (process_arg_label l) ^ "|" ^ (process_expression e) ^ "|" ^ (process_list1 t)
-and process_expression_option ( a: expression option ):string = "process_expression_option_TODO" ^
-  match a with
+and process_expression_option ( a: expression option ):string = "(process_expression_option" ^
+  (match a with
   | Some x -> (process_expression x)
-  | None -> "nope"
+  | None -> "(null_expression)"
+  ) ^")"
 and process_string_loc_expression_list x = "process_string_loc_expression_list"
 and process_expression_list ( a ):string=
   "process_list" ^  
@@ -128,16 +127,18 @@ and process_value_binding x =
   process_expression(x.pvb_expr)
 
 and  process_case (a:case) =
-  "case:" ^ 
-  process_pattern a.pc_lhs ^ "|" ^
+  "(case" ^ 
+  (process_pattern a.pc_lhs ^ "|" ^
   process_expression_option a.pc_guard ^ "|" ^
-  process_expression a.pc_rhs
+  process_expression a.pc_rhs) ^
+    ")"
     
 and process_cases ( a:cases):string=
-  "process_cases" ^  
-  match a with
+  "(process_cases" ^  
+ ( match a with
   | [] -> "process_cases"
   | a :: t -> (process_case a) ^ "|" ^ (process_cases t)
+ ) ^ ")"
 
 and process_value_binding_list x = "value_binding_list" ^
     match x with
@@ -222,10 +223,11 @@ and process_record_kind4 :label_declaration -> string_list -> string = fun x s -
 and  process_record_kind2(x :label_declaration)(s:string_list) = ""
 and    process_record_kind3 x s = ""
 and process_core_type ( x ):string = (my_process_core_type x)
-and process_core_type_option ( a: core_type option ):string = "processcore_type_option_TODO" ^
-  match a with
+and process_core_type_option ( a: core_type option ):string = "(process_core_type_option " ^
+  (match a with
   | Some x -> (process_core_type x)
   | None -> "nope"
+  ) ^ ")" 
 and
   process_record_kind((x,s):label_declaration *string_list):string =
   match x with
@@ -746,87 +748,10 @@ let fffff=1
   string context,
   separarator
 *)
-let rec emit_type_decl_list((x,s,t1):(type_declaration_list*string_list*string)):string=
-  match x with
-  | [] -> ""
-  | h :: t ->
-    (emit_type_decl (h,s))
-    ^ t1 ^
-    (emit_type_decl_list (t,s,t1))
-and emit_type_decl ((x,s)) =
-  match x with
-    {
-      ptype_name (* : string loc *);
-      ptype_params (* : (core_type * (variance * injectivity)) list *);
-      ptype_cstrs (*: (core_type * core_type * location) list*) ;   
-      ptype_kind (*: type_kind*)  ; 
-      ptype_private (*: private_flag*); 
-      ptype_manifest (* : core_type option *);
-      ptype_attributes (*: attributes*);
-      ptype_loc (*: location*)
-    } ->
-    "\nDEBUG2Erec: let process_type_decl_" ^  ptype_name.txt ^ " (x:" ^ ptype_name.txt
-    ^ "):string = match x with {"
-    ^ (emit_type_decl_kind (ptype_name.txt,ptype_kind,s,";"))
-    ^ "} ->"
-    ^ (emit_type_decl_kind_process (ptype_name.txt,ptype_kind,s,"^"))
 
-and emit_type_decl_kind((p,x,s,ss)) :string=
-  match x with
-  | Ptype_record a ->     
-    emit_record_kind_field_list(p,a,s,ss)
-  | other -> "SKIP"
-and  emit_record_kind_field_list(p,x,s,ss) : string =
-    match x with
-  | [] -> ""
-  | h :: t ->
-    let one = (emit_record_kind_field (h, s)) in
-    let tail1 = (emit_record_kind_field_list (p, t, s, ss)) in
-    if tail1 != "" then
-      one ^ ss ^ tail1
-    else
-      one                                            
-and  emit_record_kind_field((x,s):label_declaration *string_list):string =
-  match x with
-    {
-     pld_name(* : string loc *);
-     pld_mutable(* : mutable_flag *);
-     pld_type(* : core_type *);
-     pld_loc(* : Location.t *);
-     pld_attributes(* : attributes *); 
-   } ->
-    let pct = (emit_core_type2 (pld_type,s,0)) in
-    pld_name.txt  ^ "(* " ^ pct ^ "*)"
-
-
-and emit_type_decl_kind_process((p,x,s,ss)) :string=
-  match x with
-  | Ptype_record a ->     
-    emit_record_kind_field_list_process(p,a,s,ss)
-  | other -> "SKIP"
-and  emit_record_kind_field_list_process(p,x,s,ss) : string =
-    match x with
-  | [] -> ""
-  | h :: t ->
-    let one = (emit_record_kind_field_process (h, s)) in
-    let tail1 = (emit_record_kind_field_list_process (p, t, s, ss)) in
-    if tail1 != "" then
-      one ^ ss ^ tail1
-    else
-      one                                            
-and  emit_record_kind_field_process((x,s):label_declaration *string_list):string =
-  match x with
-    {
-     pld_name(* : string loc *);
-     pld_mutable(* : mutable_flag *);
-     pld_type(* : core_type *);
-     pld_loc(* : Location.t *);
-     pld_attributes(* : attributes *); 
-   } ->
-    let pct = (emit_core_type2 (pld_type,s,0)) in
-    "(process_" ^ pct ^ " " ^  pld_name.txt ^ ")"
 
 let printdesc(a :structure_item_desc*string_list) :string =
+  "printdesc" ^
   match a with
   |(x,s)->
     (* (ppddump ("DEBUG:structure_item_desc:", x)); *)
@@ -835,7 +760,7 @@ let printdesc(a :structure_item_desc*string_list) :string =
       (* (ppddump ("DEBUG:Pstr_value:", rec_flag, value_binding_list)); *)
       "Pstr_value:"      ^ print_value_binding_list(value_binding_list)
     | Pstr_type (rec_flag, type_declaration_list) ->      
-      (print_endline ("\n"^(emit_type_decl_list (type_declaration_list,s," "))^"\n"));
+      (print_endline ("\nHELP:\n"^(Emitthecode.emit_type_decl_list (type_declaration_list,s," "))^"\n"));
       "Pstr_type:"^
       process_type_decl_list((type_declaration_list,s))
     | Pstr_module  module_binding ->
@@ -854,7 +779,7 @@ let printdesc(a :structure_item_desc*string_list) :string =
     | Pstr_class (class_declarations ) ->(ppddump ("DEBUG:Pstr_class:", class_declarations)); "class"
     | Pstr_class_type (class_type_declarations) ->(ppddump ("DEBUG:Pstr_class_type:", class_type_declarations)) ; "class_Type"
     | Pstr_include  (include_declaration)->(ppddump ("DEBUG:Pstr_include:",include_declaration)); "include"
-    | Pstr_attribute (attribute)->(ppddump ("DEBUG:Pstr_attribute:", attribute)); "attribte"
+    | Pstr_attribute (attribute)->(ppddump ("DEBUG:Pstr_attribute:", attribute)); "_attribute"
     | Pstr_extension ( extension , attributes)->(ppddump ("DEBUG:Pstr_extension:", extension , attributes)) ; "extension"
 
 let process_string x = x
@@ -878,7 +803,7 @@ let proc1 x :string  =
 let debug proc lst : string =
   let result = List.map proc lst in
   List.iter (fun i -> print_endline i) result;
-    "TODO"
+  ""
                 
 let transform x (*ast, bytecodes of the interface *) =
   (ppddump ("DEBUG3:",x));
